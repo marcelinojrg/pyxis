@@ -1,0 +1,241 @@
+// Source of truth: ARCHITECTURE.md Domain Model
+// Prisma 7.x — url di prisma.config.ts, bukan di sini
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// Admin
+// ============================================================================
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+// ============================================================================
+// SiteSettings — Singleton (seed wajib buat row id=1)
+// ============================================================================
+
+model SiteSettings {
+  id                     Int      @id @default(autoincrement())
+  companyName            String?
+  logoUrl                String?
+  address                String?
+  phone                  String?
+  email                  String?
+  footerText             String?
+  socialLinks            Json?
+  defaultMetaTitle       String?
+  defaultMetaDescription String?
+  defaultOgImageUrl      String?
+  updatedAt              DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+// ============================================================================
+// HeroSection — Singleton
+// ============================================================================
+
+model HeroSection {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  subtitle  String?
+  imageUrl  String?
+  ctaLabel  String?
+  ctaUrl    String?
+  updatedAt DateTime @updatedAt
+
+  @@map("hero_sections")
+}
+
+// ============================================================================
+// HomeHighlight
+// ============================================================================
+
+model HomeHighlight {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  iconKey     String?
+  iconUrl     String?
+  order       Int
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("home_highlights")
+}
+
+// ============================================================================
+// AboutContent — Singleton
+// ============================================================================
+
+model AboutContent {
+  id            Int      @id @default(autoincrement())
+  title         String?
+  content       String?
+  vision        String?
+  mission       String?
+  imageUrl      String?
+  officeAddress String?
+  updatedAt     DateTime @updatedAt
+
+  @@map("about_contents")
+}
+
+// ============================================================================
+// Product
+// ============================================================================
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  shortDesc   String
+  fullDesc    String
+  features    String[]
+  imageUrl    String?
+  galleryUrls String[]
+  order       Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([order])
+  @@map("products")
+}
+
+// ============================================================================
+// PartnerBenefit
+// ============================================================================
+
+model PartnerBenefit {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  iconKey     String?
+  iconUrl     String?
+  order       Int
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+  @@map("partner_benefits")
+}
+
+// ============================================================================
+// PartnersPageContent — Singleton
+// ============================================================================
+
+model PartnersPageContent {
+  id           Int      @id @default(autoincrement())
+  heroTitle    String?
+  heroSubtitle String?
+  ctaLabel     String?
+  updatedAt    DateTime @updatedAt
+
+  @@map("partners_page_contents")
+}
+
+// ============================================================================
+// Partner
+// ============================================================================
+
+model Partner {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String?
+  description String?
+  iconUrl     String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+  @@index([isPublished])
+  @@map("partners")
+}
+
+// ============================================================================
+// ContactMessage
+// ============================================================================
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  source    String   // "general" | "partnership"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead])
+  @@index([source])
+  @@index([createdAt])
+  @@map("contact_messages")
+}
+
+// ============================================================================
+// LegalContent — Singleton
+// ============================================================================
+
+model LegalContent {
+  id             Int      @id @default(autoincrement())
+  privacyPolicy  String?
+  termsOfService String?
+  cookiePolicy   String?
+  updatedAt      DateTime @updatedAt
+
+  @@map("legal_contents")
+}
+
+// ============================================================================
+// CareerContent — Singleton
+// ============================================================================
+
+model CareerContent {
+  id                Int      @id @default(autoincrement())
+  description       String?
+  hasOpenPositions  Boolean  @default(false)
+  openPositionsText String?
+  applyEmail        String?
+  updatedAt         DateTime @updatedAt
+
+  @@map("career_contents")
+}
+
+// ============================================================================
+// PageSeo — multi-row, diakses via pageKey
+// ============================================================================
+
+model PageSeo {
+  id              Int      @id @default(autoincrement())
+  pageKey         String   @unique
+  metaTitle       String?
+  metaDescription String?
+  ogImageUrl      String?
+  canonicalUrl    String?
+  noIndex         Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+
+  @@index([pageKey])
+  @@map("page_seos")
+}

@@ -1,11 +1,11 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import { genPageMetadata } from "@/app/seo";
-import { siteMetadata } from "@/data/siteMetadata";
+import { genPageMetadata } from '@/app/seo';
+import { siteMetadata } from '@/data/siteMetadata';
 
 export const metadata = genPageMetadata({
-  title: "Kontak — Hubungi Kami",
-  description: "Hubungi tim BikinProject untuk pertanyaan, masukan, atau kolaborasi lebih lanjut.",
+  title: 'Kontak — Hubungi Kami',
+  description: 'Hubungi tim BikinProject untuk pertanyaan, masukan, atau kolaborasi lebih lanjut.',
 });
 
 const Contact: FC = () => {

@@ -1,15 +1,15 @@
-import axios, { AxiosInstance } from "axios";
-import https from "https";
+import axios, { AxiosInstance } from 'axios';
+import https from 'https';
 
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
 export const createNewClient: () => AxiosInstance = () => {
-  const BASE_API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/";
+  const BASE_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/';
 
   return axios.create({
     baseURL: BASE_API,
     headers: {
-      Accept: "application/json",
+      Accept: 'application/json',
     },
     httpsAgent,
   });

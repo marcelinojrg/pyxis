@@ -1,13 +1,13 @@
-"use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { FC, useState, useEffect } from "react";
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { FC, useState, useEffect } from 'react';
 
-import ThemeToggle from "@/components/Common/ThemeToggle";
-import { cn } from "@/lib/utils";
+import ThemeToggle from '@/components/Common/ThemeToggle';
+import { cn } from '@/lib/utils';
 
-import { navlinks } from "./constant/navLinks";
-import styles from "./Navbar.module.css";
+import { navlinks } from './constant/navLinks';
+import styles from './Navbar.module.css';
 
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -17,7 +17,7 @@ const Navbar: FC = () => {
   // Navbar fixed position if scrolling
   useEffect(() => {
     window.onscroll = () => {
-      const header = document.querySelector("header");
+      const header = document.querySelector('header');
       const fixNav = header?.offsetTop ?? 0;
 
       if (window.pageYOffset > fixNav) {
@@ -30,29 +30,29 @@ const Navbar: FC = () => {
 
   // Hamburger menu handler
   const hamburgerHandler = () => {
-    const hamburger = document.querySelector("#hamburger");
-    const navMenu = document.querySelector("#navMenu");
+    const hamburger = document.querySelector('#hamburger');
+    const navMenu = document.querySelector('#navMenu');
 
     setIsOpen(!isOpen);
 
     if (isOpen) {
       hamburger?.classList.remove(styles.hamburgerActive);
-      navMenu?.classList.add("hidden");
+      navMenu?.classList.add('hidden');
     } else {
       hamburger?.classList.add(styles.hamburgerActive);
-      navMenu?.classList.remove("hidden");
+      navMenu?.classList.remove('hidden');
     }
   };
 
   // isMenuActive handler
   const isMenuActive = (path: string) => {
-    const isHomePage = pathname === "/" && path === "/";
+    const isHomePage = pathname === '/' && path === '/';
 
     if (isHomePage) {
       return true;
     }
 
-    return pathname !== "/" && path !== "/" && pathname.includes(path);
+    return pathname !== '/' && path !== '/' && pathname.includes(path);
   };
 
   return (
@@ -99,7 +99,7 @@ const Navbar: FC = () => {
                       className={cn(
                         styles.navLink,
                         isMenuActive(a.path) && styles.navLinkActive,
-                        "mx-8 lg:mx-4 flex",
+                        'mx-8 lg:mx-4 flex'
                       )}
                     >
                       {a.title}

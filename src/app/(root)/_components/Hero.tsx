@@ -1,6 +1,6 @@
-"use client";
-import Link from "next/link";
-import { FC } from "react";
+'use client';
+import Link from 'next/link';
+import { FC } from 'react';
 
 const Hero: FC = () => {
   return (
@@ -40,7 +40,7 @@ const Hero: FC = () => {
                 <span className="text-blue-600 dark:text-blue-400">$</span> npx bikinproject@latest
               </span>
               <button
-                onClick={() => navigator.clipboard.writeText("npx bikinproject@latest")}
+                onClick={() => navigator.clipboard.writeText('npx bikinproject@latest')}
                 className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg transition-colors text-zinc-500 hover:text-blue-600"
                 title="Copy to clipboard"
               >
@@ -138,7 +138,7 @@ const Hero: FC = () => {
                   <p className="text-zinc-400">│</p>
                   <p className="text-zinc-400 text-xs">────────────────────────╮</p>
                   <p className="text-blue-600 dark:text-blue-400 font-bold">
-                    {" "}
+                    {' '}
                     🎉 Project ready to use!
                   </p>
                   <p className="text-zinc-400 text-xs">────────────────────────╯</p>

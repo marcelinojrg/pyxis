@@ -1,24 +1,24 @@
-"use client";
-import { FC } from "react";
+'use client';
+import { FC } from 'react';
 
 const steps = [
   {
-    number: "01",
-    title: "Jalankan Command",
+    number: '01',
+    title: 'Jalankan Command',
     description:
       'Buka terminal favorit Anda dan jalankan "npx bikinproject@latest". Tidak perlu instalasi global yang memberatkan sistem.',
   },
   {
-    number: "02",
-    title: "Pilih Konfigurasi",
+    number: '02',
+    title: 'Pilih Konfigurasi',
     description:
-      "Pilih framework (Next.js, React, Laravel), bahasa (TS/JS), dan CSS framework melalui antarmuka CLI yang interaktif.",
+      'Pilih framework (Next.js, React, Laravel), bahasa (TS/JS), dan CSS framework melalui antarmuka CLI yang interaktif.',
   },
   {
-    number: "03",
-    title: "Project Siap!",
+    number: '03',
+    title: 'Project Siap!',
     description:
-      "BikinProject akan men-generate starter project lengkap dengan best practices, siap untuk Anda kembangkan lebih lanjut.",
+      'BikinProject akan men-generate starter project lengkap dengan best practices, siap untuk Anda kembangkan lebih lanjut.',
   },
 ];
 

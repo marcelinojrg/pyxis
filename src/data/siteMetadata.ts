@@ -1,26 +1,26 @@
 export const siteMetadata = {
-  title: "BikinProject Next.js Typescript by Naufal Akbar Nugroho",
-  author: "Naufal Akbar Nugroho",
-  headerTitle: "BikinProject",
-  headerMobTitle: "BikinProject",
+  title: 'BikinProject Next.js Typescript by Naufal Akbar Nugroho',
+  author: 'Naufal Akbar Nugroho',
+  headerTitle: 'BikinProject',
+  headerMobTitle: 'BikinProject',
   description:
-    "Saya bersemangat memberikan kontribusi untuk memberikan pengetahuan teknologi bagi semua orang!",
-  language: "id-ID",
-  theme: "system", // system, dark or light
-  siteUrl: "http://localhost:3000", // e.g. https://yourwebsite.com
-  siteRepo: "https://github.com/nuflakbrr/frontend-template",
-  sitePublicRepo: "https://github.com/nuflakbrr/frontend-template",
-  siteLogo: "/static/favicons/icon-512x512.png",
-  image: "/static/images/profile-picture.png",
-  socialBanner: "/static/images/twitter-card.png",
-  email: "naufalakbar378@gmail.com",
-  instagram: "https://www.instagram.com/kbrnugroho",
-  github: "https://www.github.com/nuflakbrr",
-  x: "https://www.twitter.com/nuflakbrr",
-  linkedin: "https://www.linkedin.com/in/nuflakbrr/",
-  facebook: "https://www.facebook.com",
-  youtube: "https://www.youtube.com",
-  locale: "id-ID",
+    'Saya bersemangat memberikan kontribusi untuk memberikan pengetahuan teknologi bagi semua orang!',
+  language: 'id-ID',
+  theme: 'system', // system, dark or light
+  siteUrl: 'http://localhost:3000', // e.g. https://yourwebsite.com
+  siteRepo: 'https://github.com/nuflakbrr/frontend-template',
+  sitePublicRepo: 'https://github.com/nuflakbrr/frontend-template',
+  siteLogo: '/static/favicons/icon-512x512.png',
+  image: '/static/images/profile-picture.png',
+  socialBanner: '/static/images/twitter-card.png',
+  email: 'naufalakbar378@gmail.com',
+  instagram: 'https://www.instagram.com/kbrnugroho',
+  github: 'https://www.github.com/nuflakbrr',
+  x: 'https://www.twitter.com/nuflakbrr',
+  linkedin: 'https://www.linkedin.com/in/nuflakbrr/',
+  facebook: 'https://www.facebook.com',
+  youtube: 'https://www.youtube.com',
+  locale: 'id-ID',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
@@ -48,6 +48,6 @@ export const siteMetadata = {
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
     // Please add your .env file and modify it according to your selection
-    provider: "buttondown",
+    provider: 'buttondown',
   },
 };

@@ -1,7 +1,7 @@
-"use client";
-import { FC } from "react";
+'use client';
+import { FC } from 'react';
 
-import Loader from "@/components/Common/Loader";
+import Loader from '@/components/Common/Loader';
 
 const Loading: FC = () => {
   return (

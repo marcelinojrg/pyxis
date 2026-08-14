@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { FC } from "react";
+import Link from 'next/link';
+import { FC } from 'react';
 
-import { genPageMetadata } from "@/app/seo";
-import { GitHubIcon } from "@/components/Common/CustomIcons";
+import { genPageMetadata } from '@/app/seo';
+import { GitHubIcon } from '@/components/Common/CustomIcons';
 
 export const metadata = genPageMetadata({
-  title: "Masuk — Kelola Project Anda",
-  description: "Masuk ke akun BikinProject untuk mulai mengelola project generator Anda.",
+  title: 'Masuk — Kelola Project Anda',
+  description: 'Masuk ke akun BikinProject untuk mulai mengelola project generator Anda.',
 });
 
 const Login: FC = () => {
@@ -87,7 +87,7 @@ const Login: FC = () => {
           </form>
 
           <p className="text-center text-zinc-500 dark:text-zinc-400 font-medium">
-            Belum punya akun?{" "}
+            Belum punya akun?{' '}
             <Link
               href="/auth/register"
               className="text-blue-600 dark:text-blue-400 font-bold hover:underline"

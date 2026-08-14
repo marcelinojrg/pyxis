@@ -1,5 +1,5 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client';
+import { useState, useEffect } from 'react';
 
 type ScreenSize = {
   width: number;
@@ -25,10 +25,10 @@ const useScreenSize = (): string | undefined => {
 
     handleResize();
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -37,19 +37,19 @@ const useScreenSize = (): string | undefined => {
   }
 
   if (screenSize.width <= 374) {
-    return "Mobile XS";
+    return 'Mobile XS';
   } else if (screenSize.width >= 375 && screenSize.width <= 424) {
-    return "Mobile M";
+    return 'Mobile M';
   } else if (screenSize.width >= 425 && screenSize.width <= 765) {
-    return "Mobile L";
+    return 'Mobile L';
   } else if (screenSize.width >= 768 && screenSize.width <= 1023) {
-    return "Tablet";
+    return 'Tablet';
   } else if (screenSize.width >= 1024 && screenSize.width <= 1439) {
-    return "Laptop";
+    return 'Laptop';
   } else if (screenSize.width >= 1440 && screenSize.width <= 2559) {
-    return "Laptop LG";
+    return 'Laptop LG';
   } else if (screenSize.width >= 2560) {
-    return "Laptop XL";
+    return 'Laptop XL';
   }
 
   return undefined;

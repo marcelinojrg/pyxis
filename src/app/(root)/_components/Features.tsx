@@ -1,48 +1,48 @@
-"use client";
-import { FC } from "react";
+'use client';
+import { FC } from 'react';
 
 const features = [
   {
-    title: "Zero Config",
+    title: 'Zero Config',
     description:
-      "Lupakan setup yang rumit. Mulai project Anda dalam hitungan detik dengan konfigurasi yang sudah dioptimalkan.",
-    icon: "⚙️",
-    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+      'Lupakan setup yang rumit. Mulai project Anda dalam hitungan detik dengan konfigurasi yang sudah dioptimalkan.',
+    icon: '⚙️',
+    color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
   },
   {
-    title: "Interactive CLI",
+    title: 'Interactive CLI',
     description:
-      "Antarmuka baris perintah yang interaktif dan intuitif, memudahkan Anda memilih opsi project.",
-    icon: "💻",
-    color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
+      'Antarmuka baris perintah yang interaktif dan intuitif, memudahkan Anda memilih opsi project.',
+    icon: '💻',
+    color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
   },
   {
-    title: "Multi-framework",
+    title: 'Multi-framework',
     description:
-      "Mendukung berbagai framework populer seperti Next.js, React, Laravel, dan akan terus bertambah.",
-    icon: "📚",
-    color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
+      'Mendukung berbagai framework populer seperti Next.js, React, Laravel, dan akan terus bertambah.',
+    icon: '📚',
+    color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400',
   },
   {
-    title: "Standardisasi Kode",
+    title: 'Standardisasi Kode',
     description:
-      "Setiap project dihasilkan dengan struktur folder dan standar kode terbaik yang konsisten.",
-    icon: "🛠️",
-    color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+      'Setiap project dihasilkan dengan struktur folder dan standar kode terbaik yang konsisten.',
+    icon: '🛠️',
+    color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
   },
   {
-    title: "Developer Experience",
+    title: 'Developer Experience',
     description:
-      "Dibuat dengan fokus utama pada kenyamanan developer untuk produktivitas maksimal.",
-    icon: "✨",
-    color: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+      'Dibuat dengan fokus utama pada kenyamanan developer untuk produktivitas maksimal.',
+    icon: '✨',
+    color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
   },
   {
-    title: "Open Source",
+    title: 'Open Source',
     description:
-      "Didukung oleh komunitas dan bebas untuk dikustomisasi sesuai kebutuhan spesifik Anda.",
-    icon: "🌐",
-    color: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+      'Didukung oleh komunitas dan bebas untuk dikustomisasi sesuai kebutuhan spesifik Anda.',
+    icon: '🌐',
+    color: 'bg-rose-500/10 text-rose-600 dark:text-rose-400',
   },
 ];
 

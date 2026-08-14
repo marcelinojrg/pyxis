@@ -1,8 +1,8 @@
-"use client";
-import { FC, useState, useEffect } from "react";
-import smoothscroll from "smoothscroll-polyfill";
+'use client';
+import { FC, useState, useEffect } from 'react';
+import smoothscroll from 'smoothscroll-polyfill';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 const ScrollToTop: FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -19,15 +19,15 @@ const ScrollToTop: FC = () => {
     smoothscroll.polyfill();
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", toggleVisibility);
+    window.addEventListener('scroll', toggleVisibility);
 
     return () => {
-      window.removeEventListener("scroll", toggleVisibility);
+      window.removeEventListener('scroll', toggleVisibility);
     };
   }, []);
 
@@ -38,8 +38,8 @@ const ScrollToTop: FC = () => {
           type="button"
           onClick={scrollTop}
           className={cn(
-            isVisible ? "opacity-100" : "opacity-0 cursor-default",
-            "flex flex-col justify-center items-center rounded-lg bg-blue-500 p-2 text-white transition-all hover:bg-blue-600",
+            isVisible ? 'opacity-100' : 'opacity-0 cursor-default',
+            'flex flex-col justify-center items-center rounded-lg bg-blue-500 p-2 text-white transition-all hover:bg-blue-600'
           )}
         >
           <svg

@@ -1,0 +1,23 @@
+{
+  "updated_existing": [
+    "PRD.md",
+    "ARCHITECTURE.md",
+    "DESIGN(1).md",
+    "CLAUDE.md",
+    "ONLY_ME.md"
+  ],
+  "new_documents": [
+    "DESIGN.md",
+    "TASKS.md",
+    "SCREEN-SPEC.md",
+    "CONTENT-DATA-MAPPING.md",
+    "COMPONENT-CATALOG.md",
+    "API-CONTRACTS.md",
+    "SEO-SPEC.md",
+    "SECURITY.md",
+    "TEST-MATRIX.md",
+    "PANDUAN-ADMIN.md",
+    "FIGMA-AUDIT.md"
+  ],
+  "note": "Updated copies are provided because uploaded source files are mounted read-only."
+}

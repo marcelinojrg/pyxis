@@ -13,7 +13,7 @@ export interface ErrorMetadata {
   titleSuffix: string;
   description: string;
   badge: string;
-  theme: "rose" | "amber" | "emerald";
+  theme: 'rose' | 'amber' | 'emerald';
 }
 
 export interface ErrorTheme {

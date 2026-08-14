@@ -1,7 +1,7 @@
-import { Metadata } from "next";
+import { Metadata } from 'next';
 
-import { siteMetadata } from "@/data/siteMetadata";
-import { PageSEOProps } from "@/interfaces/seo";
+import { siteMetadata } from '@/data/siteMetadata';
+import { PageSEOProps } from '@/interfaces/seo';
 
 export function genPageMetadata({ title, description, image, ...rest }: PageSEOProps): Metadata {
   return {
@@ -10,15 +10,15 @@ export function genPageMetadata({ title, description, image, ...rest }: PageSEOP
     openGraph: {
       title: `${title} | ${siteMetadata.title}`,
       description: description || siteMetadata.description,
-      url: "./",
+      url: './',
       siteName: siteMetadata.title,
       images: image ? [image] : [siteMetadata.socialBanner],
-      locale: "id_ID",
-      type: "website",
+      locale: 'id_ID',
+      type: 'website',
     },
     twitter: {
       title: `${title} | ${siteMetadata.title}`,
-      card: "summary_large_image",
+      card: 'summary_large_image',
       images: image ? [image] : [siteMetadata.socialBanner],
     },
     ...rest,

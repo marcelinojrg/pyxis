@@ -1,12 +1,12 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import { genPageMetadata } from "@/app/seo";
-import { siteMetadata } from "@/data/siteMetadata";
+import { genPageMetadata } from '@/app/seo';
+import { siteMetadata } from '@/data/siteMetadata';
 
 export const metadata = genPageMetadata({
-  title: "Tentang BikinProject",
+  title: 'Tentang BikinProject',
   description:
-    "Pelajari lebih lanjut tentang BikinProject, motivasi di baliknya, dan bagaimana alat ini dapat membantu Anda membangun proyek dengan lebih cepat.",
+    'Pelajari lebih lanjut tentang BikinProject, motivasi di baliknya, dan bagaimana alat ini dapat membantu Anda membangun proyek dengan lebih cepat.',
 });
 
 const About: FC = () => {
@@ -33,14 +33,14 @@ const About: FC = () => {
                 <p className="sm:text-lg mb-6 md:mb-8 text-justify">
                   <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 p-1 px-2 rounded font-mono font-bold">
                     BikinProject
-                  </span>{" "}
+                  </span>{' '}
                   adalah sebuah CLI-based starter project generator yang dirancang untuk mempercepat
                   proses inisialisasi aplikasi dengan standar industri. Proyek ini mendukung
                   berbagai framework populer seperti Next.js, React, dan Laravel.
                 </p>
 
                 <p className="sm:text-lg mb-6 md:mb-8 text-justify">
-                  Dibuatnya BikinProject berawal dari kebutuhan{" "}
+                  Dibuatnya BikinProject berawal dari kebutuhan{' '}
                   <a
                     href={siteMetadata.github}
                     target="_blank"
@@ -48,7 +48,7 @@ const About: FC = () => {
                     className="text-blue-600 hover:text-blue-700 font-bold underline transition duration-100"
                   >
                     Saya
-                  </a>{" "}
+                  </a>{' '}
                   akan standarisasi struktur proyek saat memulai development baru. Alih-alih
                   melakukan setup manual yang repetitif, BikinProject mengotomatisasi segalanya
                   mulai dari pemilihan bahasa, styling framework, hingga struktur folder terbaik.
