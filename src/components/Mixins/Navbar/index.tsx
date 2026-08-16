@@ -1,136 +1,167 @@
 'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FC, useState, useEffect } from 'react';
-
-import ThemeToggle from '@/components/Common/ThemeToggle';
 import { cn } from '@/lib/utils';
+import { Menu, X } from 'lucide-react';
 
-import { navlinks } from './constant/navLinks';
-import styles from './Navbar.module.css';
+const NAV_LINKS = [
+  { title: 'Home', href: '/' },
+  { title: 'About', href: '/about' },
+  { title: 'Product', href: '/products' },
+  { title: 'Partners', href: '/partners' },
+  { title: 'Blog', href: '/blog' },
+];
 
-const Navbar: FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
+export default function Navbar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // Navbar fixed position if scrolling
+  // Hide public navbar on admin pages
+  const isAdmin = pathname.startsWith('/admin') || pathname.startsWith('/login');
+
   useEffect(() => {
-    window.onscroll = () => {
-      const header = document.querySelector('header');
-      const fixNav = header?.offsetTop ?? 0;
-
-      if (window.pageYOffset > fixNav) {
-        header?.classList.add(styles.navbarFixed);
-      } else {
-        header?.classList.remove(styles.navbarFixed);
-      }
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
     };
+
+    // Check initial scroll position
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Hamburger menu handler
-  const hamburgerHandler = () => {
-    const hamburger = document.querySelector('#hamburger');
-    const navMenu = document.querySelector('#navMenu');
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
-    setIsOpen(!isOpen);
+  if (isAdmin) return null;
 
-    if (isOpen) {
-      hamburger?.classList.remove(styles.hamburgerActive);
-      navMenu?.classList.add('hidden');
-    } else {
-      hamburger?.classList.add(styles.hamburgerActive);
-      navMenu?.classList.remove('hidden');
-    }
-  };
+  const isHome = pathname === '/';
+  const isWhite = !isHome || isScrolled;
 
-  // isMenuActive handler
-  const isMenuActive = (path: string) => {
-    const isHomePage = pathname === '/' && path === '/';
-
-    if (isHomePage) {
-      return true;
-    }
-
-    return pathname !== '/' && path !== '/' && pathname.includes(path);
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
   };
 
   return (
-    <header className="bg-transparent absolute top-0 left-0 w-full flex items-center z-10">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between relative">
-          <div className="px-4">
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        isScrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-md py-3.5 border-b border-neutral-200/80'
+          : isWhite
+            ? 'bg-white py-4'
+            : 'bg-transparent py-4'
+      )}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between">
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <span
+            className={cn(
+              'font-heading font-bold text-2xl tracking-tight transition-colors duration-300',
+              isWhite ? 'text-[#1D4ED8]' : 'text-white'
+            )}
+          >
+            Pyxis
+          </span>
+        </Link>
+
+        {/* Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-8">
+          {NAV_LINKS.map((link) => (
             <Link
-              href="/"
-              className="inline-flex items-center gap-2 font-primary font-bold text-xl lg:text-2xl py-6"
-              aria-label="logo"
+              key={link.href}
+              href={link.href}
+              className={cn(
+                'text-sm font-medium transition-colors duration-200',
+                isWhite
+                  ? isActive(link.href)
+                    ? 'text-[#1D4ED8] font-bold underline underline-offset-8 decoration-2 decoration-[#1D4ED8]'
+                    : 'text-neutral-600 hover:text-[#1D4ED8]'
+                  : isActive(link.href)
+                    ? 'text-white font-semibold underline underline-offset-8 decoration-2 decoration-white'
+                    : 'text-blue-100 hover:text-white'
+              )}
             >
-              📦️ BikinProject
+              {link.title}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Desktop CTA Button */}
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/contact"
+            className="px-5 py-2 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-neutral-900 font-semibold text-sm transition-all duration-200 shadow-sm active:scale-95"
+          >
+            Contact Us
+          </Link>
+        </div>
+
+        {/* Mobile Hamburger Toggle */}
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className={cn(
+            'md:hidden p-2 rounded-lg transition-colors',
+            isWhite
+              ? 'text-neutral-800 hover:bg-neutral-100'
+              : 'text-white hover:bg-white/10'
+          )}
+          aria-label={isOpen ? 'Tutup menu' : 'Buka menu'}
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Drawer */}
+      {isOpen && (
+        <div
+          className={cn(
+            'md:hidden fixed inset-x-0 top-full shadow-xl p-6 transition-all border-b',
+            isWhite
+              ? 'bg-white border-neutral-200 text-neutral-800'
+              : 'bg-[#1E40AF] border-blue-700 text-white'
+          )}
+        >
+          <nav className="flex flex-col space-y-3 mb-6">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'px-4 py-2.5 rounded-lg text-base font-medium transition-colors',
+                  isWhite
+                    ? isActive(link.href)
+                      ? 'text-[#1D4ED8] bg-blue-50 font-bold'
+                      : 'text-neutral-700 hover:bg-neutral-100'
+                    : isActive(link.href)
+                      ? 'text-white bg-blue-700 font-bold'
+                      : 'text-blue-100 hover:bg-blue-700/50'
+                )}
+              >
+                {link.title}
+              </Link>
+            ))}
+          </nav>
+          <div className="flex flex-col gap-3 pt-2">
+            <Link
+              href="/contact"
+              className="w-full text-center py-3 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-neutral-900 font-bold text-sm shadow-sm"
+            >
+              Contact Us
             </Link>
           </div>
-          <div className="flex items-center px-4">
-            <button
-              id="hamburger"
-              name="hamburger"
-              type="button"
-              className="right-4 block absolute lg:hidden"
-              onClick={hamburgerHandler}
-            >
-              <span
-                className={`${styles.hamburgerLine} origin-top-left transition duration-300 ease-in-out`}
-              ></span>
-              <span
-                className={`${styles.hamburgerLine} transition duration-300 ease-in-out`}
-              ></span>
-              <span
-                className={`${styles.hamburgerLine} origin-bottom-left transition duration-300 ease-in-out`}
-              ></span>
-            </button>
-
-            <nav
-              id="navMenu"
-              className="hidden absolute py-5 bg-white shadow-lg rounded-lg max-w-[250px] w-full right-4 top-full lg:block lg:static lg:bg-transparent lg:max-w-full lg:shadow-none lg:rounded-none"
-            >
-              <ul className="block lg:flex lg:items-center">
-                {navlinks?.map((a, i) => (
-                  <li className="group" key={i}>
-                    <Link
-                      href={a.path}
-                      className={cn(
-                        styles.navLink,
-                        isMenuActive(a.path) && styles.navLinkActive,
-                        'mx-8 lg:mx-4 flex'
-                      )}
-                    >
-                      {a.title}
-                    </Link>
-                  </li>
-                ))}
-                <li className="ml-8 lg:ml-6 flex items-center gap-4">
-                  <Link
-                    href="/login"
-                    className="text-zinc-700 dark:text-zinc-300 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    Masuk
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    Daftar
-                  </Link>
-                </li>
-
-                <li className="ml-8 lg:ml-4 flex items-center">
-                  <ThemeToggle />
-                </li>
-              </ul>
-            </nav>
-          </div>
         </div>
-      </div>
+      )}
     </header>
   );
-};
+}
 
-export default Navbar;

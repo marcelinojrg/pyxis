@@ -1,6 +1,16 @@
 {
   "version": 1,
   "skills": {
+    "caveman": {
+      "source": "JuliusBrussee/caveman",
+      "sourceType": "github",
+      "skillPath": "caveman/SKILL.md"
+    },
+    "ponytail": {
+      "source": "DietrichGebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "ponytail/SKILL.md"
+    },
     "prisma-cli": {
       "source": "prisma/skills",
       "sourceType": "github",

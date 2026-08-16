@@ -1,56 +1,32 @@
 import type { Metadata } from 'next';
-
-import { Geist, Geist_Mono } from 'next/font/google';
-
+import { Poppins, Inter } from 'next/font/google';
 import './globals.css';
-import ScrollToTop from '@/components/Common/ScrollToTop';
-import Footer from '@/components/Mixins/Footer';
 import Navbar from '@/components/Mixins/Navbar';
-import { siteMetadata } from '@/data/siteMetadata';
-import ThemeProvider from '@/providers/ThemeProvider';
+import Footer from '@/components/Mixins/Footer';
+import ScrollToTop from '@/components/Common/ScrollToTop';
+import { Toaster } from 'sonner';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const poppins = Poppins({
+  weight: ['500', '600', '700'],
+  variable: '--font-poppins',
   subsets: ['latin'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const inter = Inter({
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
   subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteMetadata.siteUrl || 'http://localhost:3000'),
   title: {
-    default: siteMetadata.title,
-    template: `%s | ${siteMetadata.headerTitle}`,
+    default: 'PT. Pyxis Ultimate Solution — Software Hotel & Restoran Terpercaya',
+    template: '%s | PT. Pyxis Ultimate Solution',
   },
-  description: siteMetadata.description,
-  openGraph: {
-    title: siteMetadata.title,
-    description: siteMetadata.description,
-    url: './',
-    siteName: siteMetadata.title,
-    images: [siteMetadata.socialBanner],
-    locale: 'id_ID',
-    type: 'website',
-  },
-  twitter: {
-    title: siteMetadata.title,
-    card: 'summary_large_image',
-    images: [siteMetadata.socialBanner],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  description:
+    'Penyedia solusi software enterprise terbaik untuk manajemen hotel (Alcor PMS) dan sistem kasir restoran (Alcor POS) di Indonesia.',
 };
 
 export default function RootLayout({
@@ -59,17 +35,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <Navbar />
-
-          <main className="min-h-screen">{children}</main>
-
-          <ScrollToTop />
-
-          <Footer />
-        </ThemeProvider>
+    <html lang="id" className={`${poppins.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="font-body text-neutral-800 bg-neutral-50 antialiased min-h-screen flex flex-col selection:bg-primary selection:text-white">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <ScrollToTop />
+        <Footer />
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

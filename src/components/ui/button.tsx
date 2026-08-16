@@ -1,58 +1,53 @@
-import type { VariantProps } from 'class-variance-authority';
-
-import { Button as ButtonPrimitive } from '@base-ui/react/button';
-import { cva } from 'class-variance-authority';
-
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 rounded-none border border-transparent bg-clip-padding text-xs font-medium focus-visible:ring-1 aria-invalid:ring-1 [&_svg:not([class*='size-'])]:size-4 inline-flex items-center justify-center whitespace-nowrap transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none shrink-0 [&_svg]:shrink-0 outline-none group/button select-none",
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground [a]:hover:bg-primary/80',
-        outline:
-          'border-border bg-background hover:bg-muted hover:text-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 aria-expanded:bg-muted aria-expanded:text-foreground',
+        default: 'bg-primary text-white shadow-sm hover:bg-primary-light active:scale-[0.98]',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground',
-        ghost:
-          'hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 aria-expanded:bg-muted aria-expanded:text-foreground',
-        destructive:
-          'bg-destructive/10 hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/20 text-destructive focus-visible:border-destructive/40 dark:hover:bg-destructive/30',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'bg-secondary text-neutral-900 shadow-sm hover:bg-secondary-light active:scale-[0.98]',
+        outline:
+          'border-2 border-primary text-primary bg-transparent hover:bg-neutral-100 active:scale-[0.98]',
+        ghost: 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900',
+        link: 'text-primary underline-offset-4 hover:underline p-0 h-auto',
+        danger: 'bg-error text-white hover:bg-error-light active:scale-[0.98]',
       },
       size: {
-        default:
-          'h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2',
-        xs: "h-6 gap-1 rounded-none px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-none px-2.5 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: 'h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3',
-        icon: 'size-8',
-        'icon-xs': "size-6 rounded-none [&_svg:not([class*='size-'])]:size-3",
-        'icon-sm': 'size-7 rounded-none',
-        'icon-lg': 'size-9',
+        default: 'h-11 px-6 py-2.5',
+        sm: 'h-9 px-4 py-2 text-xs',
+        lg: 'h-12 px-8 py-3 text-base',
+        icon: 'h-10 w-10 p-2',
+      },
+      fullWidth: {
+        true: 'w-full',
       },
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
+      fullWidth: false,
     },
   }
 );
 
-function Button({
-  className,
-  variant = 'default',
-  size = 'default',
-  ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  return (
-    <ButtonPrimitive
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  );
-}
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, fullWidth, ...props }, ref) => {
+    return (
+      <button
+        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = 'Button';
 
 export { Button, buttonVariants };

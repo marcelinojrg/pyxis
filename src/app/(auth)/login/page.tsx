@@ -1,104 +1,111 @@
-import Link from 'next/link';
-import { FC } from 'react';
+'use client';
 
-import { genPageMetadata } from '@/app/seo';
-import { GitHubIcon } from '@/components/Common/CustomIcons';
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
-export const metadata = genPageMetadata({
-  title: 'Masuk — Kelola Project Anda',
-  description: 'Masuk ke akun BikinProject untuk mulai mengelola project generator Anda.',
-});
+export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/admin';
 
-const Login: FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const res = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      if (res?.error) {
+        setError('Email atau password salah. Silakan coba lagi.');
+        setIsLoading(false);
+      } else {
+        router.push(callbackUrl);
+        router.refresh();
+      }
+    } catch {
+      setError('Terjadi kesalahan saat masuk. Silakan coba lagi.');
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <section className="min-h-[100vh] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-zinc-950 rounded-3xl border-2 border-zinc-100 dark:border-zinc-800 shadow-2xl overflow-hidden">
-        <div className="bg-zinc-50 dark:bg-zinc-900/50 px-6 py-4 border-b-2 border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">📦</span>
-            <span className="font-mono font-bold text-zinc-900 dark:text-white">auth --login</span>
-          </div>
-          <div className="flex gap-1.5 opacity-30">
-            <div className="w-3 h-3 rounded-full bg-zinc-400" />
-            <div className="w-3 h-3 rounded-full bg-zinc-400" />
-            <div className="w-3 h-3 rounded-full bg-zinc-400" />
-          </div>
+    <section className="min-h-screen flex items-center justify-center p-4 bg-neutral-50">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-neutral-200 shadow-lg overflow-hidden">
+        <div className="bg-primary px-6 py-6 text-white text-center">
+          <h1 className="text-2xl font-bold font-heading">Pyxis Admin</h1>
+          <p className="text-xs text-blue-200 mt-1">PT. Pyxis Ultimate Solution</p>
         </div>
 
-        <div className="p-8 space-y-8">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-black text-zinc-950 dark:text-white">Selamat Datang</h1>
-            <p className="text-zinc-500 dark:text-zinc-400 font-medium">
-              Masuk untuk mengelola project Anda.
+        <div className="p-8">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-semibold text-neutral-900">Masuk ke Dashboard</h2>
+            <p className="text-sm text-neutral-500 mt-1">
+              Gunakan akun administrator resmi untuk melanjutkan.
             </p>
           </div>
 
-          <form className="space-y-5">
-            <div className="space-y-2">
-              <label
-                htmlFor="email"
-                className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 font-mono"
-              >
-                $ user.email
+          {error && (
+            <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1">
+                Email
               </label>
               <input
                 type="email"
                 id="email"
-                className="w-full bg-zinc-50 dark:bg-zinc-900 border-2 border-zinc-100 dark:border-zinc-800 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-blue-600 dark:focus:border-blue-500 transition-all font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400"
-                placeholder="email@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white border border-neutral-300 rounded-lg px-4 py-2.5 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-neutral-400"
+                placeholder="admin@pyxis.co.id"
                 required
+                disabled={isLoading}
               />
             </div>
 
-            <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 font-mono"
-              >
-                $ user.password
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-neutral-700 mb-1">
+                Password
               </label>
               <input
                 type="password"
                 id="password"
-                className="w-full bg-zinc-50 dark:bg-zinc-900 border-2 border-zinc-100 dark:border-zinc-800 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-blue-600 dark:focus:border-blue-500 transition-all font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white border border-neutral-300 rounded-lg px-4 py-2.5 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-neutral-400"
                 placeholder="••••••••"
                 required
+                disabled={isLoading}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] mt-4"
+              disabled={isLoading}
+              className="w-full py-3 bg-primary hover:bg-blue-800 disabled:opacity-60 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors mt-2 flex items-center justify-center gap-2 cursor-pointer"
             >
-              Masuk Ke Sistem
-            </button>
-
-            <div className="relative flex items-center justify-center">
-              <span className="absolute inset-x-0 h-px bg-zinc-100 dark:bg-zinc-800"></span>
-              <span className="relative bg-white dark:bg-zinc-950 px-4 text-xs font-bold text-zinc-400 uppercase tracking-widest">
-                Atau
-              </span>
-            </div>
-
-            <button className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all font-bold text-zinc-900 dark:text-white">
-              <GitHubIcon />
-              <span>GitHub Authentication</span>
+              {isLoading ? 'Memverifikasi...' : 'Masuk'}
             </button>
           </form>
-
-          <p className="text-center text-zinc-500 dark:text-zinc-400 font-medium">
-            Belum punya akun?{' '}
-            <Link
-              href="/auth/register"
-              className="text-blue-600 dark:text-blue-400 font-bold hover:underline"
-            >
-              Daftar Sekarang
-            </Link>
-          </p>
         </div>
       </div>
     </section>
   );
-};
-
-export default Login;
+}

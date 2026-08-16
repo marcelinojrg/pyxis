@@ -1,18 +1,64 @@
-'use client';
-import { FC } from 'react';
+import type { Metadata } from 'next';
+import { getHeroSection } from '@/lib/queries/home';
+import { prisma } from '@/lib/prisma';
+import HomeHero from './_components/HomeHero';
+import HomePartnersBar from './_components/HomePartnersBar';
+import HomeFeatures from './_components/HomeFeatures';
+import HomeAboutSummary from './_components/HomeAboutSummary';
+import HomeVisionMission from './_components/HomeVisionMission';
+import HomeEvolution from './_components/HomeEvolution';
+import HomeCTA from './_components/HomeCTA';
 
-import Features from './_components/Features';
-import Hero from './_components/Hero';
-import Steps from './_components/Steps';
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await prisma.pageSeo.findUnique({
+    where: { pageKey: 'home' },
+  });
 
-const Home: FC = () => {
+  return {
+    title: seo?.metaTitle || 'Pyxis — Kelola Hotel Anda dengan Lebih Cerdas & Mudah',
+    description:
+      seo?.metaDescription ||
+      'Pyxis membantu Anda meningkatkan efisiensi operasional, memaksimalkan pendapatan, dan memberikan pengalaman tamu yang tak terlupakan melalui satu platform terpadu.',
+    openGraph: {
+      title: seo?.metaTitle || 'Pyxis — Kelola Hotel Anda dengan Lebih Cerdas & Mudah',
+      description:
+        seo?.metaDescription ||
+        'Sistem manajemen properti terdepan untuk industri perhotelan modern.',
+      images: seo?.ogImageUrl ? [seo.ogImageUrl] : [],
+    },
+    robots: {
+      index: !seo?.noIndex,
+      follow: !seo?.noIndex,
+    },
+  };
+}
+
+export default async function HomePage() {
+  const heroData = await getHeroSection();
+
   return (
-    <div className="w-full">
-      <Hero />
-      <Features />
-      <Steps />
+    <div className="w-full flex flex-col">
+      {/* 1. Hero Section */}
+      <HomeHero data={heroData} />
+
+      {/* 2. Client / Partner Logos Bar */}
+      <HomePartnersBar />
+
+      {/* 3. Features Grid: Fitur Lengkap untuk Segala Kebutuhan */}
+      <HomeFeatures />
+
+      {/* 4. About Summary: Tentang Pyxis & 4 Milestone Cards */}
+      <HomeAboutSummary />
+
+      {/* 5. Vision & Mission: Visi & Misi Perjalanan Kami */}
+      <HomeVisionMission />
+
+      {/* 6. Product Evolution: Evolusi Produk Kami (Nodes 1-5) */}
+      <HomeEvolution />
+
+      {/* 7. Conversion CTA: Saatnya Bergabung */}
+      <HomeCTA />
     </div>
   );
-};
+}
 
-export default Home;

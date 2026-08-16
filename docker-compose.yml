@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: pyxis-db
+    restart: unless-stopped
+    ports:
+      - "51214:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: template1
+    volumes:
+      - pyxis_pgdata:/var/lib/postgresql/data
+
+  postgres-shadow:
+    image: postgres:17-alpine
+    container_name: pyxis-shadow-db
+    restart: unless-stopped
+    ports:
+      - "51215:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: template1
+    volumes:
+      - pyxis_shadow_pgdata:/var/lib/postgresql/data
+
+volumes:
+  pyxis_pgdata:
+  pyxis_shadow_pgdata:
