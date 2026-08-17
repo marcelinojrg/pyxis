@@ -1,69 +1,120 @@
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
-import { authConfig } from './auth.config';
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { admin } from 'better-auth/plugins';
+import { prisma } from './prisma';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  ...authConfig,
-  providers: [
-    Credentials({
-      name: 'Credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+export const auth = betterAuth({
+  database: prismaAdapter(prisma, {
+    provider: 'postgresql',
+  }),
+  user: {
+    additionalFields: {
+      roleId: {
+        type: 'string',
+        required: false,
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
+    },
+  },
+  emailAndPassword: {
+    enabled: true,
+    autoSignIn: false,
+    requireEmailVerification: false,
+    sendResetPassword: async ({
+      user,
+      url,
+    }: {
+      user: { name?: string | null; email: string };
+      url: string;
+    }) => {
+      const { queueEmail } = await import('@/services/public/emails');
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://qa-sitivent.vercel.app';
+      const safeUrl = url.replace(/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
+      const userName = user.name || 'Peserta';
 
-        const email = String(credentials.email).toLowerCase().trim();
-        const password = String(credentials.password);
+      const body = `
+        <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Reset Password</h2>
+        <p>Halo <strong>${userName}</strong>,</p>
+        <p>Kami menerima permintaan untuk menyetel ulang kata sandi akun Sitivent Anda. Klik tombol di bawah untuk melanjutkan:</p>
+        <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
+          <tr>
+            <td align="center" style="border-radius: 8px; background-color: #D97757;">
+              <a href="${safeUrl}" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Reset Password Saya &rarr;</a>
+            </td>
+          </tr>
+        </table>
+        <p style="font-size: 13px; color: #87867F; margin-bottom: 0;">
+          Jika Anda tidak meminta reset password, Anda dapat mengabaikan email ini secara aman.
+        </p>
+      `;
+      await queueEmail(user.email, 'Reset Password Akun Sitivent', body);
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({
+      user,
+      url,
+    }: {
+      user: { name?: string | null; email: string };
+      url: string;
+    }) => {
+      const { queueEmail } = await import('@/services/public/emails');
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://qa-sitivent.vercel.app';
+      const safeUrl = url.replace(/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
+      const userName = user.name || 'Peserta';
 
-        const admin = await prisma.admin.findUnique({
-          where: { email },
-        });
-
-        if (!admin || !admin.password) {
-          return null;
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, admin.password);
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        return {
-          id: String(admin.id),
-          email: admin.email,
-          name: admin.name || 'Admin',
-        };
-      },
-    }),
-  ],
+      const body = `
+        <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Verifikasi Akun Sitivent</h2>
+        <p>Halo <strong>${userName}</strong>,</p>
+        <p>Terima kasih telah mendaftar di <strong>Sitivent</strong>. Klik tombol di bawah ini untuk memverifikasi alamat email Anda:</p>
+        <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
+          <tr>
+            <td align="center" style="border-radius: 8px; background-color: #D97757;">
+              <a href="${safeUrl}" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Verifikasi Akun Saya &rarr;</a>
+            </td>
+          </tr>
+        </table>
+        <p style="font-size: 13px; color: #87867F; margin-bottom: 0;">
+          Jika Anda merasa tidak mendaftar di Sitivent, abaikan email ini.
+        </p>
+      `;
+      await queueEmail(user.email, 'Verifikasi Akun Sitivent Anda', body);
+    },
+  },
   session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 24 hours
+    expiresIn: 60 * 60 * 24, // 1 Day
+    freshAge: 0, // Disable auto-renewal for strict testing
+    updateAge: 0, // Force update check on every request
   },
-  callbacks: {
-    ...authConfig.callbacks,
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
-      }
-      return session;
+  plugins: [admin()],
+  databaseHooks: {
+    user: {
+      update: {
+        after: async (user) => {
+          if (user.emailVerified) {
+            const { prisma: localPrisma } = await import('./prisma');
+            const subject = 'Akun Anda Berhasil Diverifikasi! - SITIVENT';
+            const alreadySent = await localPrisma.emailQueue.findFirst({
+              where: {
+                to: user.email,
+                subject,
+              },
+            });
+            if (!alreadySent) {
+              const { queueEmail } = await import('@/services/public/emails');
+              const body = `
+                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E3DACC; border-radius: 12px; background-color: #FAF9F5;">
+                  <h2 style="color: #D97757; font-family: serif;">Akun Berhasil Diverifikasi!</h2>
+                  <p>Halo ${user.name || user.email},</p>
+                  <p>Selamat! Alamat email Anda telah berhasil diverifikasi. Sekarang Anda memiliki akses penuh ke seluruh fitur di SITIVENT.</p>
+                  <p>Terima kasih telah memverifikasi akun Anda!</p>
+                </div>
+              `;
+              await queueEmail(user.email, subject, body);
+            }
+          }
+        },
+      },
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
 });

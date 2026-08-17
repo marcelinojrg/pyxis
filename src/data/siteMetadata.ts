@@ -1,26 +1,21 @@
 export const siteMetadata = {
-  title: 'BikinProject Next.js Typescript by Naufal Akbar Nugroho',
-  author: 'Naufal Akbar Nugroho',
-  headerTitle: 'BikinProject',
-  headerMobTitle: 'BikinProject',
+  title: process.env.NEXT_PUBLIC_SEO_TITLE || 'Pyxis',
+  author: process.env.NEXT_PUBLIC_SEO_AUTHOR || 'Pyxis',
   description:
-    'Saya bersemangat memberikan kontribusi untuk memberikan pengetahuan teknologi bagi semua orang!',
-  language: 'id-ID',
-  theme: 'system', // system, dark or light
-  siteUrl: 'http://localhost:3000', // e.g. https://yourwebsite.com
-  siteRepo: 'https://github.com/nuflakbrr/frontend-template',
-  sitePublicRepo: 'https://github.com/nuflakbrr/frontend-template',
-  siteLogo: '/static/favicons/icon-512x512.png',
-  image: '/static/images/profile-picture.png',
-  socialBanner: '/static/images/twitter-card.png',
-  email: 'naufalakbar378@gmail.com',
-  instagram: 'https://www.instagram.com/kbrnugroho',
-  github: 'https://www.github.com/nuflakbrr',
-  x: 'https://www.twitter.com/nuflakbrr',
-  linkedin: 'https://www.linkedin.com/in/nuflakbrr/',
-  facebook: 'https://www.facebook.com',
-  youtube: 'https://www.youtube.com',
-  locale: 'id-ID',
+    process.env.NEXT_PUBLIC_SEO_DESCRIPTION ||
+    'Sejak 2023, kami telah membantu berbagai bisnis mewujudkan visi digital mereka. Dengan dedikasi tinggi dan keahlian rekayasa perangkat lunak modern, kami menciptakan website premium, aplikasi kustom, dan solusi IT bisnis yang andal dan tepat sasaran.',
+  language: process.env.NEXT_PUBLIC_SEO_LANGUAGE || 'id-ID',
+  siteUrl: process.env.NEXT_PUBLIC_SEO_SITE_URL || '',
+  socialBanner: '/assets/img/seo_twitter-card.jpg',
+  email: process.env.NEXT_PUBLIC_SEO_EMAIL || '',
+  instagram: process.env.NEXT_PUBLIC_SEO_INSTAGRAM || '',
+  instagram_atomic: process.env.NEXT_PUBLIC_SEO_INSTAGRAM_ATOMIC || '',
+  x: process.env.NEXT_PUBLIC_SEO_X || '',
+  facebook: process.env.NEXT_PUBLIC_SEO_FACEBOOK || '',
+  youtube: process.env.NEXT_PUBLIC_SEO_YOUTUBE || '',
+  github: 'https://github.com/nuflakbrr',
+  phone: process.env.NEXT_PUBLIC_SEO_PHONE || '',
+  locale: process.env.NEXT_PUBLIC_SEO_LOCALE || 'id-ID',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.

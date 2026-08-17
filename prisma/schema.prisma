@@ -1,241 +1,332 @@
-// Source of truth: ARCHITECTURE.md Domain Model
-// Prisma 7.x — url di prisma.config.ts, bukan di sini
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-// ============================================================================
-// Admin
-// ============================================================================
+// BETTER AUTH START
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  name          String?
+  emailVerified Boolean    @default(false) @map("email_verified")
+  image         String?
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  role          String?
+  banned        Boolean?   @default(false)
+  banReason     String?    @map("ban_reason")
+  banExpires    DateTime?  @map("ban_expires")
+  roleId        String?    @map("role_id")
+  accounts      Account[]
+  articles      Article[]
+  auditLogs     AuditLog[]
+  sessions      Session[]
 
-model Admin {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  roles Role[] @relation("RoleToUser")
 
-  @@map("admins")
+  @@map("users")
 }
 
-// ============================================================================
-// SiteSettings — Singleton (seed wajib buat row id=1)
-// ============================================================================
+model Session {
+  id             String   @id @default(uuid())
+  expiresAt      DateTime @map("expires_at")
+  token          String   @unique
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent")
+  userId         String   @map("user_id")
+  impersonatedBy String?  @map("impersonated_by")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model SiteSettings {
-  id                     Int      @id @default(autoincrement())
-  companyName            String?
-  logoUrl                String?
-  address                String?
-  phone                  String?
-  email                  String?
-  footerText             String?
-  socialLinks            Json?
-  defaultMetaTitle       String?
-  defaultMetaDescription String?
-  defaultOgImageUrl      String?
-  updatedAt              DateTime @updatedAt
-
-  @@map("site_settings")
+  @@index([userId])
+  @@map("sessions")
 }
 
-// ============================================================================
-// HeroSection — Singleton
-// ============================================================================
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model HeroSection {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  subtitle  String?
-  imageUrl  String?
-  ctaLabel  String?
-  ctaUrl    String?
-  updatedAt DateTime @updatedAt
-
-  @@map("hero_sections")
+  @@index([userId])
+  @@map("accounts")
 }
 
-// ============================================================================
-// HomeHighlight
-// ============================================================================
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-model HomeHighlight {
-  id          Int      @id @default(autoincrement())
-  title       String
+  @@index([identifier])
+  @@map("verifications")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
   description String?
-  iconKey     String?
-  iconUrl     String?
-  order       Int
-  isPublished Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  roles       Role[]   @relation("PermissionToRole")
 
-  @@map("home_highlights")
+  @@map("permissions")
 }
 
-// ============================================================================
-// AboutContent — Singleton
-// ============================================================================
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  permissions Permission[] @relation("PermissionToRole")
+  users       User[]       @relation("RoleToUser")
 
-model AboutContent {
-  id            Int      @id @default(autoincrement())
-  title         String?
-  content       String?
-  vision        String?
-  mission       String?
-  imageUrl      String?
-  officeAddress String?
-  updatedAt     DateTime @updatedAt
-
-  @@map("about_contents")
+  @@map("roles")
 }
 
-// ============================================================================
-// Product
-// ============================================================================
+// BETTER AUTH END
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  action    String
+  table     String
+  recordId  String   @map("record_id")
+  oldValues String?  @map("old_values")
+  newValues String?  @map("new_values")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+model EmailQueue {
+  id          String      @id @default(cuid())
+  to          String
+  subject     String
+  body        String
+  attachments String?
+  status      EmailStatus @default(PENDING)
+  attempts    Int         @default(0)
+  error       String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  @@map("email_queues")
+}
+
+model ArticleCategory {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  articles  Article[]
+
+  @@map("article_categories")
+}
+
+model Article {
+  id                String            @id @default(uuid())
+  title             String
+  content           String
+  cover             String?
+  createdAt         DateTime          @default(now()) @map("created_at")
+  createdById       String?           @map("created_by_id")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  slug              String?           @unique
+  articleCategories ArticleCategory[]
+  createdBy         User?             @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([createdById])
+  @@map("articles")
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  phone     String
+  email     String
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("branches")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  image     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("clients")
+}
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  slug        String   @unique
-  shortDesc   String
-  fullDesc    String
-  features    String[]
-  imageUrl    String?
-  galleryUrls String[]
-  order       Int      @default(0)
-  isFeatured  Boolean  @default(false)
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String              @id @default(uuid())
+  slug            String              @unique
+  name            String
+  description     String?
+  image           String?             @map("image") // Gambar di Hero Section kanan
+  featureSubtitle String?             @map("feature_subtitle") // Subtitle "Fitur Utama"
+  benefits        ProductBenefit[]
+  features        ProductFeature[]
+  capabilities    ProductCapability[]
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
 
-  @@index([isPublished])
-  @@index([order])
   @@map("products")
 }
 
-// ============================================================================
-// PartnerBenefit
-// ============================================================================
-
-model PartnerBenefit {
-  id          Int      @id @default(autoincrement())
+model ProductBenefit {
+  id          String   @id @default(cuid())
+  productId   String   @map("product_id")
   title       String
   description String?
-  iconKey     String?
-  iconUrl     String?
-  order       Int
-  isPublished Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([order])
-  @@map("partner_benefits")
-}
-
-// ============================================================================
-// PartnersPageContent — Singleton
-// ============================================================================
-
-model PartnersPageContent {
-  id           Int      @id @default(autoincrement())
-  heroTitle    String?
-  heroSubtitle String?
-  ctaLabel     String?
-  updatedAt    DateTime @updatedAt
-
-  @@map("partners_page_contents")
-}
-
-// ============================================================================
-// Partner
-// ============================================================================
-
-model Partner {
-  id          Int      @id @default(autoincrement())
-  name        String
-  category    String?
-  description String?
-  iconUrl     String?
+  icon        String?
   order       Int      @default(0)
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@index([order])
-  @@index([isPublished])
-  @@map("partners")
+  @@index([productId])
+  @@map("product_benefits")
 }
 
-// ============================================================================
-// ContactMessage
-// ============================================================================
+model ProductFeature {
+  id          String   @id @default(cuid())
+  productId   String   @map("product_id")
+  title       String
+  description String?
+  icon        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-model ContactMessage {
-  id        Int      @id @default(autoincrement())
+  @@index([productId])
+  @@map("product_features")
+}
+
+model ProductCapability {
+  id          String                  @id @default(cuid())
+  productId   String                  @map("product_id")
+  title       String                  @default("System Capabilities")
+  description String?
+  imageUrl    String?                 @map("image_url") // Gambar mockup di sisi kiri section
+  createdAt   DateTime                @default(now()) @map("created_at")
+  updatedAt   DateTime                @updatedAt @map("updated_at")
+  product     Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  items       ProductCapabilityItem[]
+
+  @@index([productId])
+  @@map("product_capabilities")
+}
+
+model ProductCapabilityItem {
+  id                  String            @id @default(cuid())
+  productCapabilityId String            @map("product_capability_id")
+  title               String
+  description         String?
+  icon                String?
+  order               Int               @default(0)
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
+  capability          ProductCapability @relation(fields: [productCapabilityId], references: [id], onDelete: Cascade)
+
+  @@index([productCapabilityId])
+  @@map("product_capability_items")
+}
+
+model CareerCategory {
+  id        String   @id @default(uuid())
   name      String
-  email     String
-  phone     String?
-  message   String
-  source    String   // "general" | "partnership"
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  careers   Career[]
 
-  @@index([isRead])
-  @@index([source])
-  @@index([createdAt])
-  @@map("contact_messages")
+  @@map("career_categories")
 }
 
-// ============================================================================
-// LegalContent — Singleton
-// ============================================================================
+model Career {
+  id               String              @id @default(uuid())
+  categoryId       String?             @map("category_id")
+  title            String
+  slug             String              @unique
+  location         String // contoh: "Malang, Indonesia / Remote"
+  type             String // contoh: "Full-time", "Contract", "Part-time"
+  department       String? // contoh: "Engineering", "Design", dll
+  description      String // Section "Tentang Peran Ini"
+  responsibilities String[] // Section "Tanggung Jawab Utama" (List)
+  requirements     String[] // Section "Persyaratan" (List)
+  isActive         Boolean             @default(true) @map("is_active")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+  category         CareerCategory?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  applications     CareerApplication[]
 
-model LegalContent {
-  id             Int      @id @default(autoincrement())
-  privacyPolicy  String?
-  termsOfService String?
-  cookiePolicy   String?
-  updatedAt      DateTime @updatedAt
-
-  @@map("legal_contents")
+  @@index([categoryId])
+  @@map("careers")
 }
 
-// ============================================================================
-// CareerContent — Singleton
-// ============================================================================
+model CareerApplication {
+  id           String            @id @default(cuid())
+  careerId     String            @map("career_id")
+  fullName     String            @map("full_name")
+  email        String
+  phone        String
+  portfolioUrl String?           @map("portfolio_url") // LinkedIn / Portfolio
+  resumeUrl    String            @map("resume_url") // File CV / Resume yang diunggah
+  status       ApplicationStatus @default(PENDING)
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+  career       Career            @relation(fields: [careerId], references: [id], onDelete: Cascade)
 
-model CareerContent {
-  id                Int      @id @default(autoincrement())
-  description       String?
-  hasOpenPositions  Boolean  @default(false)
-  openPositionsText String?
-  applyEmail        String?
-  updatedAt         DateTime @updatedAt
-
-  @@map("career_contents")
+  @@index([careerId])
+  @@map("career_applications")
 }
 
-// ============================================================================
-// PageSeo — multi-row, diakses via pageKey
-// ============================================================================
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-model PageSeo {
-  id              Int      @id @default(autoincrement())
-  pageKey         String   @unique
-  metaTitle       String?
-  metaDescription String?
-  ogImageUrl      String?
-  canonicalUrl    String?
-  noIndex         Boolean  @default(false)
-  updatedAt       DateTime @updatedAt
+  @@map("newsletter_subscribers")
+}
 
-  @@index([pageKey])
-  @@map("page_seos")
+enum EmailStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  INTERVIEW
+  ACCEPTED
+  REJECTED
 }
