@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { genPageMetadata } from '@/app/seo';
@@ -39,5 +39,3 @@ export default function NotFound() {
     </div>
   );
 }
-
-

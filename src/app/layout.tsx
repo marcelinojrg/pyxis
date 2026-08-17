@@ -1,32 +1,60 @@
 import type { Metadata } from 'next';
-import { Poppins, Inter } from 'next/font/google';
-import './globals.css';
-import Navbar from '@/components/Mixins/Navbar';
-import Footer from '@/components/Mixins/Footer';
-import ScrollToTop from '@/components/Common/ScrollToTop';
-import { Toaster } from 'sonner';
+import { Geist, Geist_Mono, Inter } from 'next/font/google';
 
-const poppins = Poppins({
-  weight: ['500', '600', '700'],
-  variable: '--font-poppins',
+import './globals.css';
+import { cn } from '@/lib/utils';
+import { siteMetadata } from '@/data/siteMetadata';
+import QueryProvider from '@/providers/QueryProvider';
+import { Toaster } from '@/components/ui/sonner';
+// import { ImageKitProvider } from '@imagekit/next';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
   subsets: ['latin'],
   display: 'swap',
 });
 
-const inter = Inter({
-  weight: ['400', '500', '600'],
-  variable: '--font-inter',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteMetadata.siteUrl || 'http://localhost:3000'),
   title: {
-    default: 'PT. Pyxis Ultimate Solution — Software Hotel & Restoran Terpercaya',
-    template: '%s | PT. Pyxis Ultimate Solution',
+    default: siteMetadata.title,
+    template: `%s`,
   },
-  description:
-    'Penyedia solusi software enterprise terbaik untuk manajemen hotel (Alcor PMS) dan sistem kasir restoran (Alcor POS) di Indonesia.',
+  description: siteMetadata.description,
+  openGraph: {
+    title: siteMetadata.title,
+    description: siteMetadata.description,
+    url: './',
+    siteName: siteMetadata.title,
+    images: [siteMetadata.socialBanner],
+    locale: 'id_ID',
+    type: 'website',
+  },
+  authors: [{ name: siteMetadata.author }],
+  twitter: {
+    title: siteMetadata.title,
+    card: 'summary_large_image',
+    images: [siteMetadata.socialBanner],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -35,13 +63,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${poppins.variable} ${inter.variable}`} suppressHydrationWarning>
-      <body className="font-body text-neutral-800 bg-neutral-50 antialiased min-h-screen flex flex-col selection:bg-primary selection:text-white">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <ScrollToTop />
-        <Footer />
-        <Toaster position="top-right" richColors />
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={cn('font-sans', inter.variable)}
+    >
+      <head>
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://ik.imagekit.io" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://ik.imagekit.io" />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <QueryProvider>{children}</QueryProvider>
+        {/* <ImageKitProvider urlEndpoint={process.env.IMAGEKIT_URL}>
+        </ImageKitProvider> */}
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

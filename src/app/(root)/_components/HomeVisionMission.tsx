@@ -1,10 +1,10 @@
-import { Container } from '@/components/ui/container';
+// import { Container } from '@/components/ui/container';
 import { Eye, Rocket } from 'lucide-react';
 
 export default function HomeVisionMission() {
   return (
     <section className="py-20 bg-white border-t border-neutral-200/70">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Text */}
           <div className="lg:col-span-6 space-y-4">
@@ -51,8 +51,7 @@ export default function HomeVisionMission() {
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
-

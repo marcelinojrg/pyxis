@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getHeroSection } from '@/lib/queries/home';
+// import { getHeroSection } from '@/lib/queries/home';
 import { prisma } from '@/lib/prisma';
 import HomeHero from './_components/HomeHero';
 import HomePartnersBar from './_components/HomePartnersBar';
@@ -9,37 +9,37 @@ import HomeVisionMission from './_components/HomeVisionMission';
 import HomeEvolution from './_components/HomeEvolution';
 import HomeCTA from './_components/HomeCTA';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const seo = await prisma.pageSeo.findUnique({
-    where: { pageKey: 'home' },
-  });
+// export async function generateMetadata(): Promise<Metadata> {
+//   const seo = await prisma.pageSeo.findUnique({
+//     where: { pageKey: 'home' },
+//   });
 
-  return {
-    title: seo?.metaTitle || 'Pyxis — Kelola Hotel Anda dengan Lebih Cerdas & Mudah',
-    description:
-      seo?.metaDescription ||
-      'Pyxis membantu Anda meningkatkan efisiensi operasional, memaksimalkan pendapatan, dan memberikan pengalaman tamu yang tak terlupakan melalui satu platform terpadu.',
-    openGraph: {
-      title: seo?.metaTitle || 'Pyxis — Kelola Hotel Anda dengan Lebih Cerdas & Mudah',
-      description:
-        seo?.metaDescription ||
-        'Sistem manajemen properti terdepan untuk industri perhotelan modern.',
-      images: seo?.ogImageUrl ? [seo.ogImageUrl] : [],
-    },
-    robots: {
-      index: !seo?.noIndex,
-      follow: !seo?.noIndex,
-    },
-  };
-}
+//   return {
+//     title: seo?.metaTitle || 'Pyxis — Kelola Hotel Anda dengan Lebih Cerdas & Mudah',
+//     description:
+//       seo?.metaDescription ||
+//       'Pyxis membantu Anda meningkatkan efisiensi operasional, memaksimalkan pendapatan, dan memberikan pengalaman tamu yang tak terlupakan melalui satu platform terpadu.',
+//     openGraph: {
+//       title: seo?.metaTitle || 'Pyxis — Kelola Hotel Anda dengan Lebih Cerdas & Mudah',
+//       description:
+//         seo?.metaDescription ||
+//         'Sistem manajemen properti terdepan untuk industri perhotelan modern.',
+//       images: seo?.ogImageUrl ? [seo.ogImageUrl] : [],
+//     },
+//     robots: {
+//       index: !seo?.noIndex,
+//       follow: !seo?.noIndex,
+//     },
+//   };
+// }
 
 export default async function HomePage() {
-  const heroData = await getHeroSection();
+  // const heroData = await getHeroSection();
 
   return (
     <div className="w-full flex flex-col">
       {/* 1. Hero Section */}
-      <HomeHero data={heroData} />
+      <HomeHero />
 
       {/* 2. Client / Partner Logos Bar */}
       <HomePartnersBar />
@@ -61,4 +61,3 @@ export default async function HomePage() {
     </div>
   );
 }
-

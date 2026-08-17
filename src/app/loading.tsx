@@ -1,5 +1,6 @@
 'use client';
-import { FC } from 'react';
+
+import type { FC } from 'react';
 
 import Loader from '@/components/Common/Loader';
 

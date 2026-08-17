@@ -1,4 +1,4 @@
-import { Container } from '@/components/ui/container';
+// import { Container } from '@/components/ui/container';
 import { Image as ImageIcon } from 'lucide-react';
 
 const MILESTONES = [
@@ -31,7 +31,7 @@ const MILESTONES = [
 export default function HomeAboutSummary() {
   return (
     <section className="py-20 bg-[#F8FAFC] border-t border-neutral-200/70">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         {/* Top Split: Text Left + Empty Photo Container Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-14">
           <div className="lg:col-span-6 space-y-4">
@@ -60,7 +60,9 @@ export default function HomeAboutSummary() {
               key={item.year}
               className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col space-y-3"
             >
-              <span className="text-xl font-extrabold font-heading text-[#1D4ED8]">{item.year}</span>
+              <span className="text-xl font-extrabold font-heading text-[#1D4ED8]">
+                {item.year}
+              </span>
               <h3 className="text-xs sm:text-sm font-bold font-heading text-neutral-900 uppercase tracking-tight">
                 {item.title}
               </h3>
@@ -68,8 +70,7 @@ export default function HomeAboutSummary() {
             </div>
           ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
-
