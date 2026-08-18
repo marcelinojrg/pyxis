@@ -38,6 +38,8 @@ Saat ini dibutuhkan website company profile baru yang **dinamis** — artinya se
 | **Karir** | `/karir` (atau `/careers`) | Pengenalan kultur kerja, status lowongan aktif (`hasOpenPositions`), deskripsi kriteria posisi, email kontak lamaran. |
 | **Kontak** | `/kontak` (atau `/contact`) | Form pesan masuk (nama, email, no. telp, pesan, tipe kebutuhan: umum/kemitraan), info alamat kantor resmi, email & nomor telepon, embed peta (opsional/stretch). |
 | **Legal / Kebijakan** | `/legal` | Navigasi kebijakan tab: Kebijakan Privasi (*Privacy Policy*), Syarat & Ketentuan (*Terms of Service*), dan Kebijakan Cookie (*Cookie Policy*). |
+| **Blog** | `/blog` | Daftar artikel terbit (judul, kutipan/excerpt, gambar cover, tanggal terbit), diurutkan dari yang terbaru. |
+| **Detail Artikel** | `/blog/[slug]` | Rute dinamis berdasarkan slug: konten lengkap artikel, gambar cover, nama penulis, dan tanggal terbit. |
 | **404 & Error** | Not Found / Error | Halaman penanganan error kustom yang ramah pengguna dengan tombol navigasi kembali ke Home. |
 
 ---
@@ -58,6 +60,7 @@ Seluruh mutasi data di admin dashboard dilindungi autentikasi session admin tung
 | **Kelola Karir (Career CMS)** | Edit pengantar karir, saklar status lowongan aktif (*open positions toggle*), teks detail posisi, dan email tujuan lamaran. |
 | **Kelola Legal (Legal CMS)** | Edit konten Privacy Policy, Terms of Service, dan Cookie Policy secara dinamis. |
 | **Kelola Pesan Kontak (Leads)** | Daftar pesan masuk dari pengunjung, filter berdasarkan status (sudah dibaca / belum) dan sumber pesan (*general* / *partnership*), tandai sudah dibaca, dan hapus pesan. |
+| **Kelola Blog (Blog CMS)** | CRUD artikel: judul, slug unik (otomatis dari judul & dapat disesuaikan), kutipan/excerpt, konten, gambar cover, nama penulis, tanggal terbit, dan status *published*. SEO per artikel dikelola via modul Page SEO yang sudah ada. |
 | **Kelola SEO per Halaman (Page SEO)** | Pengaturan meta title, meta description, OG image, canonical URL, dan opsi noIndex per halaman (`pageKey`). |
 
 ---
@@ -68,6 +71,8 @@ Seluruh mutasi data di admin dashboard dilindungi autentikasi session admin tung
 - Sebagai **calon mitra**, saya ingin melihat daftar integrasi/benefit kemitraan dan mengajukan diri menjadi mitra resmi Pyxis.
 - Sebagai **admin perusahaan**, saya ingin mengunggah produk baru, memperbarui materi legal, atau mengubah status lowongan karir secara mandiri tanpa bantuan developer.
 - Sebagai **admin perusahaan**, saya ingin memantau dan memilah pesan/leads yang masuk dari pengunjung website untuk segera ditindaklanjuti oleh tim sales.
+- Sebagai **admin perusahaan**, saya ingin menulis dan menerbitkan artikel blog (tips, berita perusahaan) secara mandiri untuk mendukung SEO dan kredibilitas.
+- Sebagai **pengunjung**, saya ingin membaca artikel blog perusahaan untuk memahami keahlian Pyxis sebelum memutuskan menghubungi tim sales.
 
 ---
 
@@ -80,7 +85,7 @@ Untuk menjaga fokus, kualitas, dan tenggat waktu rilis:
 - ❌ **Sistem Pembayaran / E-Commerce Online** — Transaksi software enterprise B2B dilakukan via proses sales/kontrak offline.
 - ❌ **Live Chat Widget Pihak Ketiga** — Saluran komunikasi terpusat pada form kontak terintegrasi database.
 - ❌ **Notifikasi Email SMTP Otomatis** — Pesan tersimpan di database dan dikelola langsung via admin dashboard (masuk ke *backlog/stretch goal*).
-- ❌ **Blog / Artikel / News Section Komprehensif** — Fokus penuh pada profil korporat dan katalog produk.
+- ❌ **Fitur Blog Lanjutan (kategori, tag, komentar, multi-penulis)** — Blog tersedia versi sederhana: artikel + SEO per artikel. Kategori/tag/komentar masuk backlog.
 - ❌ **Dark Mode** — Mengikuti standar tema terang korporat B2B yang bersih dan profesional.
 
 ---
@@ -98,7 +103,7 @@ Untuk menjaga fokus, kualitas, dan tenggat waktu rilis:
 
 ## 7. Kriteria Sukses (Acceptance Criteria)
 
-1. Seluruh halaman publik (Home, Tentang, Produk, Detail Produk, Mitra, Karir, Kontak, Legal) menampilkan data dinamis dari database PostgreSQL.
+1. Seluruh halaman publik (Produk, Detail Produk, Mitra, Karir, Kontak, Legal, Blog, Detail Artikel) menampilkan data dinamis dari database PostgreSQL.
 2. Form kontak dan form pendaftaran kemitraan tervalidasi dengan baik dan tersimpan ke database `ContactMessage`.
 3. Akses rute `/admin/*` terlindungi secara ketat; unauthorized user otomatis dialihkan ke halaman login admin.
 4. Admin dapat melakukan operasi CRUD pada seluruh modul konten tanpa menimbulkan error runtime.
@@ -106,13 +111,5 @@ Untuk menjaga fokus, kualitas, dan tenggat waktu rilis:
 6. Lolos pemeriksaan `npm run lint`, `npm run typecheck`, dan `npm run build` tanpa error.
 
 ---
-
-## 8. Prioritas Penyesuaian (Jika Waktu Mendesak)
-
-Jika waktu pengembangan terbatas, pemotongan fitur dilakukan berdasarkan urutan berikut:
-1. Galeri multi-gambar produk → cukup 1 gambar utama per produk.
-2. Embed Google Maps interaktif pada halaman kontak → cukup informasi teks alamat lengkap.
-3. Fitur filter kategori mitra → cukup grid daftar mitra standar.
-4. Pergantian password admin di dashboard → dapat dilakukan via database / Prisma Studio.
 
 > ⚠️ **Fitur Inti yang TIDAK BOLEH Dihapus**: CRUD Produk, Form Kontak ke DB, Login Admin, Konten Dinamis Halaman Publik.
