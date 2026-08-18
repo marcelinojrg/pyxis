@@ -110,6 +110,22 @@ async function main() {
 
   console.log('✅ LegalContent seeded');
 
+  // Seed PageSeo for /about page
+  await prisma.pageSeo.upsert({
+    where: { pageKey: 'about' },
+    update: {},
+    create: {
+      pageKey: 'about',
+      metaTitle: 'Tentang PT. Pyxis Ultimate Solution',
+      metaDescription:
+        'Profil perusahaan PT. Pyxis Ultimate Solution, visi, misi, dan informasi perusahaan.',
+      ogImageUrl: '',
+      noIndex: false,
+    },
+  });
+
+  console.log('✅ PageSeo seeded');
+
   const careerContent = await prisma.careerContent.upsert({
     where: { id: 1 },
     update: {},
