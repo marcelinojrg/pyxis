@@ -1,8 +1,9 @@
+import type { Route } from 'next';
 import Link from 'next/link';
-import { Container } from '@/components/ui/container';
+// import { Container } from '@/components/ui/container';
 
 interface HomeHeroProps {
-  data: {
+  data?: {
     title?: string | null;
     subtitle?: string | null;
     imageUrl?: string | null;
@@ -20,8 +21,8 @@ export default function HomeHero({ data }: HomeHeroProps) {
   const ctaUrl = data?.ctaUrl || '/contact';
 
   return (
-    <section className="relative pt-36 pb-24 md:pt-48 md:pb-32 min-h-[85vh] flex items-center bg-gradient-to-b from-[#004AEB] to-[#001A53] text-white overflow-hidden">
-      <Container className="w-full">
+    <section className="relative pt-36 pb-24 md:pt-48 md:pb-32 min-h-[85vh] flex items-center bg-linear-to-b from-[#004AEB] to-[#001A53] text-white overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Text */}
           <div className="lg:col-span-6 space-y-6 text-left">
@@ -39,7 +40,7 @@ export default function HomeHero({ data }: HomeHeroProps) {
 
             <div className="pt-2">
               <Link
-                href={ctaUrl}
+                href={ctaUrl as Route}
                 className="inline-flex items-center justify-center px-6 py-2.5 rounded-lg border border-white/40 bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-200"
               >
                 {ctaLabel}
@@ -58,8 +59,7 @@ export default function HomeHero({ data }: HomeHeroProps) {
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
-

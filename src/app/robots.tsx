@@ -1,14 +1,16 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 
 import { siteMetadata } from '@/data/siteMetadata';
 
 export default function robots(): MetadataRoute.Robots {
+  const siteUrl = siteMetadata.siteUrl || 'http://localhost:3000';
+
   return {
     rules: {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: `${siteMetadata.siteUrl}/sitemap.xml`,
-    host: siteMetadata.siteUrl,
+    sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

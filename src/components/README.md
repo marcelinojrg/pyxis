@@ -12,9 +12,7 @@ Contoh: Tombol (`Button`), Input, Modal, Icon kustom, dll.
 Folder `Mixins` terletak pada `/src/components/Mixins/`. Folder ini berisi komponen-komponen hasil gabungan atau komposisi dari beberapa komponen `Common` untuk membentuk fitur yang lebih kompleks.
 Contoh: Navbar (gabungan dari Logo, Links, dan Theme Toggle), Footer, Sidebar, dll.
 
-## Struktur Folder Lainnya
+### UI
 
-- **app/**: Berisi halaman (pages) dan layout utama menggunakan Next.js App Router.
-- **hooks/**: Berisi custom logic React hooks yang dapat digunakan kembali di berbagai komponen.
-- **lib/**: Berisi fungsi utilitas dan konfigurasi library pihak ketiga.
-- **data/**: Berisi data statis, konstanta, dan metadata situs.
+Folder `UI` terletak pada `/src/components/ui/`. Folder ini berisi komponen-komponen UI yang sudah jadi dan siap pakai.
+Contoh: DataTable, Sidebar, dll.

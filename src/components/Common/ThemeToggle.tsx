@@ -1,6 +1,7 @@
 'use client';
+
+import { type FC, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { FC, useEffect, useState } from 'react';
 
 const ThemeToggle: FC = () => {
   const [mounted, setMounted] = useState(false);

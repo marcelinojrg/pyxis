@@ -1,5 +1,7 @@
 # Dependencies
 /node_modules
+
+.pnpm-store
 /.pnp
 .pnp.*
 .yarn/*
@@ -59,6 +61,24 @@ dev-dist
 
 .open-next
 
-.claude
+/generated/prisma
+
+# lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+bun.lock
+
+# file uploads
+/public/uploads/*
+
+/nginx
+
+/html-effectiveness
+
+/playwright-report
+/test-results
 
 /references
+
+.claude

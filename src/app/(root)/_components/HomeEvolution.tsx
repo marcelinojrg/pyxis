@@ -1,4 +1,4 @@
-import { Container } from '@/components/ui/container';
+// import { Container } from '@/components/ui/container';
 import { cn } from '@/lib/utils';
 
 const EVOLUTION_NODES = [
@@ -57,19 +57,20 @@ const EVOLUTION_NODES = [
 export default function HomeEvolution() {
   return (
     <section className="py-24 bg-[#F1F5F9]/70 border-t border-neutral-200/70">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900">
             Evolusi Produk Kami
           </h2>
           <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-            Sejarah panjang inovasi berkelanjutan untuk memenuhi kebutuhan industri perhotelan yang terus berkembang.
+            Sejarah panjang inovasi berkelanjutan untuk memenuhi kebutuhan industri perhotelan yang
+            terus berkembang.
           </p>
         </div>
 
         <div className="relative max-w-4xl mx-auto">
           {/* Vertical Center Line */}
-          <div className="absolute top-4 bottom-4 left-4 md:left-1/2 -translate-x-1/2 w-0.5 bg-neutral-300/80 -z-0" />
+          <div className="absolute top-4 bottom-4 left-4 md:left-1/2 -translate-x-1/2 w-0.5 bg-neutral-300/80 z-0" />
 
           <div className="space-y-12 relative z-10">
             {EVOLUTION_NODES.map((item) => {
@@ -107,7 +108,7 @@ export default function HomeEvolution() {
                   {/* Center Number Circle */}
                   <div
                     className={cn(
-                      'absolute left-0 md:left-1/2 -translate-x-0 md:-translate-x-1/2 w-8 h-8 rounded-full font-bold text-xs flex items-center justify-center shadow-md ring-4 ring-[#F1F5F9]',
+                      'absolute left-0 md:left-1/2 translate-x-0 md:-translate-x-1/2 w-8 h-8 rounded-full font-bold text-xs flex items-center justify-center shadow-md ring-4 ring-[#F1F5F9]',
                       item.nodeColor
                     )}
                   >
@@ -115,7 +116,7 @@ export default function HomeEvolution() {
                   </div>
 
                   {/* Right Side Container */}
-                  <div className="w-full md:w-1/2 md:pl-10 text-left pl-12 md:pl-10 mt-3 md:mt-0">
+                  <div className="w-full md:w-1/2 md:pl-10 text-left pl-12 mt-3 md:mt-0">
                     {isRight && (
                       <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-2">
                         <div className="flex items-center justify-between">
@@ -142,8 +143,7 @@ export default function HomeEvolution() {
             })}
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
-

@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 export const useDebounce = <T>(initialValue: T, delay = 300): [T, (value: T) => void] => {

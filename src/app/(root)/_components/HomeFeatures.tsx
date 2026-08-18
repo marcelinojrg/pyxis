@@ -1,17 +1,18 @@
 import Link from 'next/link';
-import { Container } from '@/components/ui/container';
+// import { Container } from '@/components/ui/container';
 import { Calendar, Users, BarChart3, RefreshCw, ArrowRight } from 'lucide-react';
 
 export default function HomeFeatures() {
   return (
     <section className="py-20 bg-white">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900">
             Fitur Lengkap untuk Segala Kebutuhan
           </h2>
           <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-            Solusi all-in-one yang dirancang khusus untuk menyederhanakan operasional hotel Anda dari front desk hingga back office.
+            Solusi all-in-one yang dirancang khusus untuk menyederhanakan operasional hotel Anda
+            dari front desk hingga back office.
           </p>
         </div>
 
@@ -63,7 +64,8 @@ export default function HomeFeatures() {
                   Laporan Keuangan
                 </h3>
                 <p className="text-sm text-neutral-600 leading-relaxed">
-                  Dapatkan wawasan mendalam dengan laporan otomatis yang komprehensif dan mudah dipahami.
+                  Dapatkan wawasan mendalam dengan laporan otomatis yang komprehensif dan mudah
+                  dipahami.
                 </p>
               </div>
               <div>
@@ -96,8 +98,7 @@ export default function HomeFeatures() {
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
-

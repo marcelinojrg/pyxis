@@ -1,6 +1,8 @@
+'use client';
+
 import { useState } from 'react';
 
-import { SortDirection } from '@/interfaces/hooks/useSort';
+import type { SortDirection } from '@/interfaces/hooks/useSort';
 
 function useSort(): SortHookReturn {
   const [direction, setDirection] = useState<SortDirection>({ field: '', direction: '' });

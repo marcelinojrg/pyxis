@@ -1,17 +1,29 @@
-import { Container } from '@/components/ui/container';
+// import { Container } from '@/components/ui/container';
 
 const PARTNERS = [
-  { name: 'ASTON', style: 'font-serif tracking-widest font-bold text-lg sm:text-xl text-neutral-500' },
-  { name: 'HARRIS', style: 'font-sans tracking-wider font-extrabold text-lg sm:text-xl text-neutral-500' },
+  {
+    name: 'ASTON',
+    style: 'font-serif tracking-widest font-bold text-lg sm:text-xl text-neutral-500',
+  },
+  {
+    name: 'HARRIS',
+    style: 'font-sans tracking-wider font-extrabold text-lg sm:text-xl text-neutral-500',
+  },
   { name: 'Santika', style: 'font-serif italic font-semibold text-lg sm:text-xl text-neutral-500' },
-  { name: 'SWISS-BELHOTEL', style: 'font-sans tracking-wide font-bold text-base sm:text-lg text-neutral-500 uppercase' },
-  { name: 'MERCURE', style: 'font-sans tracking-widest font-extrabold text-base sm:text-lg text-neutral-500' },
+  {
+    name: 'SWISS-BELHOTEL',
+    style: 'font-sans tracking-wide font-bold text-base sm:text-lg text-neutral-500 uppercase',
+  },
+  {
+    name: 'MERCURE',
+    style: 'font-sans tracking-widest font-extrabold text-base sm:text-lg text-neutral-500',
+  },
 ];
 
 export default function HomePartnersBar() {
   return (
     <section className="py-12 bg-white border-b border-neutral-100">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center space-y-6">
           <p className="text-[11px] sm:text-xs font-semibold tracking-widest text-neutral-400 uppercase">
             DIPERCAYA OLEH LEBIH DARI 50+ PROPERTI DI SELURUH INDONESIA
@@ -28,7 +40,7 @@ export default function HomePartnersBar() {
             ))}
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
