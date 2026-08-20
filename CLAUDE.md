@@ -16,9 +16,8 @@
 2. `docs/PRD.md` — requirement produk, fitur apa saja yang harus ada, apa yang TIDAK boleh dikerjakan
 3. `docs/ARCHITECTURE.md` — stack teknis, struktur folder, schema database, daftar API
 4. `docs/DESIGN.md` — panduan visual: warna, tipografi, komponen, spacing
-5. `docs/TASKS.md` — checklist eksekusi. Cari task teratas yang belum `[x]`, kerjakan itu SAJA dulu.
 
-Jangan mengerjakan task yang tidak ada di `TASKS.md`. Jika menemukan kebutuhan baru saat coding, TAMBAHKAN dulu ke `TASKS.md` sebagai task baru, baru dikerjakan.
+Jangan mengerjakan task yang tidak ada di suruh. Jika menemukan kebutuhan baru saat coding, tanyakan dahulu sebagai task baru, baru dikerjakan.
 
 ## 3. Tech Stack (ringkas — detail penuh di ARCHITECTURE.md)
 
