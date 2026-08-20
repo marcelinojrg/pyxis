@@ -46,22 +46,25 @@ Saat ini dibutuhkan website company profile baru yang **dinamis** — artinya se
 
 ### 4.2 Admin Dashboard (Protected, `/admin/*`)
 
-Seluruh mutasi data di admin dashboard dilindungi autentikasi session admin tunggal:
+Seluruh mutasi data di admin dashboard dilindungi autentikasi **Better Auth** dengan otorisasi RBAC (Role/Permission, permission kunci: `admin.access`) — proteksi rute di `src/proxy.ts`, otorisasi server action di `src/services/admin/security.ts`.
 
-| Modul | Deskripsi Fungsional |
-| :--- | :--- |
-| **Autentikasi & Akun** | Login admin via credentials (email & password ter-hash bcrypt), logout aman, dan fitur ganti password admin sendiri. *(Pendaftaran publik `/register` dilarang keras)*. |
-| **Dashboard Metrics** | Ringkasan metrik: total produk terbit, total mitra aktif, jumlah pesan kontak masuk baru/belum dibaca (*unread*), dan total pesan. |
-| **Pengaturan Global (Site Settings)** | Edit nama perusahaan, logo URL, alamat kantor, nomor telepon, email resmi, teks footer, dan tautan sosial media. |
-| **Kelola Hero & Highlights** | Edit judul hero, subjudul hero, gambar hero, label CTA, URL CTA, serta CRUD poin-poin *Home Highlights* (judul, deskripsi, icon, urutan). |
-| **Kelola Halaman About** | Edit teks judul, narasi sejarah, visi, misi, gambar pendukung, dan informasi alamat kantor. |
-| **Kelola Produk (CRUD Lengkap)** | Tambah/edit/hapus produk: nama, slug unik (otomatis dari nama & dapat disesuaikan), deskripsi singkat, deskripsi lengkap, daftar fitur (list dinamis), upload gambar utama & galeri, urutan tampil (*order*), status *featured*, dan status *published*. |
-| **Kelola Mitra (Partners CMS)** | Edit hero & benefit halaman kemitraan, serta CRUD data partner (nama mitra, kategori, deskripsi, logo/icon, urutan, status terbit). |
-| **Kelola Karir (Career CMS)** | Edit pengantar karir, saklar status lowongan aktif (*open positions toggle*), teks detail posisi, dan email tujuan lamaran. |
-| **Kelola Legal (Legal CMS)** | Edit konten Privacy Policy, Terms of Service, dan Cookie Policy secara dinamis. |
-| **Kelola Pesan Kontak (Leads)** | Daftar pesan masuk dari pengunjung, filter berdasarkan status (sudah dibaca / belum) dan sumber pesan (*general* / *partnership*), tandai sudah dibaca, dan hapus pesan. |
-| **Kelola Blog (Blog CMS)** | CRUD artikel: judul, slug unik (otomatis dari judul & dapat disesuaikan), kutipan/excerpt, konten, gambar cover, nama penulis, tanggal terbit, dan status *published*. SEO per artikel dikelola via modul Page SEO yang sudah ada. |
-| **Kelola SEO per Halaman (Page SEO)** | Pengaturan meta title, meta description, OG image, canonical URL, dan opsi noIndex per halaman (`pageKey`). |
+> Status implementasi per 2026-08-19: ✅ sudah berjalan · 🚧 ada tapi rusak/sebagian · ❌ belum dibangun
+
+| Modul | Status | Deskripsi Fungsional |
+| :--- | :---: | :--- |
+| **Autentikasi & Akun** | 🚧 | Login via email+password (Better Auth), logout aman, reset password & verifikasi email via antrean email. _Catatan: halaman `/login` masih memakai kode next-auth lama dan route handler Better Auth belum dibuat (lihat `ONLY_ME.md`)._ |
+| **Dashboard Metrics** | 🚧 | Ringkasan metrik konten. _Catatan: `/admin` saat ini baru halaman placeholder._ |
+| **Pengaturan Global (Site Settings)** | ❌ | Edit nama perusahaan, logo URL, alamat kantor, nomor telepon, email resmi, teks footer, dan tautan sosial media. _Saat ini metadata situs via env (`NEXT_PUBLIC_SEO_*`); model `SiteSettings` belum ada di schema._ |
+| **Kelola Hero & Highlights** | ❌ | Edit judul hero, subjudul hero, gambar hero, label CTA, URL CTA, serta CRUD poin-poin *Home Highlights*. |
+| **Kelola Halaman About** | ❌ | Edit teks judul, narasi sejarah, visi, misi, gambar pendukung, dan informasi alamat kantor. _Model `Branch` tersedia untuk alamat kantor._ |
+| **Kelola Produk (CRUD Lengkap)** | ❌ | Tambah/edit/hapus produk: nama, slug unik, deskripsi, benefit, fitur, kapabilitas, upload gambar, dan status tayang. _Model DB sudah siap; server action CRUD belum ada._ |
+| **Kelola Mitra (Partners CMS)** | ❌ | Edit hero & benefit halaman kemitraan, serta CRUD data partner. _Model `Client` tersedia untuk logo partner._ |
+| **Kelola Karir (Career CMS)** | ❌ | CRUD lowongan (kategori, lokasi, tipe, departemen, persyaratan) dan kelola lamaran masuk. _Model DB sudah siap._ |
+| **Kelola Legal (Legal CMS)** | ❌ | Edit konten Privacy Policy, Terms of Service, dan Cookie Policy secara dinamis. _Model belum ada di schema._ |
+| **Kelola Pesan Kontak (Leads)** | ❌ | Daftar pesan masuk dari pengunjung, filter status baca, tandai sudah dibaca, dan hapus pesan. _Model `ContactMessage` belum ada di schema._ |
+| **Kelola Blog (Blog CMS)** | 🚧 | CRUD artikel: judul, slug, konten rich text (TipTap), gambar cover, kategori, dan penulis. _Server action `services/admin/articles.ts` sudah ada; UI admin belum ada._ |
+| **Kelola User & Role (RBAC)** | 🚧 | CRUD user dan role. _Server action `services/admin/users.ts` & `roles.ts` sudah ada; UI admin belum ada._ |
+| **Kelola SEO per Halaman (Page SEO)** | ❌ | Pengaturan meta title, meta description, OG image, canonical URL per halaman. _Model `PageSeo` belum ada di schema; SEO saat ini via env + `genPageMetadata`._ |
 
 ---
 
@@ -80,31 +83,32 @@ Seluruh mutasi data di admin dashboard dilindungi autentikasi session admin tung
 
 Untuk menjaga fokus, kualitas, dan tenggat waktu rilis:
 
-- ❌ **Pendaftaran Publik (`/register`) & Multi-Role Admin** — Hanya ada 1 akun admin resmi yang dibuat via database seeding.
+- ❌ **Pendaftaran Publik (`/register`) & Multi-Role Admin** — Hanya ada 1 akun admin resmi yang dibuat via database seeding. _Catatan 2026-08-19: schema & Better Auth plugin `admin` sudah mendukung RBAC Role/Permission; UI multi-role belum dibangun dan keputusan scope ini perlu ditinjau ulang._
 - ❌ **Multi-bahasa (i18n)** — Default Bahasa Indonesia.
 - ❌ **Sistem Pembayaran / E-Commerce Online** — Transaksi software enterprise B2B dilakukan via proses sales/kontrak offline.
 - ❌ **Live Chat Widget Pihak Ketiga** — Saluran komunikasi terpusat pada form kontak terintegrasi database.
-- ❌ **Notifikasi Email SMTP Otomatis** — Pesan tersimpan di database dan dikelola langsung via admin dashboard (masuk ke *backlog/stretch goal*).
-- ❌ **Fitur Blog Lanjutan (kategori, tag, komentar, multi-penulis)** — Blog tersedia versi sederhana: artikel + SEO per artikel. Kategori/tag/komentar masuk backlog.
-- ❌ **Dark Mode** — Mengikuti standar tema terang korporat B2B yang bersih dan profesional.
+- ❌ **Notifikasi Email SMTP Otomatis** — Pesan tersimpan di database dan dikelola langsung via admin dashboard. _Catatan 2026-08-19: infrastruktur antrean email (`EmailQueue` + Nodemailer) sudah ada dan dipakai untuk newsletter/reset password/verifikasi; email notifikasi leads tetap masuk backlog._
+- ❌ **Fitur Blog Lanjutan (kategori, tag, komentar, multi-penulis)** — Blog tersedia versi sederhana: artikel + SEO per artikel. _Catatan 2026-08-19: model `ArticleCategory` sudah ada di schema; tag/komentar tetap masuk backlog._
+- ❌ **Dark Mode** — Mengikuti standar tema terang korporat B2B yang bersih dan profesional. _Catatan 2026-08-19: infrastruktur dark mode (`next-themes`, token `.dark` di globals.css, `ThemeToggle`) sudah terpasang dari template; keputusan scope tema terang tetap berlaku._
 
 ---
 
 ## 6. Arsitektur & Teknologi
 
-- **Framework**: Next.js 16 (App Router, Turbopack, React 19, TypeScript strict mode)
-- **Database & ORM**: PostgreSQL via Prisma ORM 7 (`prisma.config.ts` datasource)
-- **Autentikasi**: NextAuth.js / Auth.js (Credentials Provider, session-based)
-- **Media Storage**: Cloudinary (Upload gambar produk, logo, dan dokumen pendukung)
-- **Styling**: Tailwind CSS + shadcn/ui components (Font: Poppins untuk heading, Inter untuk body)
-- **Validasi**: Zod schema validation (Client & Server side)
+- **Framework**: Next.js 16.2 (App Router, Turbopack, React 19, TypeScript strict mode, `typedRoutes`)
+- **Database & ORM**: PostgreSQL via Prisma ORM 7 (driver `@prisma/adapter-pg`, client di-generate ke `generated/prisma`, konfigurasi di `prisma.config.ts`)
+- **Autentikasi**: Better Auth (email+password, plugin `admin` untuk RBAC Role/Permission) — detail di `docs/ARCHITECTURE.md`
+- **Media Storage**: ImageKit (upload server-side via REST API + kompresi `sharp`)
+- **Styling**: Tailwind CSS 4 (CSS-first `@theme`) + shadcn/ui (Font: Inter + Geist)
+- **Validasi**: Zod 4 schema validation (Client & Server side, schema di `src/schemas`)
+- **Mutasi data**: Server Actions (`'use server'` di `src/services`), bukan REST route handler
 
 ---
 
 ## 7. Kriteria Sukses (Acceptance Criteria)
 
 1. Seluruh halaman publik (Produk, Detail Produk, Mitra, Karir, Kontak, Legal, Blog, Detail Artikel) menampilkan data dinamis dari database PostgreSQL.
-2. Form kontak dan form pendaftaran kemitraan tervalidasi dengan baik dan tersimpan ke database `ContactMessage`.
+2. Form kontak dan form pendaftaran kemitraan tervalidasi dengan baik dan tersimpan ke database.
 3. Akses rute `/admin/*` terlindungi secara ketat; unauthorized user otomatis dialihkan ke halaman login admin.
 4. Admin dapat melakukan operasi CRUD pada seluruh modul konten tanpa menimbulkan error runtime.
 5. Antarmuka 100% responsif pada viewport mobile (360px+), tablet, dan desktop tanpa ada masalah horizontal overflow.

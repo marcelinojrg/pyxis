@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Eye, Rocket } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { cn } from '@/lib/utils';

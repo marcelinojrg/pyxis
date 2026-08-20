@@ -3,6 +3,29 @@
 
 > Dokumen ini menerjemahkan page dan section menjadi contract implementasi. Nama section final harus diselaraskan dengan Figma-Audit.
 
+## 0. Status Implementasi (per 2026-08-19)
+
+Legend: ✅ sudah berjalan · 🚧 ada tapi rusak/sebagian · ❌ belum dibangun
+
+| Screen | Rute | Status | Catatan |
+| --- | --- | :---: | --- |
+| Global shell (Navbar/Footer) | semua | ✅ | `components/Mixins/Navbar` & `Footer`; ada error typed-route minor (known issue) |
+| Home | `/` | 🚧 | Semua section ter-render (`HomeHero`…`HomeCTA`) tetapi konten masih hardcode, belum dari DB |
+| About | `/about` | 🚧 | Crash — `ui/container` & `lib/queries/*` hilang (lihat `ONLY_ME.md`) |
+| Contact | `/contact` | 🚧 | Info kontak tampil via env; form pesan belum ada |
+| Product List | `/produk` | ❌ | Model DB siap (`Product` + sub-model) |
+| Product Detail | `/produk/[slug]` | ❌ | Model DB siap |
+| Partners | `/mitra` | ❌ | Model `Client` tersedia untuk logo |
+| Career | `/karir` | ❌ | Model DB siap (`Career`, `CareerCategory`, `CareerApplication`) |
+| Legal | `/legal` | ❌ | Model `LegalContent` belum ada di schema |
+| Blog | `/blog` | ❌ | Model DB siap (`Article`, `ArticleCategory`) |
+| Blog Detail | `/blog/[slug]` | ❌ | Model DB siap |
+| Login | `/login` | 🚧 | Halaman ada tetapi masih kode next-auth lama; Better Auth handler belum dibuat |
+| Admin Dashboard | `/admin` | 🚧 | Placeholder + crash `requireAdmin` hilang (lihat `ONLY_ME.md`) |
+| 404 / Error | - | ✅ | `not-found.tsx`, `error.tsx`, `loading.tsx` |
+
+Spesifikasi di bawah ini adalah **target contract**; section yang belum dibangun tetap mengikuti aturan states, responsive, dan aksesibilitas di sini saat diimplementasi.
+
 ## 1. Global Shell
 
 ### Header

@@ -1,83 +1,100 @@
 # SECURITY.md
 # Security Baseline
 
+> Disinkronkan 2026-08-19 dengan stack berjalan (Better Auth, ImageKit, Server Actions).
+
 ## 1. Authentication
 
-- password hashed with bcrypt;
-- no plaintext password;
-- admin session protected;
-- logout works;
-- failed login does not reveal whether email exists.
+- Auth memakai **Better Auth** (`src/lib/auth.ts`), bukan NextAuth.
+- Password di-hash oleh Better Auth (default `scrypt`) — jangan pernah menyimpan plaintext.
+- Session disimpan di DB (tabel `Session`) dan diverifikasi server-side di `src/proxy.ts` + server action.
+- Logout berfungsi dan menghapus session.
+- Login gagal tidak membocorkan apakah email terdaftar.
+- Reset password & verifikasi email lewat antrean email (`EmailQueue`), token via tabel `Verification`.
 
-## 2. Authorization
+## 2. Authorization (RBAC)
 
-Every admin mutation:
-- verify session;
-- verify admin identity;
-- validate ownership if ownership is introduced later.
+- Otorisasi berbasis Role/Permission (plugin `admin` Better Auth + model `Role`/`Permission`).
+- Proteksi rute di `src/proxy.ts`: `/admin/*` butuh permission `admin.access`.
+- Setiap server action mutasi memanggil `verifySession` / `verifyPermission` (`services/admin/security.ts`) sebelum menyentuh data.
+- Superadmin dicek lewat role bernama `superadmin` (relasi `roles` maupun `roleId`).
 
 ## 3. Input Validation
 
-Use Zod server-side for:
-- product;
-- partner;
-- legal;
-- career;
-- site settings;
-- contact;
+Gunakan Zod **server-side** (schema di `src/schemas`) untuk:
+
+- users;
+- roles;
+- articles;
+- auth (login/register);
+- newsletter;
 - upload metadata.
+
+Validasi client (React Hook Form + Zod resolver) hanya pendamping — server tetap sumber kebenaran.
 
 ## 4. XSS
 
-Risk areas:
-- legal content;
-- about content;
-- long descriptions;
-- admin messages.
+Area berisiko:
 
-Do not dangerously render HTML unless sanitized and explicitly designed for rich text.
+- konten artikel rich text (TipTap);
+- deskripsi panjang produk;
+- konten yang dirender dari DB.
+
+Aturan:
+
+- Jangan render HTML mentah dengan `dangerouslySetInnerHTML` kecuali sudah disanitasi. `dompurify` tersedia di dependensi untuk sanitasi.
+- Konten rich text disimpan sebagai HTML dari TipTap; pastikan sanitasi saat render di halaman publik.
 
 ## 5. Rate Limiting
 
-Public contact endpoint:
-- 5 requests/minute/IP baseline;
-- return 429;
-- production store must work across serverless instances.
+- Endpoint publik yang menulis data (mis. newsletter, form kontak bila dibangun) harus diberi rate limiting.
+- Saat ini rate limiting **belum diimplementasi** — catat sebagai backlog sebelum form kontak publik dirilis.
+- Bila memakai Vercel, gunakan store yang bekerja lintas instance (mis. Upstash Ratelimit), bukan in-memory semata.
 
 ## 6. Upload Security
 
-- max 2MB;
-- allowed formats;
-- server-side validation;
-- upload only through backend controlled flow;
-- store public URL only;
-- never expose API secret.
+- Upload hanya lewat server action `uploadImage` (`services/public/uploads.ts`).
+- Validasi tipe & ukuran di server sebelum kompresi `sharp` dan kirim ke ImageKit.
+- `IMAGEKIT_PRIVATE_KEY` hanya dipakai di server — jangan pernah dikirim ke client atau masuk bundle.
+- Simpan URL publik ImageKit di DB, bukan secret.
+- Timeout 30 detik untuk proses upload/kompresi.
 
 ## 7. Environment
 
-Secrets only in environment:
-- DATABASE_URL;
-- NEXTAUTH_SECRET;
-- Cloudinary secrets;
-- admin seed credentials.
+Secret hanya di environment (lihat `.env.example`), jangan pernah di-hardcode:
+
+- `DATABASE_URL` / `DIRECT_URL`;
+- `BETTER_AUTH_SECRET` / `BETTER_AUTH_URL`;
+- `IMAGEKIT_PRIVATE_KEY` / `IMAGEKIT_PUBLIC_KEY` / `IMAGEKIT_URL`;
+- `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS`.
+
+Pastikan `.env`/`.env.local` masuk `.gitignore`.
 
 ## 8. Headers
 
-Production should use:
-- secure referrer policy;
-- X-Content-Type-Options;
-- frame policy appropriate to site;
-- Content-Security-Policy after checking third-party requirements.
+`next.config.ts` sudah menyetel header produksi:
+
+- `X-Content-Type-Options: nosniff`;
+- `X-Frame-Options: SAMEORIGIN` (DENY untuk `/admin/managements/*`);
+- `Referrer-Policy: strict-origin-when-cross-origin`;
+- `Permissions-Policy` (camera/microphone/geolocation dibatasi);
+- `poweredByHeader` dimatikan.
+
+Content-Security-Policy belum disetel — tambahkan setelah memetakan kebutuhan pihak ketiga (ImageKit, analytics).
 
 ## 9. Data Minimization
 
-Contact form stores only the fields needed by PRD.
-No sensitive user data should be requested.
+- Form publik hanya menyimpan field yang dibutuhkan PRD.
+- Jangan meminta data sensitif yang tidak perlu.
+- Data lead/lamaran (`CareerApplication`) diperlakukan sebagai data pribadi — jangan dibagikan ke pihak tidak berwenang.
 
 ## 10. Logging
 
-Never log:
+Jangan pernah menulis ke log:
+
 - password;
-- raw session token;
-- API secret;
-- full credential payload.
+- token session mentah;
+- secret API (ImageKit private key, SMTP pass);
+- payload kredensial lengkap.
+
+Log server action memakai prefix (mis. `[uploadImage]`) dan hanya mencatat metadata non-sensitif.
