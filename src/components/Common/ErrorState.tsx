@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import type { Route } from 'next';
 import type { FC } from 'react';
 
 import type { ErrorMetadata, ErrorStateProps, ErrorTheme } from '@/interfaces/error';
@@ -534,7 +535,7 @@ const ErrorState: FC<ErrorStateProps> = ({ code, error }) => {
             <p className="mt-4 text-center text-xs" style={{ color: '#87867F' }}>
               Butuh bantuan?{' '}
               <Link
-                href="/help"
+                href={'/help' as Route}
                 className="font-semibold hover:underline"
                 style={{ color: meta.errorColor }}
               >

@@ -1,6 +1,25 @@
 # TEST-MATRIX.md
 # QA and Acceptance Test Matrix
 
+## 0. Status Kelayakan (per 2026-08-19)
+
+Legend: ✅ bisa dijalankan sekarang · 🚧 terhalang known issue · ❌ fiturnya belum dibangun
+
+| Grup | Status | Catatan |
+| --- | :---: | --- |
+| 1. Public Navigation | 🚧 | Home ✅, About crash (known issue), Products/Partners/Legal/Careers belum dibangun |
+| 2. Lead Form | ❌ | Form kontak publik belum ada; newsletter (`/` footer) bisa dites |
+| 3. Admin | 🚧 | `/admin` & `/login` rusak (known issue di `ONLY_ME.md`) |
+| 4. Upload | ✅ | `uploadImage`/`deleteImage` (ImageKit) sudah ada di `services/public/uploads.ts` |
+| 5. Responsive | ✅ | Berlaku untuk halaman yang sudah ada |
+| 6. Accessibility | ✅ | Berlaku untuk halaman yang sudah ada |
+| 7. Security | 🚧 | Proteksi proxy ✅ berjalan; mutasi admin belum ada yang bisa dites |
+| 8. SEO | 🚧 | sitemap/robots/metadata ✅; halaman dinamis belum ada |
+| 9. Engineering | 🚧 | `typecheck`/`build` masih gagal karena known issues |
+| 10. Visual QA | 🚧 | Hanya untuk halaman yang sudah ter-render |
+
+Matriks di bawah adalah **target QA**; skenario untuk fitur yang belum dibangun dijalankan saat fiturnya selesai.
+
 ## 1. Public Navigation
 
 | ID | Scenario | Expected |
@@ -115,6 +134,8 @@ Check:
 - npm run typecheck;
 - npm run build;
 - production smoke test.
+
+Baseline 2026-08-19: `typecheck`/`build` masih gagal karena known issues (`ONLY_ME.md`) — sebagian besar error leftover sudah dibersihkan (30 file sistem event lama dihapus), sisa error adalah modul hilang di `/about`, `/admin`, `/login`, dan `prisma/seed.ts` yang usang.
 
 ## 10. Visual QA
 

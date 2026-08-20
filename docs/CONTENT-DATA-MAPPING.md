@@ -1,124 +1,121 @@
 # CONTENT-DATA-MAPPING.md
-# Content to Database and Admin Mapping
+# Pemetaan Konten → Sumber Data → Admin
 
-## 1. Purpose
+> Disinkronkan 2026-08-19 dengan `prisma/schema.prisma` berjalan dan kondisi halaman publik saat ini.
+> Status: ✅ sudah berjalan · 🚧 ada tapi rusak/sebagian · ❌ belum diimplementasi
 
-Mencegah gap antara desain, PRD, database, dan admin dashboard.
+## 1. Tujuan
 
-## 2. Global
+Mencegah gap antara desain, PRD, database, dan admin dashboard. Setiap konten editorial harus jelas sumbernya dan siapa yang mengelolanya.
 
-| Content | Source | Model | Editable |
-|---|---|---|---|
-| Company name | DB | SiteSettings | Ya |
-| Logo | DB/Cloudinary | SiteSettings | Ya |
-| Address | DB | SiteSettings | Ya |
-| Phone | DB | SiteSettings | Ya |
-| Email | DB | SiteSettings | Ya |
-| Footer text | DB | SiteSettings | Ya |
-| Social links | DB | SiteSettings | Ya |
+## 2. Global (Metadata Situs)
 
-## 3. Home
+| Konten          | Sumber                              | Editable oleh admin? |
+| --------------- | ----------------------------------- | -------------------- |
+| Judul situs     | env `NEXT_PUBLIC_SEO_TITLE` → `src/data/siteMetadata.ts` | ❌ (via env/deploy) |
+| Deskripsi situs | env `NEXT_PUBLIC_SEO_DESCRIPTION`   | ❌ (via env/deploy)  |
+| Sosial media    | env `NEXT_PUBLIC_SEO_INSTAGRAM/X/FACEBOOK/YOUTUBE` | ❌ (via env/deploy) |
+| Email/telepon   | env `NEXT_PUBLIC_SEO_EMAIL/PHONE`   | ❌ (via env/deploy)  |
+| Logo            | aset statis `public/`               | ❌                   |
 
-| Content | Model | Field |
-|---|---|---|
-| Hero title | HeroSection | title |
-| Hero subtitle | HeroSection | subtitle |
-| Hero image | HeroSection | imageUrl |
-| Hero CTA | HeroSection | ctaLabel, ctaUrl |
-| Featured products | Product | isFeatured |
-| Product order | Product | order |
-| Highlights | HomeHighlight | title, description, icon, order |
-| SEO | PageSeo | pageKey=home |
+> Catatan: model `SiteSettings` sudah **tidak ada** di schema. Jika admin butuh pengaturan global editable, modelnya harus dibuat ulang (lihat backlog).
 
-## 4. About
+## 3. Home (`/`)
 
-| Content | Model | Field |
-|---|---|---|
-| title | AboutContent | title |
-| body | AboutContent | content |
-| image | AboutContent | imageUrl |
-| vision | AboutContent | vision |
-| mission | AboutContent | mission |
-| office address | AboutContent/SiteSettings | sesuai sumber resmi |
-| SEO | PageSeo | pageKey=about |
+Status umum: 🚧 — section sudah dirender tetapi **konten masih hardcode di komponen** (`src/app/(root)/_components/Home*`). Query DB lama (hero, pageSeo) dalam keadaan terkomentar.
 
-## 5. Products
+| Konten              | Sumber saat ini        | Model yang tersedia | Target |
+| ------------------- | ---------------------- | -------------------- | ------ |
+| Hero (judul, CTA)   | hardcode `HomeHero`    | —                    | DB (model hero perlu dibuat ulang) |
+| Logo partner/klien  | hardcode `HomePartnersBar` | `Client` ✅ ada di schema | Tarik dari `Client` |
+| Fitur/highlights    | hardcode `HomeFeatures`/`HomeHighlights` | — | DB |
+| Ringkasan about     | hardcode `HomeAboutSummary` | —              | DB |
+| Visi & misi         | hardcode `HomeVisionMission` | —             | DB |
+| Evolusi produk      | hardcode `HomeEvolution` | `Product` ✅       | Tarik dari `Product` |
+| Produk unggulan     | hardcode (belum ada section aktif) | `Product` + `ProductBenefit/Feature/Capability` ✅ | Tarik dari `Product` |
+| CTA                 | hardcode `HomeCTA`     | —                    | DB/hardcode disetujui |
+| SEO halaman         | metadata statis root layout | `PageSeo` ❌ tidak ada | Env atau model baru |
 
-| Content | Model | Field |
-|---|---|---|
-| name | Product | name |
-| slug | Product | slug |
-| short desc | Product | shortDesc |
-| full desc | Product | fullDesc |
-| features | Product | features |
-| main image | Product | imageUrl |
-| gallery | Product | galleryUrls |
-| order | Product | order |
-| published | Product | isPublished |
-| featured | Product | isFeatured |
-| SEO | PageSeo or product SEO extension | documented implementation |
+## 4. About (`/about`)
 
-## 6. Partners
+Status: 🚧 crash — `@/lib/queries/about` & `@/lib/queries/site-settings` hilang, dan halaman masih memanggil `prisma.pageSeo` (model tidak ada).
 
-| Content | Model | Field |
-|---|---|---|
-| hero title | PartnersPageContent | heroTitle |
-| hero subtitle | PartnersPageContent | heroSubtitle |
-| CTA | PartnersPageContent | ctaLabel |
-| benefit | PartnerBenefit | title, description, icon |
-| partner name | Partner | name |
-| category | Partner | category |
-| description | Partner | description |
-| icon | Partner | iconUrl |
-| order | Partner | order |
-| published | Partner | isPublished |
+| Konten        | Model lama (sudah dihapus) | Model saat ini | Target |
+| ------------- | -------------------------- | -------------- | ------ |
+| Narasi/profil | `AboutContent` ❌          | —              | Buat ulang model atau hardcode sementara |
+| Visi & misi   | `AboutContent` ❌          | —              | sama seperti atas |
+| Alamat kantor | `SiteSettings` ❌          | `Branch` ✅    | Tarik dari `Branch` (`isPrimary`) |
+| SEO           | `PageSeo` ❌               | —              | Env atau model baru |
 
-## 7. Contact
+## 5. Contact (`/contact`)
 
-Public:
-- name;
-- email;
-- phone;
-- message.
+Status: 🚧 sebagian — info kontak memakai `siteMetadata` (env); form kontak publik belum ada.
 
-DB:
-`ContactMessage`.
+| Konten            | Sumber                | Model |
+| ----------------- | --------------------- | ----- |
+| Info kontak       | `siteMetadata` (env)  | `Branch` ✅ tersedia untuk daftar kantor |
+| Form pesan        | ❌ belum ada          | `ContactMessage` ❌ tidak ada di schema (perlu dibuat ulang bila dibutuhkan) |
+| Newsletter        | ✅ `app/actions/newsletter.ts` | `NewsletterSubscriber` + `EmailQueue` |
 
-Source:
-- `general`;
-- `partnership`.
+## 6. Produk (halaman `/produk` — ❌ belum dibangun)
 
-## 8. Legal
+Model sudah siap di schema: `Product`, `ProductBenefit`, `ProductFeature`, `ProductCapability`, `ProductCapabilityItem`.
 
-`LegalContent`:
-- privacyPolicy;
-- termsOfService;
-- cookiePolicy.
+| Konten          | Model & Field |
+| --------------- | ------------- |
+| Nama & slug     | `Product.name`, `Product.slug` |
+| Deskripsi       | `Product.description` |
+| Gambar hero     | `Product.image` |
+| Benefit         | `ProductBenefit` (title, description, icon, order) |
+| Fitur utama     | `ProductFeature` (title, description, icon, order) + `Product.featureSubtitle` |
+| Kapabilitas     | `ProductCapability` (title, description, imageUrl) + `ProductCapabilityItem` |
 
-## 9. Careers
+## 7. Karir (halaman `/karir` — ❌ belum dibangun)
 
-`CareerContent`:
-- description;
-- hasOpenPositions;
-- openPositionsText;
-- applyEmail.
+Model sudah siap: `Career`, `CareerCategory`, `CareerApplication`.
 
-## 10. CMS Rule
+| Konten            | Model & Field |
+| ----------------- | ------------- |
+| Judul & slug      | `Career.title`, `Career.slug` |
+| Kategori          | `CareerCategory` |
+| Lokasi/tipe/dept  | `Career.location`, `type`, `department` |
+| Deskripsi & syarat| `Career.description`, `responsibilities[]`, `requirements[]` |
+| Status aktif      | `Career.isActive` |
+| Lamaran masuk     | `CareerApplication` (status `ApplicationStatus`) |
+
+## 8. Blog (halaman `/blog` — ❌ belum dibangun)
+
+Model sudah siap: `Article`, `ArticleCategory`.
+
+| Konten        | Model & Field |
+| ------------- | ------------- |
+| Judul & slug  | `Article.title`, `Article.slug` |
+| Konten        | `Article.content` (rich text TipTap) |
+| Cover         | `Article.cover` (URL ImageKit) |
+| Kategori      | `ArticleCategory` (many-to-many) |
+| Penulis       | `Article.createdBy` → `User` |
+
+## 9. Legal (halaman `/legal` — ❌ belum dibangun)
+
+Model `LegalContent` sudah **tidak ada** di schema. Perlu dibuat ulang bila fitur ini tetap di scope.
+
+## 10. Aturan CMS
 
 Setiap field editorial harus mempunyai:
-- owner;
-- source;
-- validation;
-- render target;
-- fallback;
-- editable status.
 
-Tidak boleh ada konten bisnis penting yang muncul hanya karena developer menulis string baru di component.
+- owner (role/permission yang boleh edit);
+- source (model + field, atau env);
+- validation (schema Zod di `src/schemas`);
+- render target (halaman/komponen);
+- fallback (nilai default bila kosong);
+- editable status (ya/tidak).
 
-## 11. Placeholder Policy
+Tidak boleh ada konten bisnis penting yang muncul hanya karena developer menulis string baru di component — kecuali tercatat sebagai hardcode sementara di dokumen ini.
 
-Placeholder diperbolehkan hanya:
+## 11. Kebijakan Placeholder
+
+Placeholder diperbolehkan hanya untuk:
+
 - local development;
-- clearly marked;
+- clearly marked (komentar/tercatat di dokumen ini);
 - tidak dipresentasikan sebagai fakta perusahaan.
-

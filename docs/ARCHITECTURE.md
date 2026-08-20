@@ -1,156 +1,206 @@
 # ARCHITECTURE.md — Arsitektur Teknis
 
+> Disinkronkan dengan struktur `src/` hasil refactor 2026-08-19 dan schema database berjalan.
+> Sumber kebenaran: `package.json`, `prisma/schema.prisma`, `next.config.ts`, `.env.example`, dan isi `src/`.
+
 ## 1. Tech Stack Lengkap
 
-| Layer           | Teknologi                                            | Versi (minimal)           | Alasan                                            |
-| --------------- | ---------------------------------------------------- | ------------------------- | ------------------------------------------------- |
-| Framework       | Next.js                                              | 15.x (App Router)         | Frontend + backend jadi satu, cocok solo dev      |
-| Bahasa          | TypeScript                                           | 5.x                       | Strict typing, kurangi bug                        |
-| Database        | PostgreSQL                                           | 15+                       | Relasional, gratis di Neon/Supabase               |
-| ORM             | Prisma                                               | 5.x                       | Schema-first, migrasi mudah                       |
-| Auth            | NextAuth.js (Auth.js)                                | 5.x (beta/stable terbaru) | Standar untuk Next.js, credentials provider cukup |
-| Styling         | TailwindCSS                                          | 3.x/4.x                   | Cepat untuk solo dev                              |
-| Komponen UI     | shadcn/ui                                            | latest                    | Komponen siap pakai, tetap bisa dikustom          |
-| Validasi        | Zod                                                  | latest                    | Validasi schema di server & client                |
-| Upload gambar   | Cloudinary (via `next-cloudinary` atau API langsung) | latest                    | Tidak perlu storage server sendiri                |
-| Hosting app     | Vercel                                               | -                         | Auto-deploy dari GitHub, gratis untuk skala ini   |
-| Hosting DB      | Neon atau Supabase (pilih salah satu)                | -                         | PostgreSQL gratis tier                            |
-| Package manager | npm                                                  | -                         | Default, konsisten                                |
+| Layer              | Teknologi                                        | Versi (package.json) | Catatan                                                        |
+| ------------------ | ------------------------------------------------ | -------------------- | -------------------------------------------------------------- |
+| Framework          | Next.js (App Router, Turbopack)                  | 16.2.x               | `typedRoutes`, `reactCompiler`, Server Actions (body 50MB)      |
+| Bahasa             | TypeScript                                       | 6.x                  | strict, `verbatimModuleSyntax` aktif                            |
+| UI                 | React                                            | 19.2.x               | React Compiler aktif                                            |
+| Database           | PostgreSQL                                       | -                    | Lokal (dev) / Supabase (prod)                                   |
+| ORM                | Prisma                                           | 7.8.x                | Generator `prisma-client` → `generated/prisma`, driver `@prisma/adapter-pg` |
+| Auth               | Better Auth                                      | 1.6.x                | Plugin `admin` (RBAC), email+password, email verification       |
+| Styling            | TailwindCSS                                      | 4.2.x                | CSS-first (`@theme` di `globals.css`), dark mode via class      |
+| Komponen UI        | shadcn/ui (radix-ui)                             | latest               | Primitif di `src/components/ui`                                 |
+| Validasi           | Zod                                              | 4.x                  | Schema di `src/schemas`, dipakai server & client                |
+| Upload gambar      | ImageKit                                         | `@imagekit/next` 2.x | Upload via REST API server-side + kompresi `sharp`              |
+| Rich text editor   | TipTap                                           | 3.x                  | Editor + toolbar custom di `components/ui/toolbars`             |
+| Data fetching      | TanStack Query + Server Actions                  | 5.x                  | Mutasi via `'use server'` di `src/services`                     |
+| Tabel              | TanStack Table                                   | 8.x                  | Untuk list/tabel admin                                          |
+| Email              | Nodemailer + tabel `EmailQueue`                  | 9.x                  | Antrean email (newsletter, reset password, verifikasi)          |
+| Chart              | Recharts                                         | 3.x                  | Dashboard                                                       |
+| Form               | React Hook Form + `@hookform/resolvers`          | 7.x                  | -                                                               |
+| Testing            | Playwright                                       | 1.6x                 | Konfigurasi di `playwright.config.ts`, test di `test/`          |
+| Hosting app        | Vercel                                           | -                    | -                                                               |
+| Hosting DB         | Supabase / Neon                                  | -                    | PostgreSQL                                                      |
+| Package manager    | npm                                              | 11.x                 | -                                                               |
 
-## 2. Database Schema (Prisma)
+## 2. Struktur Folder `src/`
 
-```prisma
-// prisma/schema.prisma
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model Admin {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hashed dengan bcrypt, JANGAN plaintext
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model HeroSection {
-  id          String   @id @default(cuid())
-  title       String
-  subtitle    String
-  imageUrl    String?
-  ctaLabel    String   @default("Hubungi Kami")
-  ctaUrl      String   @default("/kontak")
-  updatedAt   DateTime @updatedAt
-  // Catatan: tabel ini didesain hanya akan punya 1 row (singleton pattern).
-  // Ambil row pertama via findFirst(), buat row default lewat seed.
-}
-
-model AboutContent {
-  id          String   @id @default(cuid())
-  title       String
-  content     String   @db.Text
-  imageUrl    String?
-  updatedAt   DateTime @updatedAt
-  // Singleton pattern, sama seperti HeroSection.
-}
-
-model Product {
-  id           String   @id @default(cuid())
-  name         String
-  slug         String   @unique
-  shortDesc    String
-  fullDesc     String   @db.Text
-  features     String[] // array string, tiap elemen 1 fitur
-  imageUrl     String?
-  galleryUrls  String[] @default([])
-  order        Int      @default(0)
-  isPublished  Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([slug])
-  @@index([order])
-}
-
-model ContactMessage {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  message   String   @db.Text
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@index([isRead])
-  @@index([createdAt])
-}
+```
+src/
+├── app/                      # Next.js App Router
+│   ├── (root)/               # Route publik: /, /about, /contact
+│   │   └── _components/      # Section per halaman (HomeHero, AboutProfile, ...)
+│   ├── (admin)/              # Route admin: /admin (dilindungi proxy)
+│   ├── (auth)/               # Route auth: /login
+│   ├── actions/              # Server action standalone (newsletter.ts)
+│   ├── layout.tsx            # Root layout: metadata, font, providers, Toaster
+│   ├── seo.tsx               # Helper genPageMetadata (OG/Twitter/meta)
+│   ├── sitemap.tsx           # Sitemap dinamis
+│   ├── robots.tsx            # robots.txt
+│   ├── error.tsx / loading.tsx / not-found.tsx
+│   └── globals.css           # Token desain Tailwind 4 (@theme) + style TipTap
+├── components/
+│   ├── ui/                   # Primitif shadcn/ui + toolbars TipTap (lihat components/README.md)
+│   ├── Common/               # Komponen reusable (RichTextEditor, Modals, Loader, ...)
+│   └── Mixins/               # Komponen komposit (Navbar, Footer)
+├── services/                 # Server Actions ('use server'), dikelompokkan per aktor
+│   ├── admin/                # users, roles, articles, security (+ audit, cors, inputs)
+│   ├── participant/          # profile
+│   ├── public/               # uploads, emails, auth
+│   └── index.ts              # Barrel re-export
+├── schemas/                  # Schema validasi Zod per domain (users, roles, articles, auth, ...)
+├── interfaces/               # Tipe TypeScript (features/, modal, heading, alert)
+├── hooks/                    # Hooks client (usePagination, useDebounce, useSort, ...)
+├── lib/                      # Utilitas: prisma, auth (server), authClient (client), slugify, format*
+├── providers/                # QueryProvider (TanStack Query), PermissionProvider
+├── data/                     # siteMetadata (digerakkan env NEXT_PUBLIC_SEO_*)
+├── types/                    # Deklarasi tipe global (.d.ts)
+└── proxy.ts                  # Proteksi route Next.js 16 (pengganti middleware)
 ```
 
-**Catatan penting seed data**: `prisma/seed.ts` HARUS membuat:
+Konvensi penamaan komponen didokumentasikan di `src/components/README.md` (Common / Mixins / UI).
 
-1. Satu row `HeroSection` default (judul & subtitle placeholder yang masuk akal).
-2. Satu row `AboutContent` default.
-3. Satu akun `Admin` dari `ADMIN_EMAIL` / `ADMIN_PASSWORD` di `.env.local` (password di-hash pakai `bcrypt` sebelum disimpan).
-4. Minimal 2 row `Product` dummy (Alcor PMS, Alcor POS) supaya halaman produk tidak kosong saat testing.
+## 3. Database Schema (Prisma)
 
-## 4. Daftar API / Route Handler
+- File schema: `prisma/schema.prisma`.
+- Client di-generate ke `generated/prisma` (generator `prisma-client`, bukan `prisma-client-js`).
+- Koneksi runtime memakai driver adapter `@prisma/adapter-pg` (`PrismaPg`), bukan URL global di datasource.
+- Migrasi memakai `DIRECT_URL` (session-mode pooler) yang dikonfigurasi di `prisma.config.ts`.
 
-| Method | Path                      | Auth?               | Deskripsi                                                           |
-| ------ | ------------------------- | ------------------- | ------------------------------------------------------------------- |
-| GET    | `/api/hero`               | Tidak               | Ambil data hero untuk halaman Home                                  |
-| PUT    | `/api/hero`               | **Admin**           | Update data hero                                                    |
-| GET    | `/api/about`              | Tidak               | Ambil data about                                                    |
-| PUT    | `/api/about`              | **Admin**           | Update data about                                                   |
-| GET    | `/api/produk`             | Tidak               | List semua produk yang `isPublished=true`, urut berdasarkan `order` |
-| POST   | `/api/produk`             | **Admin**           | Tambah produk baru                                                  |
-| GET    | `/api/produk/[id]`        | Tidak               | Detail 1 produk                                                     |
-| PUT    | `/api/produk/[id]`        | **Admin**           | Update produk                                                       |
-| DELETE | `/api/produk/[id]`        | **Admin**           | Hapus produk                                                        |
-| POST   | `/api/kontak`             | Tidak (rate-limit!) | Simpan pesan dari form kontak publik                                |
-| GET    | `/api/kontak`             | **Admin**           | List pesan masuk                                                    |
-| PATCH  | `/api/kontak/[id]`        | **Admin**           | Update status `isRead`                                              |
-| DELETE | `/api/kontak/[id]`        | **Admin**           | Hapus pesan                                                         |
-| POST   | `/api/upload`             | **Admin**           | Upload gambar ke Cloudinary, return URL                             |
-| \*     | `/api/auth/[...nextauth]` | -                   | Handler NextAuth (login/logout/session)                             |
+### Model — Auth (blok Better Auth)
 
-Alternatif: boleh pakai **Next.js Server Actions** menggantikan sebagian route handler di atas (khususnya untuk form admin) — pilih salah satu pendekatan dan konsisten, jangan campur tanpa alasan jelas.
+| Model        | Fungsi                                                            |
+| ------------ | ----------------------------------------------------------------- |
+| `User`       | Akun pengguna; field tambahan `role`, `banned`, `roleId`          |
+| `Session`    | Sesi Better Auth (token, expiry, IP, user agent)                  |
+| `Account`    | Kredensial per provider (password untuk email+password)           |
+| `Verification` | Token verifikasi email / reset password                         |
+| `Role`       | Nama role (mis. `superadmin`)                                     |
+| `Permission` | Nama permission (mis. `admin.access`), many-to-many dengan `Role` |
 
-## 5. Alur Autentikasi Admin
+Relasi role user ada dua jalur: many-to-many `User.roles` dan one-to-many `User.roleId` — keduanya dicek saat otorisasi (lihat `proxy.ts` dan `services/admin/security.ts`).
 
-1. Admin buka `/admin/login`, input email + password.
-2. NextAuth `CredentialsProvider` mem-verifikasi ke tabel `Admin` (bandingkan password hash pakai `bcrypt.compare`).
-3. Jika valid, session (JWT strategy) dibuat.
-4. `src/app/admin/layout.tsx` mengecek session di server (`getServerSession`) — kalau tidak ada session valid, redirect ke `/admin/login`.
-5. Semua Route Handler yang butuh admin harus memanggil helper `requireAdmin()` di `lib/auth.ts` yang cek session sebelum lanjut proses.
+### Model — Konten
 
-## 6. Alur Upload Gambar
+| Model                     | Fungsi                                                              |
+| ------------------------- | ------------------------------------------------------------------- |
+| `Product`                 | Produk (Alcor PMS/POS): slug, nama, deskripsi, gambar               |
+| `ProductBenefit`          | Benefit produk (icon, order)                                        |
+| `ProductFeature`          | Fitur utama produk (icon, order)                                    |
+| `ProductCapability`       | Grup kapabilitas + gambar mockup                                    |
+| `ProductCapabilityItem`   | Item dalam grup kapabilitas                                         |
+| `Career` + `CareerCategory` | Lowongan kerja (slug, lokasi, tipe, departemen, persyaratan)      |
+| `CareerApplication`       | Lamaran kerja (CV, portfolio, status `ApplicationStatus`)           |
+| `Article` + `ArticleCategory` | Artikel/blog (slug, konten, cover, pembuat)                     |
+| `Branch`                  | Kantor cabang (alamat, telp, email, `isPrimary`)                    |
+| `Client`                  | Logo klien/partner                                                  |
 
-1. Admin pilih file di form (`ImageUploader.tsx`).
-2. Validasi client: tipe file (jpg/png/webp), ukuran maks 2MB.
-3. Kirim ke `/api/upload` (multipart/form-data).
-4. Server validasi ulang (jangan percaya client saja), lalu upload ke Cloudinary via SDK.
-5. Response berisi `secure_url` dari Cloudinary, disimpan sebagai `imageUrl`/`galleryUrls` di database.
+### Model — Operasional
 
-## 7. Keamanan (Non-negotiable)
+| Model                | Fungsi                                                    |
+| -------------------- | --------------------------------------------------------- |
+| `EmailQueue`         | Antrean email (`EmailStatus`: PENDING/PROCESSING/SENT/FAILED) |
+| `NewsletterSubscriber` | Email pelanggan newsletter                              |
 
-- Semua route mutasi data (POST/PUT/PATCH/DELETE) di luar `/api/kontak` (POST) dan `/api/auth/*` **wajib** dicek admin session.
-- `/api/kontak` (POST) publik tapi **wajib diberi rate limiting sederhana** (misal: max 5 request/menit per IP) untuk mencegah spam — bisa pakai package ringan seperti `@upstash/ratelimit` atau implementasi in-memory sederhana kalau traffic rendah.
-- Semua input divalidasi dengan Zod schema di server, bukan hanya di client.
-- Password admin **wajib** di-hash dengan `bcrypt` (salt rounds minimal 10), tidak pernah disimpan/di-log plaintext.
-- Sanitasi input teks (terutama `message` dari form kontak) untuk mencegah XSS saat ditampilkan di dashboard.
-- `.env.local` wajib masuk `.gitignore` — cek sebelum commit pertama.
+Enum yang tersedia di generated client: `EmailStatus`, `ApplicationStatus`.
 
-## 8. Deployment
+**Catatan penting**: model lama `Admin`, `HeroSection`, `AboutContent`, `ContactMessage`, `SiteSettings`, `PageSeo`, `Partner*`, `LegalContent`, `CareerContent`, `HomeHighlight` **sudah tidak ada** di schema. Konten yang dulu disimpan di model tersebut kini harus dipetakan ulang (lihat `CONTENT-DATA-MAPPING.md`).
 
-1. Push repo ke GitHub.
-2. Connect repo ke Vercel, set semua environment variable dari `.env.example` di dashboard Vercel.
-3. Database: buat project di Neon/Supabase, copy `DATABASE_URL` ke Vercel env.
-4. Jalankan `npx prisma migrate deploy` (bukan `migrate dev`) untuk environment production — bisa lewat build command Vercel: `prisma generate && prisma migrate deploy && next build`.
-5. Jalankan seed sekali secara manual (via `npx prisma db seed` dari local yang connect ke DB production, atau lewat script terpisah) untuk membuat akun admin pertama.
+## 4. Pola Mutasi Data: Server Actions (BUKAN Route Handler)
+
+Tidak ada Route Handler REST (`/api/*`) untuk CRUD konten. Semua mutasi dilakukan lewat **Server Actions** di `src/services/**` (file diawali `'use server'`).
+
+Format respons standar — `ServiceResponse<T>` di `src/types/service-response.d.ts`:
+
+```ts
+export type ServiceResponse<T = unknown> = {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+};
+```
+
+Alur standar setiap mutasi server action:
+
+1. Ambil session via `auth.api.getSession({ headers })` (Better Auth).
+2. Verifikasi izin via `verifySession` / `verifyPermission` (`services/admin/security.ts`).
+3. Validasi input dengan schema Zod (`src/schemas`).
+4. Mutasi via Prisma.
+5. `revalidatePath` untuk path publik yang terdampak.
+6. Kembalikan `ServiceResponse` typed.
+
+## 5. Alur Autentikasi & Otorisasi (Better Auth)
+
+1. Konfigurasi server: `src/lib/auth.ts` — `betterAuth` + Prisma adapter + plugin `admin`; email+password aktif, reset password & verifikasi email dikirim lewat `queueEmail`.
+2. Client: `src/lib/authClient.ts` — `createAuthClient` + `adminClient`; export `useSession`, `signIn`, `signUp`, `signOut`.
+3. Proteksi route: `src/proxy.ts` (Next.js 16 proxy) — cek session langsung dari DB, cek expiry, lalu cek permission RBAC:
+   - `/admin/*` butuh permission `admin.access`; tanpa itu di-redirect ke `/participant/dashboard`.
+   - `/login` untuk user yang sudah login di-redirect ke dashboard sesuai role.
+4. Otorisasi di server action: `verifyPermission` membaca permission user dari relasi `roles → permissions` (dan `roleId`).
+5. Di client, `PermissionProvider` menyediakan data permission/role user untuk UI.
+
+> ⚠️ **Known issue**: Route handler Better Auth (`/api/auth/[...all]`) belum dibuat di `src/app` — lihat `ONLY_ME.md`.
+
+## 6. Alur Upload Gambar (ImageKit)
+
+1. Admin memilih file di form (mis. `RichTextEditor` atau form CRUD).
+2. Server action `uploadImage` (`services/public/uploads.ts`):
+   - validasi & kompresi gambar dengan `sharp` (timeout 30 detik);
+   - upload ke ImageKit REST API (`https://upload.imagekit.io/api/v1/files/upload`) memakai `IMAGEKIT_PRIVATE_KEY` (server-side, jangan pernah bocor ke client);
+   - mengembalikan URL publik ImageKit.
+3. Gambar dirender dengan `next/image`; domain `ik.imagekit.io` sudah didaftarkan di `images.remotePatterns` (`next.config.ts`).
+4. `deleteImage` tersedia untuk menghapus aset dari ImageKit.
+
+## 7. Alur Email (Queue)
+
+1. `queueEmail` (`services/public/emails.ts`) menulis baris ke tabel `EmailQueue` (status `PENDING`).
+2. Worker mengirim via Nodemailer dengan kredensial SMTP dari env (`SMTP_HOST/PORT/USER/PASS`), lalu memperbarui status (`SENT`/`FAILED`, `attempts`).
+3. Dipakai untuk: newsletter (`app/actions/newsletter.ts`), reset password, dan verifikasi email (dari `lib/auth.ts`).
+
+## 8. Keamanan (ringkas — detail di SECURITY.md)
+
+- Header keamanan global diset di `next.config.ts`: `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, `Permissions-Policy`; `poweredByHeader` dimatikan.
+- Semua server action mutasi wajib cek session + permission (lihat pola §4).
+- Validasi Zod di server untuk semua input.
+- Secret hanya lewat env: `DATABASE_URL`, `BETTER_AUTH_SECRET`, `IMAGEKIT_PRIVATE_KEY`, `SMTP_PASS`.
+
+## 9. Environment Variables
+
+Referensi lengkap: `.env.example`.
+
+```
+DATABASE_URL=            # PostgreSQL (lokal / Supabase pooler transaction-mode)
+DIRECT_URL=              # session-mode pooler, dipakai prisma migrate (prisma.config.ts)
+BETTER_AUTH_SECRET=      # secret Better Auth
+BETTER_AUTH_URL=         # mis. http://localhost:3000
+NEXT_PUBLIC_APP_URL=     # base URL aplikasi
+NEXT_PUBLIC_SEO_*=       # metadata SEO (title, description, social, dll)
+IMAGEKIT_URL=            # endpoint ImageKit
+IMAGEKIT_PRIVATE_KEY=    # private key (server-only)
+IMAGEKIT_PUBLIC_KEY=     # public key
+SMTP_HOST/PORT/USER/PASS # kredensial SMTP (Nodemailer)
+```
+
+## 10. Deployment
+
+1. Push repo ke GitHub → connect ke Vercel.
+2. Set semua env dari `.env.example` di dashboard Vercel.
+3. Build command menjalankan `prisma generate` + `prisma migrate deploy` + `next build` (Turbopack).
+4. Seed akun admin awal via `npm run db:seed` (lihat known issue di bawah).
+
+## 11. Known Issues (per 2026-08-19)
+
+Daftar lengkap & status perbaikan ada di `ONLY_ME.md`. Ringkasan yang memengaruhi arsitektur:
+
+- `/about` crash: `@/components/ui/container` dan `@/lib/queries/*` hilang; query lama memakai model yang sudah tidak ada di schema.
+- `/admin` crash: `@/lib/requireAdmin` hilang; layout masih memanggil `signOut` yang tidak ada di `lib/auth.ts`.
+- `/login` crash: masih import `next-auth/react` padahal project sudah pindah ke Better Auth.
+- Route handler Better Auth (`/api/auth/[...all]`) belum ada.
+- `prisma/seed.ts` masih memakai model lama (`admin`, `siteSettings`) dan `bcryptjs` yang belum terpasang.
+- Cache `.next` stale (validator route lama) — hapus folder `.next` untuk membersihkan.

@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/requireAdmin';
 
 interface AdminLayoutProps {
@@ -21,8 +22,10 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
           <form
             action={async () => {
               'use server';
-              const { signOut } = await import('@/lib/auth');
-              await signOut({ redirectTo: '/login' });
+              const { headers } = await import('next/headers');
+              const { auth } = await import('@/lib/auth');
+              await auth.api.signOut({ headers: await headers() });
+              redirect('/login');
             }}
           >
             <button
