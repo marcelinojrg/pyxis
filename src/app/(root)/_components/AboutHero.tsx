@@ -1,5 +1,4 @@
-import { FC } from 'react';
-import { Container } from '@/components/ui/container';
+import type { FC } from 'react';
 
 export interface AboutHeroProps {
   title: string;
@@ -13,7 +12,7 @@ export const AboutHero: FC<AboutHeroProps> = ({ title, content }) => {
       {/* Subtle grid pattern overlay */}
       <div className="" />
 
-      <Container className="relative z-10 w-full">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="max-w-3xl mx-auto text-center space-y-5">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold font-heading text-white leading-[1.18] tracking-tight">
             {title}
@@ -25,7 +24,7 @@ export const AboutHero: FC<AboutHeroProps> = ({ title, content }) => {
             </p>
           )}
         </div>
-      </Container>
+      </div>
     </section>
   );
 };

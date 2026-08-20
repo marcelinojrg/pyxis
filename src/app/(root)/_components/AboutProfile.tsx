@@ -1,6 +1,5 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import Image from 'next/image';
-import { Container } from '@/components/ui/container';
 
 export interface AboutProfileProps {
   officeAddress?: string | null;
@@ -10,7 +9,7 @@ export interface AboutProfileProps {
 export const AboutProfile: FC<AboutProfileProps> = ({ imageUrl }) => {
   return (
     <section className="py-16 md:py-20 bg-white">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           {/* Left Image with Badge */}
           <div className="lg:col-span-6">
@@ -57,7 +56,7 @@ export const AboutProfile: FC<AboutProfileProps> = ({ imageUrl }) => {
             </p>
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 };

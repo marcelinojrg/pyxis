@@ -1,6 +1,5 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Building2, Phone, Mail } from 'lucide-react';
-import { Container } from '@/components/ui/container';
 
 export interface AboutContactProps {
   companyName?: string | null;
@@ -10,15 +9,10 @@ export interface AboutContactProps {
   officeAddress?: string | null;
 }
 
-export const AboutContact: FC<AboutContactProps> = ({
-  companyName,
-  address,
-  phone,
-  email,
-}) => {
+export const AboutContact: FC<AboutContactProps> = ({ companyName, address, phone, email }) => {
   return (
     <section className="py-20 md:py-24 bg-white border-t border-neutral-200/70">
-      <Container>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900">
@@ -116,7 +110,7 @@ export const AboutContact: FC<AboutContactProps> = ({
             </div>
           </div>
         </div>
-      </Container>
+      </div>
     </section>
   );
 };
