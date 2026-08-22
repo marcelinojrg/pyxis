@@ -85,3 +85,6 @@ bun.lock
 .agents
 .windsurf
 .qwen
+graphify-out
+src/graphify-out
+*.graphify*
