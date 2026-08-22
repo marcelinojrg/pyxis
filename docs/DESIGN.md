@@ -134,3 +134,34 @@ Dashboard admin **tidak perlu semewah halaman publik** — prioritaskan fungsi &
 - Bahasa Indonesia formal-semi-santai (bukan kaku birokratis, tapi tetap profesional B2B).
 - CTA button pakai kata kerja aktif: "Hubungi Kami", "Lihat Produk", "Kirim Pesan" — bukan "Klik Disini".
 - Hindari jargon berlebihan; jelaskan fitur produk dengan bahasa yang dipahami pemilik hotel/restoran (bukan hanya developer).
+
+# UI / UX & SEO Guidelines - SITIVENT
+
+## UI / UX Guidelines
+
+Seluruh tampilan harus mengikuti prinsip:
+
+- Clean
+- Modern
+- Responsive
+- Accessible
+- Minimalist
+
+Gunakan komponen yang sudah tersedia.
+
+Jangan membuat ulang component apabila sudah ada.
+
+Prioritaskan reuse dibanding duplicate.
+
+## SEO Rules
+
+Landing page wajib memiliki:
+
+- Metadata
+- OpenGraph
+- Twitter Card
+- Canonical URL
+- Sitemap
+- Robots
+
+Gunakan metadata API bawaan Next.js.
