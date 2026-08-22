@@ -22,7 +22,7 @@ const PARTNERS = [
 
 export default function HomePartnersBar() {
   return (
-    <section className="py-12 bg-white border-b border-neutral-100">
+    <section className="py-16 bg-white border-b border-neutral-100">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center space-y-6">
           <p className="text-[11px] sm:text-xs font-semibold tracking-widest text-neutral-400 uppercase">

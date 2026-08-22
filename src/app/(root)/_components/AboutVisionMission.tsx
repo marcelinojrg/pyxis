@@ -38,7 +38,7 @@ const EVOLUTION_ITEMS = [
 
 export const AboutVisionMission: FC<AboutVisionMissionProps> = ({ vision, mission }) => {
   return (
-    <section className="py-20 md:py-24 bg-[#F8FAFC] border-t border-neutral-200/70">
+    <section className="py-16 bg-[#F8FAFC] border-t border-neutral-200/70">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20">
           {/* Left Column: Vision & Mission */}

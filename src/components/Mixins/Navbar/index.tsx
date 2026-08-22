@@ -10,7 +10,7 @@ import { Menu, X } from 'lucide-react';
 const NAV_LINKS = [
   { title: 'Home', href: '/' },
   { title: 'About', href: '/about' },
-  { title: 'Product', href: '/products' },
+  { title: 'Products', href: '/products' },
   { title: 'Partners', href: '/partners' },
   { title: 'Blog', href: '/blog' },
 ];
@@ -47,7 +47,7 @@ export default function Navbar() {
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
-    return pathname.startsWith(href);
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   return (
@@ -76,24 +76,40 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href as Route}
-              className={cn(
-                'text-sm font-medium transition-colors duration-200',
-                isWhite
-                  ? isActive(link.href)
-                    ? 'text-[#1D4ED8] font-bold underline underline-offset-8 decoration-2 decoration-[#1D4ED8]'
-                    : 'text-neutral-600 hover:text-[#1D4ED8]'
-                  : isActive(link.href)
-                    ? 'text-white font-semibold underline underline-offset-8 decoration-2 decoration-white'
-                    : 'text-blue-100 hover:text-white'
-              )}
-            >
-              {link.title}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href as Route}
+                className={cn(
+                  'relative py-1 text-sm font-medium transition-colors duration-200 group inline-block',
+                  isWhite
+                    ? active
+                      ? 'text-[#1D4ED8] font-bold'
+                      : 'text-neutral-600 hover:text-neutral-900'
+                    : active
+                      ? 'text-white font-semibold'
+                      : 'text-blue-100 hover:text-white'
+                )}
+              >
+                {link.title}
+                {/* Animasi garis: Biru/Putih saat aktif, Abu-abu saat hover di halaman lain */}
+                <span
+                  className={cn(
+                    'absolute -bottom-1 left-0 h-[2px] w-full rounded-full transition-all duration-300 ease-out origin-left',
+                    active
+                      ? isWhite
+                        ? 'bg-[#1D4ED8] scale-x-100 opacity-100'
+                        : 'bg-white scale-x-100 opacity-100'
+                      : isWhite
+                        ? 'bg-neutral-300 scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100'
+                        : 'bg-white/40 scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100'
+                  )}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Desktop CTA Button */}
@@ -131,24 +147,27 @@ export default function Navbar() {
           )}
         >
           <nav className="flex flex-col space-y-3 mb-6">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href as Route}
-                className={cn(
-                  'px-4 py-2.5 rounded-lg text-base font-medium transition-colors',
-                  isWhite
-                    ? isActive(link.href)
-                      ? 'text-[#1D4ED8] bg-blue-50 font-bold'
-                      : 'text-neutral-700 hover:bg-neutral-100'
-                    : isActive(link.href)
-                      ? 'text-white bg-blue-700 font-bold'
-                      : 'text-blue-100 hover:bg-blue-700/50'
-                )}
-              >
-                {link.title}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href as Route}
+                  className={cn(
+                    'relative px-4 py-2.5 rounded-lg text-base font-medium transition-colors',
+                    isWhite
+                      ? active
+                        ? 'text-[#1D4ED8] bg-blue-50 font-bold'
+                        : 'text-neutral-700 hover:bg-neutral-100'
+                      : active
+                        ? 'text-white bg-blue-700 font-bold'
+                        : 'text-blue-100 hover:bg-blue-700/50'
+                  )}
+                >
+                  {link.title}
+                </Link>
+              );
+            })}
           </nav>
           <div className="flex flex-col gap-3 pt-2">
             <Link

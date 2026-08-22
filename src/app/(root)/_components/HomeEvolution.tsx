@@ -56,7 +56,7 @@ const EVOLUTION_NODES = [
 
 export default function HomeEvolution() {
   return (
-    <section className="py-24 bg-[#F1F5F9]/70 border-t border-neutral-200/70">
+    <section className="py-16 bg-[#F1F5F9]/70 border-t border-neutral-200/70">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900">

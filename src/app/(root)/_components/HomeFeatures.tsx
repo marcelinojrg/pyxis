@@ -4,7 +4,7 @@ import { Calendar, Users, BarChart3, RefreshCw, ArrowRight } from 'lucide-react'
 
 export default function HomeFeatures() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-16 bg-white">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900">

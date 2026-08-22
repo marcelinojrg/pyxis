@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function AboutCTA() {
   return (
-    <section className="relative py-24 sm:py-28 overflow-hidden bg-[#0A1222] text-white">
+    <section className="relative py-16 overflow-hidden bg-[#0A1222] text-white">
       {/* Background Architectural Overlay Gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#0B1E48]/80 via-[#0A1222]/95 to-[#050B14] -z-10" />
 
