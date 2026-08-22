@@ -1,6 +1,8 @@
 # DESIGN.md — Panduan Visual & Sistem Desain
 
 > Tujuan file ini: memastikan AI agent menghasilkan tampilan yang **konsisten** setiap kali membuat komponen baru, bukan desain acak tiap sesi.
+>
+> Disinkronkan 2026-08-19: mekanisme token kini Tailwind CSS 4 (CSS-first `@theme` di `src/app/globals.css`, dimuat bersama `@config "../../tailwind.config.ts"`), dark mode via class `.dark`.
 
 ## 1. Kesan yang Ingin Dibangun
 
@@ -11,6 +13,12 @@ Pyxis adalah perusahaan **B2B software enterprise** (software hotel). Kesan visu
 - **Teknologi/tech-forward** tapi tetap hangat (karena berhubungan dengan industri hospitality)
 
 ## 2. Palet Warna
+
+### Kondisi aktual (2026-08-19)
+
+Token warna memakai **variabel CSS oklch** di `src/app/globals.css` (pola shadcn/ui): `--background`, `--foreground`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--success`, `--warning`, `--border`, `--ring`, dll — lengkap dengan padanan `.dark`. Token ini dipetakan ke utility Tailwind (`bg-primary`, `text-muted-foreground`, ...) lewat `@theme inline`. Palet bawaan saat ini **netral monokrom** (primary hampir hitam), belum memakai warna brand navy/amber.
+
+### Palet brand (TARGET — belum diterapkan di globals.css)
 
 | Nama Token      | Hex                    | Penggunaan                                                    |
 | --------------- | ---------------------- | ------------------------------------------------------------- |
@@ -26,21 +34,16 @@ Pyxis adalah perusahaan **B2B software enterprise** (software hotel). Kesan visu
 | `success`       | `#16A34A`              | Notifikasi sukses (misal: pesan terkirim)                     |
 | `error`         | `#DC2626`              | Notifikasi error/validasi gagal                               |
 
-Definisikan token ini di `tailwind.config.ts` sebagai `extend.colors`, JANGAN pakai hex langsung berulang-ulang di komponen.
-
-```ts
-// tailwind.config.ts (potongan)
-theme: {
-  extend: {
-    colors: {
-      primary: { DEFAULT: '#1E3A8A', light: '#3B82F6' },
-      secondary: { DEFAULT: '#F59E0B' },
-    },
-  },
-}
-```
+Cara menerapkan palet brand: ubah nilai variabel CSS di `:root` (dan `.dark`) pada `globals.css` — **jangan** menulis hex langsung berulang-ulang di komponen. Aksen hijau editorial `#4e7145` dan hangat `#D97757` yang terlihat di `globals.css` adalah sisa styling konten lama (`.article-content`, `.event-card`) dan akan dirapikan saat konten dibangun ulang.
 
 ## 3. Tipografi
+
+### Kondisi aktual (2026-08-19)
+
+- Font yang dimuat di `src/app/layout.tsx` (`next/font/google`): **Inter** (body, `--font-sans`; juga dipakai sebagai `--font-heading`), **Geist** (`--font-geist-sans`), **Geist Mono** (`--font-geist-mono`).
+- **Poppins belum dipasang** — daftar di bawah adalah target brand.
+
+### Target brand
 
 - **Font heading**: `Poppins` (600/700 weight) — kesan modern, tegas
 - **Font body**: `Inter` (400/500 weight) — sangat readable untuk teks panjang
@@ -131,3 +134,34 @@ Dashboard admin **tidak perlu semewah halaman publik** — prioritaskan fungsi &
 - Bahasa Indonesia formal-semi-santai (bukan kaku birokratis, tapi tetap profesional B2B).
 - CTA button pakai kata kerja aktif: "Hubungi Kami", "Lihat Produk", "Kirim Pesan" — bukan "Klik Disini".
 - Hindari jargon berlebihan; jelaskan fitur produk dengan bahasa yang dipahami pemilik hotel/restoran (bukan hanya developer).
+
+# UI / UX & SEO Guidelines - SITIVENT
+
+## UI / UX Guidelines
+
+Seluruh tampilan harus mengikuti prinsip:
+
+- Clean
+- Modern
+- Responsive
+- Accessible
+- Minimalist
+
+Gunakan komponen yang sudah tersedia.
+
+Jangan membuat ulang component apabila sudah ada.
+
+Prioritaskan reuse dibanding duplicate.
+
+## SEO Rules
+
+Landing page wajib memiliki:
+
+- Metadata
+- OpenGraph
+- Twitter Card
+- Canonical URL
+- Sitemap
+- Robots
+
+Gunakan metadata API bawaan Next.js.

@@ -1,23 +1,66 @@
 {
-  "updated_existing": [
-    "PRD.md",
-    "ARCHITECTURE.md",
-    "DESIGN(1).md",
-    "CLAUDE.md",
-    "ONLY_ME.md"
-  ],
-  "new_documents": [
-    "DESIGN.md",
-    "TASKS.md",
-    "SCREEN-SPEC.md",
-    "CONTENT-DATA-MAPPING.md",
-    "COMPONENT-CATALOG.md",
-    "API-CONTRACTS.md",
-    "SEO-SPEC.md",
-    "SECURITY.md",
-    "TEST-MATRIX.md",
-    "PANDUAN-ADMIN.md",
-    "FIGMA-AUDIT.md"
-  ],
-  "note": "Updated copies are provided because uploaded source files are mounted read-only."
+  "last_synced": "2026-08-19",
+  "note": "Indeks dokumen project. Semua dokumen disinkronkan dengan struktur src/ hasil refactor 2026-08-19 (Better Auth, Prisma 7, ImageKit, Server Actions). TASKS.md dan FIGMA-AUDIT.md yang pernah direferensikan sudah tidak ada; status kerja dilacak di ONLY_ME.md.",
+  "documents": [
+    {
+      "file": "PRD.md",
+      "purpose": "Requirement produk, scope, user stories, acceptance criteria",
+      "status": "synced-with-status-markers"
+    },
+    {
+      "file": "ARCHITECTURE.md",
+      "purpose": "Stack teknis, struktur folder, schema database, alur auth/upload/email",
+      "status": "rewritten"
+    },
+    {
+      "file": "API-CONTRACTS.md",
+      "purpose": "Kontrak server actions & ServiceResponse (tidak ada REST API)",
+      "status": "rewritten"
+    },
+    {
+      "file": "COMPONENT-CATALOG.md",
+      "purpose": "Inventaris komponen ui/Common/Mixins + aturan pakai",
+      "status": "rewritten"
+    },
+    {
+      "file": "CONTENT-DATA-MAPPING.md",
+      "purpose": "Pemetaan konten halaman ke model database & statusnya",
+      "status": "rewritten"
+    },
+    {
+      "file": "SCREEN-SPEC.md",
+      "purpose": "Spesifikasi screen/section + status implementasi",
+      "status": "synced-with-status-markers"
+    },
+    {
+      "file": "DESIGN.md",
+      "purpose": "Panduan visual: token warna, tipografi, spacing, aksesibilitas",
+      "status": "synced-actual-vs-target"
+    },
+    {
+      "file": "SECURITY.md",
+      "purpose": "Baseline keamanan: Better Auth, RBAC, Zod, upload, env, headers",
+      "status": "rewritten"
+    },
+    {
+      "file": "SEO-SPEC.md",
+      "purpose": "Spesifikasi SEO: siteMetadata, genPageMetadata, sitemap, robots",
+      "status": "rewritten"
+    },
+    {
+      "file": "TEST-MATRIX.md",
+      "purpose": "Matriks QA + status kelayakan per grup",
+      "status": "synced-with-status-markers"
+    },
+    {
+      "file": "PANDUAN-ADMIN.md",
+      "purpose": "Panduan admin: kondisi aktual + modul yang direncanakan",
+      "status": "rewritten"
+    },
+    {
+      "file": "ONLY_ME.md",
+      "purpose": "Catatan pribadi owner: investigasi bug, backlog, keputusan",
+      "status": "owner-managed"
+    }
+  ]
 }

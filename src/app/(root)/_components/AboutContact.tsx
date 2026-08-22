@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import { Building2, Phone, Mail } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
@@ -10,12 +10,7 @@ export interface AboutContactProps {
   officeAddress?: string | null;
 }
 
-export const AboutContact: FC<AboutContactProps> = ({
-  companyName,
-  address,
-  phone,
-  email,
-}) => {
+export const AboutContact: FC<AboutContactProps> = ({ companyName, address, phone, email }) => {
   return (
     <section className="py-20 md:py-24 bg-white border-t border-neutral-200/70">
       <Container>

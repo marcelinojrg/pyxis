@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import { genPageMetadata } from '@/app/seo';
 import { siteMetadata } from '@/data/siteMetadata';
