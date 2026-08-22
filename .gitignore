@@ -82,3 +82,6 @@ bun.lock
 /references
 
 .claude
+.agents
+.windsurf
+.qwen
