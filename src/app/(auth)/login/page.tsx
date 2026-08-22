@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import type { Route } from 'next';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn } from '@/lib/authClient';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,18 +21,16 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await signIn('credentials', {
+      const { error: signInError } = await signIn.email({
         email,
         password,
-        redirect: false,
-        callbackUrl,
       });
 
-      if (res?.error) {
+      if (signInError) {
         setError('Email atau password salah. Silakan coba lagi.');
         setIsLoading(false);
       } else {
-        router.push(callbackUrl);
+        router.push(callbackUrl as Route);
         router.refresh();
       }
     } catch {

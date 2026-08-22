@@ -56,112 +56,46 @@ SITIVENT memiliki modul utama:
 # PANDUAN-ADMIN.md
 # Panduan Admin Website Pyxis
 
-## 1. Login
+> Disinkronkan 2026-08-19. Panduan ini menggambarkan **kondisi aktual** dashboard admin terlebih dahulu, lalu fitur yang direncanakan.
 
-Buka:
-`/admin/login`
+## Status Saat Ini (per 2026-08-19)
 
-Masukkan email dan password admin.
+| Bagian | Status | Keterangan |
+| --- | :---: | --- |
+| Login (`/login`) | 🚧 | Halaman ada, tetapi masih memakai kode next-auth lama dan belum berfungsi. Autentikasi sudah pindah ke Better Auth — migrasi halaman login tercatat di `ONLY_ME.md`. |
+| Dashboard (`/admin`) | 🚧 | Baru halaman placeholder ("Dashboard Utama"). Proteksi rute sudah aktif di `src/proxy.ts` (butuh permission `admin.access`). |
+| Modul CRUD konten | ❌ | Belum tersedia (produk, artikel, karir, mitra, legal, pesan, site settings). |
+
+**Implikasi praktis**: sampai known issues di `ONLY_ME.md` diperbaiki, admin belum bisa login dan mengelola konten lewat dashboard. Pengelolaan data sementara dilakukan langsung ke database (mis. `npx prisma studio`) oleh developer.
+
+## 1. Login (setelah diperbaiki)
+
+Alur target:
+
+1. Buka `/login`.
+2. Masukkan email dan password (Better Auth email+password).
+3. User dengan permission `admin.access` diarahkan ke `/admin`; user biasa ke `/participant/dashboard`.
+4. Lupa password: tautan reset dikirim lewat email (antrean `EmailQueue`).
 
 ## 2. Dashboard
 
-Dashboard menampilkan ringkasan:
-- produk;
-- partner;
-- pesan belum dibaca;
-- total pesan.
+Target: ringkasan metrik konten (produk, artikel, lamaran karir, pelanggan newsletter, pesan masuk). Saat ini belum tersedia.
 
-## 3. Mengubah Hero
+## 3. Modul yang Direncanakan (belum tersedia)
 
-Masuk ke:
-`Admin > Hero`
+Panduan detail per modul akan ditulis di sini saat UI admin dibangun. Rencana modul sesuai `PRD.md` §4.2:
 
-Edit:
-- title;
-- subtitle;
-- image;
-- CTA.
+- **Produk** — CRUD produk (nama, slug, deskripsi, benefit, fitur, kapabilitas, gambar via ImageKit).
+- **Blog/Artikel** — CRUD artikel rich text (TipTap), cover, kategori. Server action sudah tersedia (`services/admin/articles.ts`).
+- **Karir** — CRUD lowongan + kelola lamaran (`CareerApplication`).
+- **Mitra/Partner** — kelola logo klien (`Client`).
+- **User & Role** — CRUD user dan role RBAC. Server action sudah tersedia (`services/admin/users.ts`, `roles.ts`).
+- **Site Settings / Hero / Legal / Pesan** — menunggu model database dibuat ulang (lihat `CONTENT-DATA-MAPPING.md`).
 
-Klik simpan.
-Periksa halaman Home.
+## 4. Praktik Aman (berlaku sekarang & nanti)
 
-## 4. Mengelola Produk
-
-Menu:
-`Admin > Produk`
-
-### Tambah
-1. Klik tambah produk.
-2. Isi nama.
-3. Pastikan slug benar.
-4. Isi deskripsi.
-5. Tambahkan fitur.
-6. Upload image.
-7. Tentukan urutan.
-8. Tentukan Published.
-9. Tentukan Featured jika produk perlu muncul di Home.
-10. Simpan.
-
-### Edit
-Pilih produk lalu edit.
-
-### Hapus
-Gunakan konfirmasi sebelum menghapus.
-
-## 5. Partners
-
-Kelola:
-- hero;
-- alasan bermitra;
-- partner/integrasi.
-
-## 6. Legal
-
-Edit:
-- Privacy Policy;
-- Terms of Service;
-- Cookie Policy.
-
-Gunakan bahasa resmi perusahaan.
-Jangan memasukkan credential atau data rahasia.
-
-## 7. Karir
-
-Edit:
-- deskripsi;
-- status lowongan;
-- text posisi;
-- email tujuan CV.
-
-## 8. Site Settings
-
-Gunakan untuk:
-- alamat;
-- phone;
-- email;
-- logo;
-- footer;
-- social links;
-- default SEO.
-
-## 9. Pesan
-
-Menu:
-`Admin > Pesan`
-
-Periksa:
-- sumber;
-- nama;
-- email;
-- message;
-- status read.
-
-Jangan membagikan data lead kepada pihak yang tidak berwenang.
-
-## 10. Praktik Aman
-
-- jangan membagikan password;
-- logout setelah selesai;
-- jangan menulis data sensitif ke field publik;
-- periksa hasil perubahan pada website.
-
+- Jangan membagikan password atau kredensial admin.
+- Logout setelah selesai.
+- Jangan menulis data sensitif ke field publik.
+- Periksa hasil perubahan pada website setelah menyimpan.
+- Jangan membagikan data lead/pelamar kepada pihak yang tidak berwenang.

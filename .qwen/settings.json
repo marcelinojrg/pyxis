@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(caveman)",
+      "Skill(ponytail)"
+    ]
+  },
+  "$version": 4
+}

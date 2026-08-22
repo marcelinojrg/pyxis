@@ -13,83 +13,94 @@
 ## 2. Urutan Membaca Dokumen (WAJIB, jangan dilompati)
 
 1. `CLAUDE.md` (file ini) — overview & aturan main
-2. `docs/PRD.md` — requirement produk, fitur apa saja yang harus ada, apa yang TIDAK boleh dikerjakan
-3. `docs/ARCHITECTURE.md` — stack teknis, struktur folder, schema database, daftar API
-4. `docs/DESIGN.md` — panduan visual: warna, tipografi, komponen, spacing
-5. `docs/TASKS.md` — checklist eksekusi. Cari task teratas yang belum `[x]`, kerjakan itu SAJA dulu.
+2. `docs/PRD.md` — requirement produk, fitur apa saja yang harus ada, apa yang TIDAK boleh dikerjakan (ada kolom status implementasi per halaman/modul)
+3. `docs/ARCHITECTURE.md` — stack teknis, struktur folder, schema database, alur auth/upload/email
+4. `docs/DESIGN.md` — panduan visual: token warna, tipografi, spacing
+5. `docs/ONLY_ME.md` — status known issues & backlog. Cek bagian "Laporan Bug" sebelum mengerjakan sesuatu yang mungkin terkait.
 
-Jangan mengerjakan task yang tidak ada di `TASKS.md`. Jika menemukan kebutuhan baru saat coding, TAMBAHKAN dulu ke `TASKS.md` sebagai task baru, baru dikerjakan.
+Jika menemukan kebutuhan/bug baru saat coding, TAMBAHKAN dulu ke `ONLY_ME.md` (bagian backlog atau laporan bug), baru dikerjakan.
 
 ## 3. Tech Stack (ringkas — detail penuh di ARCHITECTURE.md)
 
-- Framework: **Next.js 15** (App Router, TypeScript strict mode)
-- Database: **PostgreSQL** via **Prisma ORM**
-- Auth: **NextAuth.js (Auth.js)** — hanya 1 role: `admin`
-- Styling: **TailwindCSS** + **shadcn/ui**
-- Upload gambar: **Cloudinary**
-- Hosting: **Vercel** (app) + **Neon/Supabase** (database)
+- Framework: **Next.js 16** (App Router, Turbopack, `typedRoutes`, React Compiler) + **React 19** + TypeScript strict
+- Database: **PostgreSQL** via **Prisma ORM 7** (adapter `@prisma/adapter-pg`, client di `generated/prisma`)
+- Auth: **Better Auth** (email+password, plugin `admin`, RBAC Role/Permission) — proteksi rute di `src/proxy.ts`
+- Styling: **TailwindCSS 4** (CSS-first di `globals.css`) + **shadcn/ui**
+- Upload gambar: **ImageKit** (server-side + kompresi `sharp`)
+- Mutasi data: **Server Actions** (`'use server'` di `src/services`) — BUKAN REST route handler
+- Validasi: **Zod 4** (schema di `src/schemas`)
+- Email: **Nodemailer** + tabel `EmailQueue`
+- Hosting: **Vercel** (app) + **Supabase/Neon** (database)
 
 ## 4. Command Penting
 
 ```bash
-npm run dev              # jalankan dev server (localhost:3000)
+npm run dev               # dev server (localhost:3000, Turbopack)
 npm run build             # build production
+npm run lint              # eslint
+npm run lint:fix          # eslint --fix
+npm run typecheck         # tsc --noEmit
+npm run db:seed           # seed database (tsx prisma/seed.ts) — lihat known issue di ONLY_ME.md
 npx prisma migrate dev    # jalankan migrasi database (development)
-npx prisma studio         # buka GUI database
 npx prisma generate       # generate Prisma client setelah ubah schema
-npm run lint               # cek linting
-npm run typecheck          # cek TypeScript (tsc --noEmit)
+npx prisma studio         # buka GUI database
 ```
 
 ## 5. Aturan Coding (Non-negotiable)
 
-1. **TypeScript strict** — tidak boleh ada `any` tanpa alasan jelas yang dikomentari.
-2. **Semua teks yang tampil di halaman publik harus berasal dari database**, bukan hardcode di komponen. Kecuali label UI statis (misal tombol "Kirim", "Simpan").
-3. **Setiap Server Action / Route Handler yang mengubah data (create/update/delete) HARUS dilindungi autentikasi admin.** Tidak ada endpoint tulis yang publik.
-4. **Validasi input di server**, jangan percaya validasi client saja. Gunakan `zod` untuk schema validation.
-5. **Semua form upload gambar** harus divalidasi tipe file (jpg/png/webp) dan ukuran maksimal (2MB) sebelum diupload ke Cloudinary.
-6. **Komponen React**: functional component + TypeScript, satu file = satu komponen utama. Simpan di `/components`, dipisah `/components/public` dan `/components/admin`.
-7. **Penamaan file**: kebab-case untuk file, PascalCase untuk nama komponen React.
-8. **Jangan install package baru** di luar yang sudah disebut di ARCHITECTURE.md tanpa mencatat alasannya di TASKS.md dulu.
-9. **Setiap kali sebuah task di TASKS.md selesai dan berjalan tanpa error**, update checkbox-nya jadi `[x]` sebelum lanjut ke task berikutnya.
+1. **TypeScript strict** — tidak boleh ada `any` tanpa alasan jelas yang dikomentari. Perhatikan `verbatimModuleSyntax`: import type harus pakai `import type`.
+2. **Semua teks yang tampil di halaman publik harus berasal dari database**, bukan hardcode di komponen. Kecuali label UI statis (misal tombol "Kirim", "Simpan"). (Kondisi saat ini: Home masih hardcode — lihat `CONTENT-DATA-MAPPING.md`; jangan menambah hardcode baru.)
+3. **Setiap Server Action yang mengubah data (create/update/delete) HARUS dilindungi autentikasi + otorisasi** — cek session Better Auth lalu `verifyPermission` dari `services/admin/security.ts`. Tidak ada mutasi publik tanpa proteksi.
+4. **Validasi input di server**, jangan percaya validasi client saja. Gunakan schema Zod di `src/schemas`.
+5. **Upload gambar** lewat `uploadImage` (`services/public/uploads.ts`) — validasi tipe & ukuran di server sebelum kompresi dan kirim ke ImageKit.
+6. **Komponen React**: functional component + TypeScript. Ikuti arsitektur di `src/components/README.md`: primitif di `ui/`, reusable di `Common/`, komposit di `Mixins/`, section halaman di `app/(root)/_components/`.
+7. **Penamaan file**: kebab-case untuk primitif ui, PascalCase untuk komponen fitur; nama komponen React PascalCase.
+8. **Jangan install package baru** di luar yang sudah ada di `package.json` tanpa mencatat alasannya di `ONLY_ME.md` dulu.
+9. **Selesai = terverifikasi** — lihat Definition of Done di bawah.
 10. Tulis komentar dalam Bahasa Indonesia atau Inggris konsisten (pilih salah satu di awal, jangan campur dalam satu file).
 
 ## 6. Environment Variables yang Dibutuhkan
 
-Buat file `.env.local` (JANGAN pernah commit file ini ke git):
+Buat file `.env` (JANGAN pernah commit file ini ke git) — referensi lengkap di `.env.example`:
 
 ```
-DATABASE_URL=              # connection string PostgreSQL (Neon/Supabase)
-NEXTAUTH_SECRET=            # random string, generate dengan `openssl rand -base64 32`
-NEXTAUTH_URL=http://localhost:3000
-ADMIN_EMAIL=                # email login admin awal (seed)
-ADMIN_PASSWORD=             # password login admin awal (seed) — akan di-hash, bukan plaintext
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+DATABASE_URL=             # PostgreSQL (lokal / Supabase pooler)
+DIRECT_URL=               # session-mode pooler untuk prisma migrate
+BETTER_AUTH_SECRET=       # secret Better Auth
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_SEO_*=        # metadata SEO (title, description, social, dll)
+IMAGEKIT_URL=             # endpoint ImageKit
+IMAGEKIT_PRIVATE_KEY=     # private key (server-only!)
+IMAGEKIT_PUBLIC_KEY=
+SMTP_HOST=                # kredensial SMTP untuk EmailQueue
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
 ```
 
-Pastikan `.env.local` masuk `.gitignore`. Sediakan `.env.example` (tanpa nilai asli) untuk referensi.
+Pastikan `.env` masuk `.gitignore`.
 
-## 7. Definition of Done (untuk SETIAP task, bukan hanya project akhir)
+## 7. Definition of Done (untuk SETIAP task)
 
 Sebuah task dianggap selesai HANYA jika:
 
 - [ ] Kode berjalan tanpa error di `npm run dev`
-- [ ] Tidak ada error di `npm run typecheck`
-- [ ] Tidak ada error di `npm run lint`
+- [ ] Tidak ada error BARU di `npm run typecheck` (baseline saat ini masih punya known issues — daftar di `ONLY_ME.md`; jangan menambah error baru)
+- [ ] Tidak ada error di `npm run lint` untuk file yang disentuh
 - [ ] Fitur sudah dicoba manual minimal 1x sesuai skenario di PRD.md
-- [ ] Jika mengubah schema database, migrasi sudah dijalankan (`prisma migrate dev`) dan berhasil
-- [ ] Checkbox terkait di `TASKS.md` sudah diupdate
+- [ ] Jika mengubah schema database, migrasi sudah dijalankan (`npx prisma migrate dev`) dan `npx prisma generate` berhasil
+- [ ] Jika ada known issue yang selesai diperbaiki, update statusnya di `ONLY_ME.md`
 
 ## 8. Larangan Keras
 
-- ❌ Jangan menyimpan file upload di local filesystem server (akan hilang saat deploy ulang di Vercel) — WAJIB pakai Cloudinary.
+- ❌ Jangan menyimpan file upload di local filesystem server (akan hilang saat deploy ulang di Vercel) — WAJIB lewat ImageKit.
 - ❌ Jangan hardcode credential/API key di kode. Selalu lewat `process.env`.
 - ❌ Jangan membuat fitur di luar scope `PRD.md` bagian "Out of Scope" tanpa persetujuan eksplisit dari user.
-- ❌ Jangan skip validasi auth di route/admin API dengan alasan "biar cepat testing dulu".
+- ❌ Jangan skip validasi auth/permission di server action dengan alasan "biar cepat testing dulu".
 - ❌ Jangan generate desain/komponen yang bertentangan dengan `DESIGN.md`.
+- ❌ Jangan menghidupkan kembali kode leftover sistem event lama (Sitivent) yang sudah dibersihkan 2026-08-19.
 
 ## 9. Kalau Ragu
 
-Jika instruksi di `TASKS.md` ambigu atau bertabrakan dengan `PRD.md`/`ARCHITECTURE.md`, **berhenti dan tanyakan ke user**, jangan mengasumsikan sendiri lalu lanjut coding.
+Jika instruksi ambigu atau bertabrakan antara `PRD.md`/`ARCHITECTURE.md`/`ONLY_ME.md`, **berhenti dan tanyakan ke user**, jangan mengasumsikan sendiri lalu lanjut coding.
