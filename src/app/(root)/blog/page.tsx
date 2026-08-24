@@ -1,7 +1,7 @@
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { BlogHero } from '@/app/(root)/_components/BlogHero';
-import { BlogList } from '@/app/(root)/_components/BlogList';
+import { BlogHero } from '@/app/(root)/_components/blog/BlogHero';
+import { BlogList } from '@/app/(root)/_components/blog/BlogList';
 
 export const metadata = genPageMetadata({
   title: 'Blog & Kegiatan — Berita Terbaru PT. Pyxis Ultimate Solution',

@@ -1,9 +1,9 @@
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { CareerHero } from '@/app/(root)/_components/CareerHero';
-import { CareerCulture } from '@/app/(root)/_components/CareerCulture';
-import { CareerList } from '@/app/(root)/_components/CareerList';
-import HomeCTA from '@/app/(root)/_components/HomeCTA';
+import { CareerHero } from '@/app/(root)/_components/careers/CareerHero';
+import { CareerCulture } from '@/app/(root)/_components/careers/CareerCulture';
+import { CareerList } from '@/app/(root)/_components/careers/CareerList';
+import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
 
 export const metadata = genPageMetadata({
   title: 'Karir — Bergabung dengan PT. Pyxis Ultimate Solution',

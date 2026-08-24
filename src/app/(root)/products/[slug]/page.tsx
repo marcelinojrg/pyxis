@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { ProductDetailHero } from '@/app/(root)/_components/ProductDetailHero';
-import { ProductDetailBenefits } from '@/app/(root)/_components/ProductDetailBenefits';
-import { ProductDetailFeatures } from '@/app/(root)/_components/ProductDetailFeatures';
-import { ProductDetailCapabilities } from '@/app/(root)/_components/ProductDetailCapabilities';
-import HomeCTA from '@/app/(root)/_components/HomeCTA';
+import { ProductDetailHero } from '@/app/(root)/_components/products/ProductDetailHero';
+import { ProductDetailBenefits } from '@/app/(root)/_components/products/ProductDetailBenefits';
+import { ProductDetailFeatures } from '@/app/(root)/_components/products/ProductDetailFeatures';
+import { ProductDetailCapabilities } from '@/app/(root)/_components/products/ProductDetailCapabilities';
+import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
 
 export const revalidate = 60;
 

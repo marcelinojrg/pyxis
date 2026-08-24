@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { BlogDetailHeader } from '@/app/(root)/_components/BlogDetailHeader';
-import { BlogDetailContent } from '@/app/(root)/_components/BlogDetailContent';
+import { BlogDetailHeader } from '@/app/(root)/_components/blog/BlogDetailHeader';
+import { BlogDetailContent } from '@/app/(root)/_components/blog/BlogDetailContent';
 
 export const revalidate = 60;
 

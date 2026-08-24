@@ -1,8 +1,8 @@
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { ProductsHero } from '@/app/(root)/_components/ProductsHero';
-import { ProductsList } from '@/app/(root)/_components/ProductsList';
-import HomeCTA from '@/app/(root)/_components/HomeCTA';
+import { ProductsHero } from '@/app/(root)/_components/products/ProductsHero';
+import { ProductsList } from '@/app/(root)/_components/products/ProductsList';
+import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
 
 export const metadata = genPageMetadata({
   title: 'Produk — Solusi Software Hotel & Restoran Terintegrasi',

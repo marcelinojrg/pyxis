@@ -1,8 +1,8 @@
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
 import { Container } from '@/components/ui/container';
-import { ContactInfo } from '@/app/(root)/_components/ContactInfo';
-import { ContactForm } from '@/app/(root)/_components/ContactForm';
+import { ContactInfo } from '@/app/(root)/_components/contact/ContactInfo';
+import { ContactForm } from '@/app/(root)/_components/contact/ContactForm';
 
 export const metadata = genPageMetadata({
   title: 'Kontak — Hubungi Kami',

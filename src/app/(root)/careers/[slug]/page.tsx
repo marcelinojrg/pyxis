@@ -2,9 +2,9 @@ import { notFound } from 'next/navigation';
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
 import { Container } from '@/components/ui/container';
-import { CareerDetailHeader } from '@/app/(root)/_components/CareerDetailHeader';
-import { CareerDetailContent } from '@/app/(root)/_components/CareerDetailContent';
-import { CareerApplyForm } from '@/app/(root)/_components/CareerApplyForm';
+import { CareerDetailHeader } from '@/app/(root)/_components/careers/CareerDetailHeader';
+import { CareerDetailContent } from '@/app/(root)/_components/careers/CareerDetailContent';
+import { CareerApplyForm } from '@/app/(root)/_components/careers/CareerApplyForm';
 
 export const revalidate = 60;
 

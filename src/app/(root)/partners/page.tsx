@@ -1,8 +1,8 @@
 import { genPageMetadata } from '@/app/seo';
-import { PartnersHero } from '@/app/(root)/_components/PartnersHero';
-import { PartnersBenefits } from '@/app/(root)/_components/PartnersBenefits';
-import { PartnersInterfacing } from '@/app/(root)/_components/PartnersInterfacing';
-import HomeCTA from '@/app/(root)/_components/HomeCTA';
+import { PartnersHero } from '@/app/(root)/_components/partners/PartnersHero';
+import { PartnersBenefits } from '@/app/(root)/_components/partners/PartnersBenefits';
+import { PartnersInterfacing } from '@/app/(root)/_components/partners/PartnersInterfacing';
+import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
 
 export const metadata = genPageMetadata({
   title: 'Kemitraan — Integrasi & Ekosistem Mitra PT. Pyxis Ultimate Solution',

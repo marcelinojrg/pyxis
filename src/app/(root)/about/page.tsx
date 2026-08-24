@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { AboutHero } from '@/app/(root)/_components/AboutHero';
-import { AboutProfile } from '@/app/(root)/_components/AboutProfile';
-import { AboutVisionMission } from '@/app/(root)/_components/AboutVisionMission';
-import { AboutContact } from '@/app/(root)/_components/AboutContact';
-import AboutCTA from '@/app/(root)/_components/AboutCTA';
+import { AboutHero } from '@/app/(root)/_components/about/AboutHero';
+import { AboutProfile } from '@/app/(root)/_components/about/AboutProfile';
+import { AboutVisionMission } from '@/app/(root)/_components/about/AboutVisionMission';
+import { AboutContact } from '@/app/(root)/_components/about/AboutContact';
+import AboutCTA from '@/app/(root)/_components/about/AboutCTA';
 
 export const metadata: Metadata = {
   title: 'Tentang Kami — PT. Pyxis Ultimate Solution',

@@ -1,6 +1,6 @@
 import { genPageMetadata } from '@/app/seo';
 import { Container } from '@/components/ui/container';
-import { LegalContent } from '@/app/(root)/_components/LegalContent';
+import { LegalContent } from '@/app/(root)/_components/legal/LegalContent';
 
 export const metadata = genPageMetadata({
   title: 'Kebijakan Legal — PT. Pyxis Ultimate Solution',

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 // import { getHeroSection } from '@/lib/queries/home';
 import { prisma } from '@/lib/prisma';
-import HomeHero from './_components/HomeHero';
-import HomePartnersBar from './_components/HomePartnersBar';
-import HomeFeatures from './_components/HomeFeatures';
-import HomeAboutSummary from './_components/HomeAboutSummary';
-import HomeVisionMission from './_components/HomeVisionMission';
-import HomeEvolution from './_components/HomeEvolution';
-import HomeCTA from './_components/HomeCTA';
+import HomeHero from './_components/home/HomeHero';
+import HomePartnersBar from './_components/home/HomePartnersBar';
+import HomeFeatures from './_components/home/HomeFeatures';
+import HomeAboutSummary from './_components/home/HomeAboutSummary';
+import HomeVisionMission from './_components/home/HomeVisionMission';
+import HomeEvolution from './_components/home/HomeEvolution';
+import HomeCTA from './_components/home/HomeCTA';
 
 // export async function generateMetadata(): Promise<Metadata> {
 //   const seo = await prisma.pageSeo.findUnique({
