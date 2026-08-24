@@ -5,11 +5,7 @@ export const careerApplicationSchema = z.object({
   fullName: z.string().min(3, 'Nama lengkap minimal 3 karakter.'),
   email: z.string().email('Format email tidak valid.'),
   phone: z.string().min(8, 'Nomor telepon minimal 8 digit.'),
-  portfolioUrl: z
-    .string()
-    .url('URL portofolio/LinkedIn tidak valid.')
-    .optional()
-    .or(z.literal('')),
+  portfolioUrl: z.string().url('URL portofolio/LinkedIn tidak valid.').optional().or(z.literal('')),
   resumeUrl: z.string().default('#placeholder-resume'),
 });
 

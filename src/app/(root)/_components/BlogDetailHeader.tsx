@@ -9,11 +9,7 @@ export interface BlogDetailHeaderProps {
   authorName?: string | null;
 }
 
-export const BlogDetailHeader: FC<BlogDetailHeaderProps> = ({
-  title,
-  createdAt,
-  authorName,
-}) => {
+export const BlogDetailHeader: FC<BlogDetailHeaderProps> = ({ title, createdAt, authorName }) => {
   const formattedDate = new Intl.DateTimeFormat('id-ID', {
     day: 'numeric',
     month: 'long',

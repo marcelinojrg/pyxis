@@ -17,7 +17,9 @@ export const CareerDetailContent: FC<CareerDetailContentProps> = ({
         <h2 className="text-lg font-bold text-neutral-900 mb-3 border-b border-neutral-100 pb-2">
           Tentang Peran Ini
         </h2>
-        <p className="text-sm text-neutral-600 leading-relaxed whitespace-pre-line">{description}</p>
+        <p className="text-sm text-neutral-600 leading-relaxed whitespace-pre-line">
+          {description}
+        </p>
       </div>
 
       {responsibilities.length > 0 && (

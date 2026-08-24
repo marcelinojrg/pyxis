@@ -19,8 +19,8 @@ export default function LegalPage() {
             Informasi Legal & Kebijakan
           </h1>
           <p className="text-sm sm:text-base text-blue-100 max-w-2xl mx-auto">
-            Komitmen transparansi dan perlindungan hukum bagi pengguna produk dan pengunjung situs PT.
-            Pyxis Ultimate Solution.
+            Komitmen transparansi dan perlindungan hukum bagi pengguna produk dan pengunjung situs
+            PT. Pyxis Ultimate Solution.
           </p>
         </Container>
       </section>

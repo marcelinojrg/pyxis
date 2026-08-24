@@ -57,8 +57,8 @@ export const LegalContent: FC = () => {
                 </h3>
                 <p>
                   Kami mengumpulkan informasi pribadi yang Anda berikan secara langsung saat mengisi
-                  formulir kontak, formulir demo produk, atau pendaftaran akun layanan. Informasi ini
-                  mencakup nama, alamat email, nomor telepon, dan data nama properti Anda.
+                  formulir kontak, formulir demo produk, atau pendaftaran akun layanan. Informasi
+                  ini mencakup nama, alamat email, nomor telepon, dan data nama properti Anda.
                 </p>
                 <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
                   2. Penggunaan Informasi
@@ -68,9 +68,7 @@ export const LegalContent: FC = () => {
                   permintaan demo, meningkatkan pengalaman pengguna, serta mengirimkan pemberitahuan
                   penting terkait pembaruan sistem dan keamanan.
                 </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  3. Keamanan Data
-                </h3>
+                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">3. Keamanan Data</h3>
                 <p>
                   Kami menerapkan tindakan teknis dan organisasional yang ketat untuk melindungi
                   data pribadi Anda dari akses tidak sah, pengubahan, pengungkapan, atau
@@ -100,8 +98,8 @@ export const LegalContent: FC = () => {
                   2. Hak Kekayaan Intelektual
                 </h3>
                 <p>
-                  Seluruh hak cipta, merek dagang, desain, dan kode sumber dari Alcor PMS, Alcor POS,
-                  serta situs web ini adalah hak milik penuh dari PT. Pyxis Ultimate Solution.
+                  Seluruh hak cipta, merek dagang, desain, dan kode sumber dari Alcor PMS, Alcor
+                  POS, serta situs web ini adalah hak milik penuh dari PT. Pyxis Ultimate Solution.
                 </p>
                 <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
                   3. Batasan Tanggung Jawab
@@ -122,21 +120,18 @@ export const LegalContent: FC = () => {
                   Situs web kami menggunakan cookie dan teknologi pelacakan serupa untuk
                   meningkatkan kenyamanan penelusuran Anda.
                 </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  1. Apa itu Cookie?
-                </h3>
+                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">1. Apa itu Cookie?</h3>
                 <p>
-                  Cookie adalah file teks kecil yang disimpan di perangkat Anda saat Anda mengunjungi
-                  situs web kami. Cookie membantu kami mengingat preferensi Anda dan menganalisis
-                  lalu lintas situs.
+                  Cookie adalah file teks kecil yang disimpan di perangkat Anda saat Anda
+                  mengunjungi situs web kami. Cookie membantu kami mengingat preferensi Anda dan
+                  menganalisis lalu lintas situs.
                 </p>
                 <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
                   2. Jenis Cookie yang Kami Gunakan
                 </h3>
                 <p>
                   Kami menggunakan Cookie Esensial (untuk fungsi keamanan dan navigasi dasar) serta
-                  Cookie Analitis (untuk memahami cara pengunjung berinteraksi dengan halaman
-                  kami).
+                  Cookie Analitis (untuk memahami cara pengunjung berinteraksi dengan halaman kami).
                 </p>
                 <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
                   3. Pengaturan Cookie

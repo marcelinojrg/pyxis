@@ -12,17 +12,20 @@ const CULTURES = [
   {
     icon: Users,
     title: 'Kolaborasi Terbuka',
-    description: 'Budaya kerja yang saling mendukung, terbuka akan ide-ide kreatif, dan inklusif bagi semua.',
+    description:
+      'Budaya kerja yang saling mendukung, terbuka akan ide-ide kreatif, dan inklusif bagi semua.',
   },
   {
     icon: ShieldCheck,
     title: 'Kualitas & Integritas',
-    description: 'Menjaga standar tertinggi dalam penulisan kode, keamanan data, dan layanan pelanggan.',
+    description:
+      'Menjaga standar tertinggi dalam penulisan kode, keamanan data, dan layanan pelanggan.',
   },
   {
     icon: HeartHandshake,
     title: 'Keseimbangan Kerja',
-    description: 'Fleksibilitas kerja dan dukungan penuh untuk pertumbuhan karir dan kesejahteraan tim.',
+    description:
+      'Fleksibilitas kerja dan dukungan penuh untuk pertumbuhan karir dan kesejahteraan tim.',
   },
 ];
 
@@ -50,7 +53,9 @@ export const CareerCulture: FC = () => {
                   <Icon className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-neutral-900 mb-2">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">{item.description}</p>
+                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                  {item.description}
+                </p>
               </div>
             );
           })}

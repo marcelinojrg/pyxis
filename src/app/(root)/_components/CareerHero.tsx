@@ -13,8 +13,8 @@ export const CareerHero: FC = () => {
             Tumbuh dan Berkarya Bersama Pyxis
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">
-            Bergabunglah dengan tim talenta hebat dalam menciptakan solusi software hospitality
-            masa depan Indonesia.
+            Bergabunglah dengan tim talenta hebat dalam menciptakan solusi software hospitality masa
+            depan Indonesia.
           </p>
         </div>
       </Container>

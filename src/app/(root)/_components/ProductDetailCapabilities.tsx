@@ -36,7 +36,9 @@ export const ProductDetailCapabilities: FC<ProductDetailCapabilitiesProps> = ({ 
                     {cap.title}
                   </h2>
                   {cap.description && (
-                    <p className="text-sm text-neutral-600 leading-relaxed mb-6">{cap.description}</p>
+                    <p className="text-sm text-neutral-600 leading-relaxed mb-6">
+                      {cap.description}
+                    </p>
                   )}
 
                   <div className="space-y-4">
