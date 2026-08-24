@@ -67,7 +67,7 @@ export const ProductsList: FC<ProductsListProps> = ({ products }) => {
                 </div>
                 <div>
                   <Link
-                    href={`/contact?product=${product.slug}`}
+                    href={`/products/${product.slug}`}
                     className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                   >
                     Pelajari Selengkapnya
