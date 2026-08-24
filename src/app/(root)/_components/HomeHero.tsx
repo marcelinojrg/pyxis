@@ -1,4 +1,5 @@
 import type { Route } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 // import { Container } from '@/components/ui/container';
 
@@ -48,14 +49,33 @@ export default function HomeHero({ data }: HomeHeroProps) {
             </div>
           </div>
 
-          {/* Right Visual Empty Cards prepared for photos per reference */}
+          {/* Right Visual Cards */}
           <div className="lg:col-span-6 relative flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-md h-72 sm:h-80">
-              {/* Back Card (Top Left) */}
-              <div className="absolute top-0 left-0 w-[68%] h-48 sm:h-52 rounded-2xl bg-white/95 shadow-xl border border-white/40 backdrop-blur-sm" />
+            <div className="relative w-full max-w-lg h-72 sm:h-80 md:h-88">
+              {/* Back Card (Top Right) */}
+              <div className="absolute top-0 right-0 w-[68%] h-48 sm:h-56 rounded-2xl bg-white/95 shadow-xl backdrop-blur-sm overflow-hidden">
+                <Image
+                  src="/assets/img/home-hero-pyxis.webp"
+                  alt="Pyxis Ultimate Solution"
+                  fill
+                  sizes="(max-width: 1024px) 70vw, 28vw"
+                  className="object-cover"
+                  quality={75}
+                />
+              </div>
 
-              {/* Front Card (Bottom Right Overlapping) */}
-              <div className="absolute bottom-0 right-0 w-[78%] h-52 sm:h-56 rounded-2xl bg-white shadow-2xl border border-white" />
+              {/* Front Card (Bottom Left Overlapping) */}
+              <div className="absolute bottom-4 sm:bottom-6 left-0 z-10 w-[62%] h-44 sm:h-52 rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-black/5 overflow-hidden">
+                <Image
+                  src="/assets/img/home-hero-ilustrasi.jpg"
+                  alt="Ilustrasi platform Pyxis"
+                  fill
+                  sizes="(max-width: 1024px) 70vw, 26vw"
+                  className="object-cover"
+                  quality={75}
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>
