@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: CareerDetailPageProps) {
   return genPageMetadata({
     title: `${career.title} — Karir PT. Pyxis Ultimate Solution`,
     description: career.description.slice(0, 160),
+    path: `/careers/${career.slug}`,
   });
 }
 
@@ -35,7 +36,7 @@ export default async function CareerDetailPage({ params }: CareerDetailPageProps
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-50/50 pb-20">
+    <div className="flex flex-col min-h-screen bg-[#f7f8fa] pb-16">
       <CareerDetailHeader
         title={career.title}
         department={career.department}
@@ -43,7 +44,7 @@ export default async function CareerDetailPage({ params }: CareerDetailPageProps
         type={career.type}
       />
 
-      <Container className="py-12 md:py-16">
+      <Container className="py-8 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <CareerDetailContent
@@ -54,6 +55,18 @@ export default async function CareerDetailPage({ params }: CareerDetailPageProps
           </div>
           <div className="lg:col-span-1">
             <CareerApplyForm careerId={career.id} careerTitle={career.title} />
+            <div className="mt-8 rounded-xl bg-[#dce5ff] p-7 text-neutral-800">
+              <span className="text-3xl font-bold text-[#07358b]">“</span>
+              <p className="mt-2 text-sm italic leading-relaxed">
+                Bekerja di Pyxis berarti menjadi bagian dari tim yang peduli pada kualitas dan
+                inovasi. Kami membangun solusi yang membantu bisnis hospitality berkembang.
+              </p>
+              <p className="mt-5 text-xs font-bold">
+                Siti Rahmawati
+                <br />
+                <span className="font-normal">CTO, Pyxis</span>
+              </p>
+            </div>
           </div>
         </div>
       </Container>

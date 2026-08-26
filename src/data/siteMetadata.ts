@@ -6,7 +6,7 @@ export const siteMetadata = {
     'Sejak 2023, kami telah membantu berbagai bisnis mewujudkan visi digital mereka. Dengan dedikasi tinggi dan keahlian rekayasa perangkat lunak modern, kami menciptakan website premium, aplikasi kustom, dan solusi IT bisnis yang andal dan tepat sasaran.',
   language: process.env.NEXT_PUBLIC_SEO_LANGUAGE || 'id-ID',
   siteUrl: process.env.NEXT_PUBLIC_SEO_SITE_URL || '',
-  socialBanner: '/assets/img/seo_twitter-card.jpg',
+  socialBanner: '/assets/img/home-hero-pyxis.webp',
   email: process.env.NEXT_PUBLIC_SEO_EMAIL || '',
   instagram: process.env.NEXT_PUBLIC_SEO_INSTAGRAM || '',
   instagram_atomic: process.env.NEXT_PUBLIC_SEO_INSTAGRAM_ATOMIC || '',

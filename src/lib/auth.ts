@@ -4,6 +4,16 @@ import { admin } from 'better-auth/plugins';
 import { prisma } from './prisma';
 
 export const auth = betterAuth({
+  trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'],
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 20,
+    customRules: {
+      '/sign-in/email': { window: 60, max: 5 },
+      '/request-password-reset': { window: 60, max: 3 },
+    },
+  },
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),

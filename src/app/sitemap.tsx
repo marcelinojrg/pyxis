@@ -1,26 +1,52 @@
 import type { MetadataRoute } from 'next';
 
 import { siteMetadata } from '@/data/siteMetadata';
-import { getAppRoutes } from '@/lib/sitemap';
+import { prisma } from '@/lib/prisma';
 
-/** Routes yang dikecualikan dari sitemap (private/auth pages) */
-const EXCLUDED_ROUTES = ['/login', '/register'];
+const STATIC_ROUTES = [
+  '/',
+  '/about',
+  '/products',
+  '/partners',
+  '/careers',
+  '/blog',
+  '/contact',
+  '/legal',
+];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = siteMetadata.siteUrl || 'http://localhost:3000';
+  const staticRoutes: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
+    url: `${siteUrl}${route === '/' ? '' : route}`,
+  }));
 
-  const routes = getAppRoutes()
-    .filter((route) => {
-      // Exclude exact matches (e.g. /login, /register)
-      if (EXCLUDED_ROUTES.includes(route)) return false;
-      // Exclude /admin and all sub-paths
-      if (route === '/admin' || route.startsWith('/admin/')) return false;
-      return true;
-    })
-    .map((route) => ({
-      url: `${siteUrl}${route === '/' ? '' : route}`,
-      lastModified: new Date().toISOString().split('T')[0],
-    }));
+  try {
+    const [products, articles, careers] = await Promise.all([
+      prisma.product.findMany({ select: { slug: true, updatedAt: true } }),
+      prisma.article.findMany({ select: { slug: true, id: true, updatedAt: true } }),
+      prisma.career.findMany({
+        where: { isActive: true },
+        select: { slug: true, updatedAt: true },
+      }),
+    ]);
 
-  return [...routes];
+    return [
+      ...staticRoutes,
+      ...products.map((product) => ({
+        url: `${siteUrl}/products/${product.slug}`,
+        lastModified: product.updatedAt,
+      })),
+      ...articles.map((article) => ({
+        url: `${siteUrl}/blog/${article.slug || article.id}`,
+        lastModified: article.updatedAt,
+      })),
+      ...careers.map((career) => ({
+        url: `${siteUrl}/careers/${career.slug}`,
+        lastModified: career.updatedAt,
+      })),
+    ];
+  } catch (error) {
+    console.error('[sitemap] Failed to load dynamic routes:', error);
+    return staticRoutes;
+  }
 }

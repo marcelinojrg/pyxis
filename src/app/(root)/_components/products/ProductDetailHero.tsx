@@ -18,40 +18,34 @@ export const ProductDetailHero: FC<ProductDetailHeroProps> = ({
   slug,
 }) => {
   return (
-    <section className="relative pt-36 pb-20 md:pt-48 md:pb-28 bg-gradient-to-r from-[#001A53] to-[#004AEB] text-white overflow-hidden">
+    <section className="bg-[#f7f8fa] pt-28 pb-16 md:pt-36 md:pb-20">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 text-left">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 text-xs font-semibold uppercase tracking-wider">
-              Produk Pyxis Ultimate
-            </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading text-white leading-tight">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
+          <div className="space-y-5 text-left">
+            <h1 className="max-w-xl text-4xl sm:text-5xl md:text-6xl font-bold font-heading text-[#07358b] leading-[1.05]">
               {name}
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-blue-100 leading-relaxed">
+            <p className="max-w-xl text-sm sm:text-base text-neutral-600 leading-relaxed">
               {description ||
                 'Solusi teknologi terintegrasi untuk meningkatkan performa bisnis hospitality Anda.'}
             </p>
-            <div className="pt-2 flex flex-wrap gap-4">
-              <Link
-                href={`/contact?product=${slug}`}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-neutral-950 font-bold text-sm shadow-lg transition-all active:scale-95"
-              >
-                Jadwalkan Demo
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
           </div>
 
-          <div className="relative aspect-video lg:aspect-4/3 rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-900/50">
+          <Link
+            href={`/contact?product=${slug}`}
+            className="relative aspect-video rounded-xl overflow-hidden border border-neutral-200 shadow-xl bg-white block group"
+          >
             {image ? (
               <Image src={image} alt={name} fill className="object-cover" priority />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-900 to-indigo-950 flex items-center justify-center text-blue-200 font-bold text-xl">
-                {name} Visual
+              <div className="w-full h-full bg-neutral-400 flex items-center justify-center text-white font-bold text-xl">
+                Lihat Produk
               </div>
             )}
-          </div>
+            <span className="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-lg bg-[#f9a51a] px-4 py-2 text-xs font-bold text-neutral-950 opacity-0 group-hover:opacity-100 transition-opacity">
+              Jadwalkan Demo <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
         </div>
       </Container>
     </section>

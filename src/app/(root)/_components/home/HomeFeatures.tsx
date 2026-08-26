@@ -20,7 +20,7 @@ export default function HomeFeatures() {
           {/* Row 1: Reservasi Lebih Mudah (Left - Col 7) + Profil Tamu Spesifik (Right - Col 5) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Card 1: Reservasi Lebih Mudah */}
-            <div className="lg:col-span-7 bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-sm flex flex-col justify-between space-y-6">
+            <div className="lg:col-span-7 bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-sm">
               <div className="space-y-4">
                 <div className="w-11 h-11 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center shadow-sm">
                   <Calendar className="w-5 h-5" />
@@ -33,8 +33,6 @@ export default function HomeFeatures() {
                   overbooking dan tingkatkan okupansi dengan manajemen inventaris real-time.
                 </p>
               </div>
-              {/* Clean Empty Photo Container */}
-              <div className="w-full h-44 sm:h-52 rounded-xl bg-[#F0F4FA] border border-neutral-200/70" />
             </div>
 
             {/* Card 2: Profil Tamu Spesifik */}
@@ -80,7 +78,7 @@ export default function HomeFeatures() {
             </div>
 
             {/* Card 4: Integrasi Channel Manager */}
-            <div className="lg:col-span-8 bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="lg:col-span-8 bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-sm">
               <div className="space-y-4 flex-1">
                 <div className="w-11 h-11 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center shadow-sm">
                   <RefreshCw className="w-5 h-5" />
@@ -93,8 +91,6 @@ export default function HomeFeatures() {
                   Perbarui tarif dan ketersediaan secara otomatis di semua platform.
                 </p>
               </div>
-              {/* Clean Empty Photo Container on Right */}
-              <div className="w-full md:w-64 h-36 md:h-44 rounded-xl bg-[#F0F4FA] border border-neutral-200/70 shrink-0" />
             </div>
           </div>
         </div>

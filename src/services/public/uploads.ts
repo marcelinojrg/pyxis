@@ -1,14 +1,12 @@
 'use server';
 
-import { writeFile, mkdir, unlink, stat, rename, rm } from 'node:fs/promises';
-import { join } from 'node:path';
-import { existsSync } from 'node:fs';
+import { verifyPermission } from '@/services/admin/security';
 import sharp from 'sharp';
-import { prisma } from '@/lib/prisma';
-import { slugify } from '@/lib/slugify';
 
 /** Timeout (ms) untuk seluruh proses upload & kompresi sharp */
 const UPLOAD_TIMEOUT_MS = 30_000;
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
 
 /**
  * Wrapper Promise dengan timeout agar proses tidak hang selamanya.
@@ -30,29 +28,60 @@ export async function uploadImage(
   file: File,
   subDir: string = ''
 ): Promise<{ success: boolean; url?: string; error?: string }> {
+  if (!(await verifyPermission('admin.access'))) {
+    return { success: false, error: 'Akses ditolak.' };
+  }
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    return { success: false, error: 'Format gambar harus JPEG, PNG, WebP, atau AVIF.' };
+  }
+  if (file.size === 0 || file.size > MAX_IMAGE_SIZE_BYTES) {
+    return { success: false, error: 'Ukuran gambar harus antara 1 byte dan 10 MB.' };
+  }
+  if (!/^[a-zA-Z0-9/_-]{0,120}$/.test(subDir) || subDir.split('/').includes('..')) {
+    return { success: false, error: 'Folder upload tidak valid.' };
+  }
+
   const startTime = Date.now();
   console.log(
     `[uploadImage] ▶ Mulai upload ke ImageKit: "${file.name}" (${(file.size / 1024).toFixed(1)} KB) → subDir: "${subDir || '(root)'}"`
   );
 
   try {
+    const imageBuffer = Buffer.from(await file.arrayBuffer());
+    const optimizedImage = await withTimeout(
+      sharp(imageBuffer).rotate().webp({ quality: 82 }).toBuffer(),
+      UPLOAD_TIMEOUT_MS,
+      'Validasi gambar'
+    );
+    const fileName = `${file.name.replace(/\.[^.]+$/, '') || 'image'}.webp`;
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('fileName', file.name);
+    formData.append(
+      'file',
+      new Blob([Uint8Array.from(optimizedImage)], { type: 'image/webp' }),
+      fileName
+    );
+    formData.append('fileName', fileName);
     if (subDir) {
       formData.append('folder', subDir);
     }
 
-    const privateKey = process.env.IMAGEKIT_PRIVATE_KEY || '';
+    const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+    if (!privateKey) {
+      throw new Error('IMAGEKIT_PRIVATE_KEY belum dikonfigurasi.');
+    }
     const authHeader = 'Basic ' + Buffer.from(privateKey + ':').toString('base64');
 
-    const res = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
-      method: 'POST',
-      headers: {
-        Authorization: authHeader,
-      },
-      body: formData,
-    });
+    const res = await withTimeout(
+      fetch('https://upload.imagekit.io/api/v1/files/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: authHeader,
+        },
+        body: formData,
+      }),
+      UPLOAD_TIMEOUT_MS,
+      'Upload gambar'
+    );
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -75,132 +104,61 @@ export async function uploadImage(
 }
 
 /**
- * Hapus Gambar dari Filesystem atau ImageKit
+ * Hapus gambar dari ImageKit.
  */
 export async function deleteImage(url: string): Promise<{ success: boolean; error?: string }> {
+  if (!(await verifyPermission('admin.access'))) {
+    return { success: false, error: 'Akses ditolak.' };
+  }
+
   try {
     if (!url) return { success: true };
 
-    // Hapus file lokal lama jika ada
-    if (url.startsWith('/uploads/')) {
-      const filename = url.replace('/uploads/', '');
-      const filePath = join(process.cwd(), 'public', 'uploads', filename);
-      if (existsSync(filePath)) {
-        await unlink(filePath);
-      }
-      return { success: true };
+    const parsedUrl = new URL(url);
+    if (parsedUrl.protocol !== 'https:' || parsedUrl.hostname !== 'ik.imagekit.io') {
+      return { success: false, error: 'URL gambar tidak valid.' };
     }
 
-    // Hapus dari ImageKit jika berupa ImageKit URL
-    if (url.includes('ik.imagekit.io')) {
-      const parsedUrl = new URL(url);
-      const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    if (pathParts.length < 2) return { success: false, error: 'URL gambar tidak valid.' };
 
-      if (pathParts.length > 1) {
-        // Abaikan ID imagekit (part pertama) dan filter out transform (tr:)
-        const relativeParts = pathParts.slice(1).filter((part) => !part.startsWith('tr:'));
-        const imageKitPath = '/' + relativeParts.join('/');
-        const privateKey = process.env.IMAGEKIT_PRIVATE_KEY || '';
-        const authHeader = 'Basic ' + Buffer.from(privateKey + ':').toString('base64');
-
-        // Cari fileId berdasarkan path
-        const query = `path="${imageKitPath}"`;
-        console.log(`[deleteImage] Mencari file dengan query: ${query}`);
-        const searchRes = await fetch(
-          `https://api.imagekit.io/v1/files?searchQuery=${encodeURIComponent(query)}`,
-          {
-            headers: {
-              Authorization: authHeader,
-            },
-          }
-        );
-
-        if (searchRes.ok) {
-          const files = await searchRes.json();
-          console.log(`[deleteImage] Hasil pencarian files:`, JSON.stringify(files));
-          if (Array.isArray(files) && files.length > 0) {
-            const fileId = files[0].fileId;
-            console.log(`[deleteImage] Menghapus fileId: ${fileId}`);
-            const deleteRes = await fetch(`https://api.imagekit.io/v1/files/${fileId}`, {
-              method: 'DELETE',
-              headers: {
-                Authorization: authHeader,
-              },
-            });
-
-            if (deleteRes.ok) {
-              console.log(`[deleteImage] Berhasil menghapus file dari ImageKit: ${fileId}`);
-            } else {
-              const errText = await deleteRes.text();
-              console.error(
-                `[deleteImage] Gagal menghapus file dari ImageKit: ${fileId}. Response: ${errText}`
-              );
-            }
-          } else {
-            console.warn(
-              `[deleteImage] File tidak ditemukan di ImageKit dengan path: ${imageKitPath}`
-            );
-          }
-        } else {
-          const errText = await searchRes.text();
-          console.error(
-            `[deleteImage] Gagal mencari file. Status: ${searchRes.status}, Response: ${errText}`
-          );
+    const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+    if (!privateKey) throw new Error('IMAGEKIT_PRIVATE_KEY belum dikonfigurasi.');
+    const authHeader = 'Basic ' + Buffer.from(privateKey + ':').toString('base64');
+    const imageKitPath =
+      '/' +
+      pathParts
+        .slice(1)
+        .filter((part) => !part.startsWith('tr:'))
+        .join('/');
+    const searchRes = await withTimeout(
+      fetch(
+        `https://api.imagekit.io/v1/files?searchQuery=${encodeURIComponent(`path="${imageKitPath}"`)}`,
+        {
+          headers: { Authorization: authHeader },
         }
-      }
-    }
+      ),
+      UPLOAD_TIMEOUT_MS,
+      'Pencarian gambar'
+    );
+
+    if (!searchRes.ok) throw new Error(`Pencarian ImageKit gagal (${searchRes.status}).`);
+    const files = (await searchRes.json()) as { fileId: string }[];
+    if (!files[0]) return { success: true };
+
+    const deleteRes = await withTimeout(
+      fetch(`https://api.imagekit.io/v1/files/${files[0].fileId}`, {
+        method: 'DELETE',
+        headers: { Authorization: authHeader },
+      }),
+      UPLOAD_TIMEOUT_MS,
+      'Penghapusan gambar'
+    );
+    if (!deleteRes.ok) throw new Error(`Penghapusan ImageKit gagal (${deleteRes.status}).`);
 
     return { success: true };
   } catch (error) {
     console.error('Delete Image Error:', error);
     return { success: false, error: 'Gagal menghapus file gambar.' };
-  }
-}
-
-/**
- * Ganti Nama Direktori di public/uploads
- */
-export async function renameUploadDir(
-  oldSubDir: string,
-  newSubDir: string
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    const oldPath = join(process.cwd(), 'public', 'uploads', oldSubDir);
-    const newPath = join(process.cwd(), 'public', 'uploads', newSubDir);
-
-    if (existsSync(oldPath)) {
-      // Pastikan parent directory tujuan ada
-      const newParent = join(newPath, '..');
-      if (!existsSync(newParent)) {
-        await mkdir(newParent, { recursive: true });
-      }
-
-      await rename(oldPath, newPath);
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Rename Upload Dir Error:', error);
-    return { success: false, error: 'Gagal mengganti nama direktori penyimpanan.' };
-  }
-}
-
-/**
- * Hapus Direktori di public/uploads secara rekursif
- */
-export async function deleteUploadDir(
-  subDir: string
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    const dirPath = join(process.cwd(), 'public', 'uploads', subDir);
-
-    if (existsSync(dirPath)) {
-      await rm(dirPath, { recursive: true, force: true });
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Delete Upload Dir Error:', error);
-    return { success: false, error: 'Gagal menghapus direktori penyimpanan.' };
   }
 }

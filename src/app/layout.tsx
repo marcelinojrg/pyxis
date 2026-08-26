@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Inter } from 'next/font/google';
+import { headers } from 'next/headers';
 
 import './globals.css';
 import { cn } from '@/lib/utils';
@@ -29,6 +30,9 @@ export const metadata: Metadata = {
     template: `%s`,
   },
   description: siteMetadata.description,
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: siteMetadata.title,
     description: siteMetadata.description,
@@ -57,19 +61,36 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+const organizationJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteMetadata.title,
+  url: siteMetadata.siteUrl || undefined,
+  email: siteMetadata.email || undefined,
+  telephone: siteMetadata.phone || undefined,
+}).replace(/</g, '\\u003c');
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const nonce = (await headers()).get('x-nonce');
+
   return (
     <html
-      lang="en"
+      lang="id"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
       className={cn('font-sans', inter.variable)}
     >
       <head>
+        <script
+          type="application/ld+json"
+          nonce={nonce || undefined}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: organizationJsonLd }}
+        />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://ik.imagekit.io" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />

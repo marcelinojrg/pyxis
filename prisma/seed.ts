@@ -86,13 +86,14 @@ async function main() {
   if (existingAccount) {
     await prisma.account.update({
       where: { id: existingAccount.id },
-      data: { password },
+      data: { password, issuer: 'local:credential' },
     });
   } else {
     await prisma.account.create({
       data: {
         userId: admin.id,
         providerId: 'credential',
+        issuer: 'local:credential',
         accountId: admin.id,
         password,
       },

@@ -8,6 +8,7 @@ export const metadata = genPageMetadata({
   title: 'Kemitraan — Integrasi & Ekosistem Mitra PT. Pyxis Ultimate Solution',
   description:
     'Bergabung dalam ekosistem kemitraan PT. Pyxis Ultimate Solution: integrasi channel manager, keylock system, POS, hardware, dan teknologi IoT perhotelan.',
+  path: '/partners',
 });
 
 export default function PartnersPage() {
