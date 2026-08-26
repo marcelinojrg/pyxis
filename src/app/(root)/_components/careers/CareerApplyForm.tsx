@@ -50,12 +50,8 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
   };
 
   return (
-    <div className="bg-white p-6 sm:p-8 rounded-2xl border border-neutral-200/80 shadow-xs sticky top-28">
-      <h3 className="text-lg font-bold text-neutral-900 mb-1">Kirim Lamaran Pekerjaan</h3>
-      <p className="text-xs text-neutral-500 mb-6">
-        Lengkapi formulir di bawah ini untuk melamar posisi{' '}
-        <span className="font-semibold text-neutral-800">{careerTitle}</span>.
-      </p>
+    <div className="rounded-xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-sm">
+      <h3 className="text-lg font-bold text-neutral-900 mb-6">Formulir Lamaran</h3>
 
       {status && (
         <div
@@ -87,7 +83,7 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="John Doe"
-            className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
           />
         </div>
 
@@ -103,7 +99,7 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="johndoe@example.com"
-            className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
           />
         </div>
 
@@ -119,7 +115,7 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="08123456789"
-            className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
           />
         </div>
 
@@ -137,14 +133,14 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
             value={portfolioUrl}
             onChange={(e) => setPortfolioUrl(e.target.value)}
             placeholder="https://linkedin.com/in/username"
-            className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+          className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#07358b] px-4 py-3 text-xs font-bold text-white transition-colors hover:bg-[#052769] disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Send className="w-4 h-4" />
           <span>{loading ? 'Mengirimkan...' : 'Kirim Lamaran'}</span>

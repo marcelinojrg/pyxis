@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
     title: `${product.name} — Pyxis Ultimate Solution`,
     description: product.description || undefined,
     image: product.image || undefined,
+    path: `/products/${product.slug}`,
   });
 }
 

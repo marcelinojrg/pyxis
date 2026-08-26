@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: 'Tentang Kami — PT. Pyxis Ultimate Solution',
   description:
     'PT PYXIS Ultimate Solution menyediakan infrastruktur digital inovatif untuk membantu bisnis Anda tetap unggul.',
+  alternates: {
+    canonical: '/about',
+  },
   openGraph: {
     title: 'Tentang Kami — PT. Pyxis Ultimate Solution',
     description:

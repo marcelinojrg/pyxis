@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface BlogDetailHeaderProps {
@@ -9,7 +9,7 @@ export interface BlogDetailHeaderProps {
   authorName?: string | null;
 }
 
-export const BlogDetailHeader: FC<BlogDetailHeaderProps> = ({ title, createdAt, authorName }) => {
+export const BlogDetailHeader: FC<BlogDetailHeaderProps> = ({ title, createdAt }) => {
   const formattedDate = new Intl.DateTimeFormat('id-ID', {
     day: 'numeric',
     month: 'long',
@@ -17,35 +17,23 @@ export const BlogDetailHeader: FC<BlogDetailHeaderProps> = ({ title, createdAt, 
   }).format(new Date(createdAt));
 
   return (
-    <section className="pt-32 pb-12 md:pt-40 md:pb-16 bg-gradient-to-r from-[#001A53] to-[#004AEB] text-white">
-      <Container>
-        <nav className="flex items-center gap-2 text-xs text-blue-200 mb-6">
-          <Link href="/" className="hover:text-white transition-colors">
-            Beranda
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-blue-300" />
-          <Link href="/blog" className="hover:text-white transition-colors">
-            Blog
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-blue-300" />
-          <span className="text-white font-medium truncate max-w-xs">{title}</span>
-        </nav>
-
+    <section className="bg-[#f7f8fa] pt-28 pb-5 md:pt-32 md:pb-8">
+      <Container className="max-w-5xl">
+        <Link
+          href="/blog"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-[#07358b] hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4" /> Kembali ke Blog
+        </Link>
         <div className="max-w-4xl">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-heading text-white leading-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading text-[#07358b] leading-tight mb-4">
             {title}
           </h1>
-          <div className="flex items-center gap-6 text-xs sm:text-sm text-blue-100">
+          <div className="flex items-center text-xs sm:text-sm text-neutral-500">
             <span className="inline-flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-blue-300" />
+              <Calendar className="w-4 h-4" />
               {formattedDate}
             </span>
-            {authorName && (
-              <span className="inline-flex items-center gap-2">
-                <User className="w-4 h-4 text-blue-300" />
-                {authorName}
-              </span>
-            )}
           </div>
         </div>
       </Container>

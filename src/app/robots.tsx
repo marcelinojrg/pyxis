@@ -6,10 +6,13 @@ export default function robots(): MetadataRoute.Robots {
   const siteUrl = siteMetadata.siteUrl || 'http://localhost:3000';
 
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-    },
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/admin/', '/login', '/register', '/api/'],
+      },
+    ],
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
   };

@@ -6,6 +6,7 @@ export const metadata = genPageMetadata({
   title: 'Kebijakan Legal — PT. Pyxis Ultimate Solution',
   description:
     'Informasi kebijakan privasi, syarat dan ketentuan penggunaan layanan, serta kebijakan cookie PT. Pyxis Ultimate Solution.',
+  path: '/legal',
 });
 
 export const revalidate = 60;

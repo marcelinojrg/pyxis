@@ -9,6 +9,7 @@ export const metadata = genPageMetadata({
   title: 'Karir — Bergabung dengan PT. Pyxis Ultimate Solution',
   description:
     'Jelajahi kesempatan karir di PT. Pyxis Ultimate Solution. Temukan posisi impian Anda di bidang software hospitality.',
+  path: '/careers',
 });
 
 export const revalidate = 60;
@@ -23,6 +24,7 @@ export default async function CareersPage() {
       location: true,
       type: true,
       department: true,
+      description: true,
       category: {
         select: { name: true },
       },

@@ -24,13 +24,9 @@ export default function HomeHero({ data }: HomeHeroProps) {
   return (
     <section className="relative pt-36 pb-24 md:pt-48 md:pb-32 min-h-[85vh] flex items-center bg-linear-to-b from-[#004AEB] to-[#001A53] text-white overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Text */}
           <div className="lg:col-span-6 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/25 text-white text-xs font-medium backdrop-blur-sm">
-              <span>Sistem Manajemen Properti #1</span>
-            </div>
-
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold font-heading text-white leading-[1.18] tracking-tight">
               {title}
             </h1>

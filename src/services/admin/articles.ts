@@ -86,6 +86,15 @@ export async function createArticle(values: ArticleValues): Promise<ArticleRespo
   const hasAccess = await verifyPermission('article.create');
   if (!hasAccess) return { success: false, error: 'Akses ditolak.' };
 
+  const parsedValues = articleSchema.safeParse(values);
+  if (!parsedValues.success) {
+    return {
+      success: false,
+      error: parsedValues.error.issues[0]?.message || 'Data artikel tidak valid.',
+    };
+  }
+  const data = parsedValues.data;
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -95,8 +104,8 @@ export async function createArticle(values: ArticleValues): Promise<ArticleRespo
 
   // Cari ID kategori dari nama kategori yang dikirim
   const categoryConnect: { id: string }[] = [];
-  if (values.categories && values.categories.length > 0) {
-    for (const cat of values.categories) {
+  if (data.categories.length > 0) {
+    for (const cat of data.categories) {
       const dbCat = await prisma.articleCategory.findFirst({
         where: { name: cat.name },
       });
@@ -108,10 +117,10 @@ export async function createArticle(values: ArticleValues): Promise<ArticleRespo
 
   const article = await prisma.article.create({
     data: {
-      title: values.title,
-      slug: slugify(values.title),
-      content: values.content,
-      cover: values.cover || null,
+      title: data.title,
+      slug: slugify(data.title),
+      content: data.content,
+      cover: data.cover || null,
       createdById: session.user.id,
       articleCategories: {
         connect: categoryConnect,
@@ -133,13 +142,22 @@ export async function updateArticleById(
   const hasAccess = await verifyPermission('article.update');
   if (!hasAccess) return { success: false, error: 'Akses ditolak.' };
 
+  const parsedValues = articleSchema.safeParse(values);
+  if (!parsedValues.success) {
+    return {
+      success: false,
+      error: parsedValues.error.issues[0]?.message || 'Data artikel tidak valid.',
+    };
+  }
+  const data = parsedValues.data;
+
   const exists = await prisma.article.findUnique({ where: { id } });
   if (!exists) return { success: false, error: 'Artikel tidak ditemukan.' };
 
   // Cari ID kategori dari nama kategori yang dikirim
   const categoryConnect: { id: string }[] = [];
-  if (values.categories && values.categories.length > 0) {
-    for (const cat of values.categories) {
+  if (data.categories.length > 0) {
+    for (const cat of data.categories) {
       const dbCat = await prisma.articleCategory.findFirst({
         where: { name: cat.name },
       });
@@ -152,10 +170,10 @@ export async function updateArticleById(
   const article = await prisma.article.update({
     where: { id },
     data: {
-      title: values.title,
-      slug: slugify(values.title),
-      content: values.content,
-      cover: values.cover || null,
+      title: data.title,
+      slug: slugify(data.title),
+      content: data.content,
+      cover: data.cover || null,
       articleCategories: {
         set: [],
         connect: categoryConnect,

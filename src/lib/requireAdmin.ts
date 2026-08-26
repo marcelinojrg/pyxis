@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
+import { verifyPermission } from '@/services/admin/security';
 
 /**
  * Guard sisi server untuk halaman admin.
@@ -13,6 +14,10 @@ export async function requireAdmin() {
 
   if (!session?.user) {
     redirect('/login');
+  }
+
+  if (!(await verifyPermission('admin.access'))) {
+    redirect('/');
   }
 
   return session.user;

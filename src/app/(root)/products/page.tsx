@@ -8,6 +8,7 @@ export const metadata = genPageMetadata({
   title: 'Produk — Solusi Software Hotel & Restoran Terintegrasi',
   description:
     'Katalog lengkap produk software PT. Pyxis Ultimate Solution: Alcor PMS, POS, Booking Engine, Channel Manager, dan modul terintegrasi lainnya.',
+  path: '/products',
 });
 
 export const revalidate = 60;

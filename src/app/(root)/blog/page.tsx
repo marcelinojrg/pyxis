@@ -7,6 +7,7 @@ export const metadata = genPageMetadata({
   title: 'Blog & Kegiatan — Berita Terbaru PT. Pyxis Ultimate Solution',
   description:
     'Ikuti perkembangan terbaru, rilis fitur software hotel Alcor PMS & POS, serta liputan kegiatan PT. Pyxis Ultimate Solution.',
+  path: '/blog',
 });
 
 export const revalidate = 60;

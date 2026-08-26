@@ -8,6 +8,7 @@ export const metadata = genPageMetadata({
   title: 'Kontak — Hubungi Kami',
   description:
     'Hubungi tim PT. Pyxis Ultimate Solution untuk konsultasi, demo produk Alcor PMS/POS, atau kemitraan.',
+  path: '/contact',
 });
 
 export const revalidate = 60;

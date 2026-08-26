@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
     title: `${article.title} — Blog PT. Pyxis Ultimate Solution`,
     description: article.content.replace(/<[^>]+>/g, '').slice(0, 160),
     image: article.cover || undefined,
+    path: `/blog/${article.slug || article.id}`,
   });
 }
 
@@ -45,9 +46,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     select: {
       id: true,
       title: true,
+      content: true,
       slug: true,
       cover: true,
       createdAt: true,
+      articleCategories: { select: { name: true }, take: 1 },
     },
     orderBy: { createdAt: 'desc' },
   });
