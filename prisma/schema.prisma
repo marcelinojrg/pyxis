@@ -175,6 +175,8 @@ model Product {
   description     String?
   image           String?             @map("image") // Gambar di Hero Section kanan
   featureSubtitle String?             @map("feature_subtitle") // Subtitle "Fitur Utama"
+  order           Int                 @default(0)
+  isActive        Boolean             @default(true) @map("is_active")
   benefits        ProductBenefit[]
   features        ProductFeature[]
   capabilities    ProductCapability[]

@@ -28,6 +28,10 @@ const PERMISSIONS = [
   'article.category.create',
   'article.category.update',
   'article.category.delete',
+  'product.read',
+  'product.create',
+  'product.update',
+  'product.delete',
 ];
 
 async function main() {

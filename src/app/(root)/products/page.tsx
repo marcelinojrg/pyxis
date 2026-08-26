@@ -15,6 +15,7 @@ export const revalidate = 60;
 
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({
+    where: { isActive: true },
     select: {
       id: true,
       name: true,
@@ -23,7 +24,7 @@ export default async function ProductsPage() {
       slug: true,
     },
     orderBy: {
-      createdAt: 'asc',
+      order: 'asc',
     },
   });
 

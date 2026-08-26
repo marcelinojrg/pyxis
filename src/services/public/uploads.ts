@@ -1,12 +1,17 @@
 'use server';
 
+import { randomUUID } from 'node:crypto';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { verifyPermission } from '@/services/admin/security';
 import sharp from 'sharp';
+import { saveLocalImage, removeLocalImage } from './localUpload';
 
 /** Timeout (ms) untuk seluruh proses upload & kompresi sharp */
 const UPLOAD_TIMEOUT_MS = 30_000;
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
+const LOCAL_UPLOAD_ROOT = path.resolve(process.cwd(), 'public', 'uploads');
 
 /**
  * Wrapper Promise dengan timeout agar proses tidak hang selamanya.
@@ -40,6 +45,8 @@ export async function uploadImage(
   if (!/^[a-zA-Z0-9/_-]{0,120}$/.test(subDir) || subDir.split('/').includes('..')) {
     return { success: false, error: 'Folder upload tidak valid.' };
   }
+
+  return saveLocalImage(file, subDir);
 
   const startTime = Date.now();
   console.log(
@@ -113,6 +120,10 @@ export async function deleteImage(url: string): Promise<{ success: boolean; erro
 
   try {
     if (!url) return { success: true };
+
+    if (url.startsWith('/uploads/')) {
+      return removeLocalImage(url);
+    }
 
     const parsedUrl = new URL(url);
     if (parsedUrl.protocol !== 'https:' || parsedUrl.hostname !== 'ik.imagekit.io') {

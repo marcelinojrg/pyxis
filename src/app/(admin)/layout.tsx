@@ -1,16 +1,9 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import {
-  BriefcaseBusiness,
-  LayoutDashboard,
-  LogOut,
-  Mail,
-  Newspaper,
-  Package,
-  Settings,
-} from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { requireAdmin } from '@/lib/requireAdmin';
+import { AdminNavigation } from '@/app/(admin)/_components/AdminNavigation';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -32,17 +25,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     .slice(0, 2)
     .toUpperCase();
 
-  const navigation = [
-    { label: 'Dashboard', icon: LayoutDashboard, active: true },
-    { label: 'Produk', icon: Package },
-    { label: 'Karir', icon: BriefcaseBusiness },
-    { label: 'Blog', icon: Newspaper },
-    { label: 'Pesan Masuk', icon: Mail, badge: 0 },
-  ];
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
-      <header className="flex h-16 border-b border-neutral-200 bg-white">
+      <header className="sticky top-0 z-40 flex h-16 border-b border-neutral-200 bg-white">
         <div className="flex w-full items-center bg-[#111827] px-6 md:w-64 md:shrink-0">
           <span className="text-xl font-bold tracking-tight text-white">Pyxis Admin</span>
         </div>
@@ -88,31 +73,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </header>
 
-      <div className="flex min-h-[calc(100vh-4rem)]">
-        <aside className="hidden w-64 shrink-0 flex-col bg-[#111827] text-white md:flex">
-          <nav className="flex-1 space-y-1 py-4">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.label}
-                  className={`mx-0 flex items-center gap-4 border-l-4 px-5 py-3 text-sm ${
-                    item.active
-                      ? 'border-[#AFC2FF] bg-[#24428F] font-semibold text-white'
-                      : 'border-transparent text-neutral-300'
-                  }`}
-                >
-                  <Icon className="h-5 w-5 shrink-0" />
-                  <span>{item.label}</span>
-                  {item.badge ? (
-                    <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">
-                      {item.badge}
-                    </span>
-                  ) : null}
-                </div>
-              );
-            })}
-          </nav>
+      <div className="min-h-[calc(100vh-4rem)] overflow-x-hidden">
+        <aside className="fixed bottom-0 left-0 top-16 z-30 hidden w-64 flex-col bg-[#111827] text-white md:flex">
+          <AdminNavigation />
           <div className="border-t border-white/10 p-4">
             <div className="flex items-center gap-4 px-1 py-3 text-sm text-neutral-300">
               <Settings className="h-5 w-5" />
@@ -121,7 +84,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 p-5 sm:p-8">{children}</main>
+        <main className="min-w-0 max-w-full overflow-x-hidden p-5 sm:p-8 md:ml-64">{children}</main>
       </div>
     </div>
   );

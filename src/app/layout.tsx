@@ -100,7 +100,7 @@ export default async function RootLayout({
         <QueryProvider>{children}</QueryProvider>
         {/* <ImageKitProvider urlEndpoint={process.env.IMAGEKIT_URL}>
         </ImageKitProvider> */}
-        <Toaster richColors position="top-center" />
+        <Toaster position="top-center" />
       </body>
     </html>
   );

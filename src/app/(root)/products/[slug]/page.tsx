@@ -3,6 +3,7 @@ import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
 import { ProductDetailHero } from '@/app/(root)/_components/products/ProductDetailHero';
 import { ProductDetailBenefits } from '@/app/(root)/_components/products/ProductDetailBenefits';
+import { ProductDetailDescription } from '@/app/(root)/_components/products/ProductDetailDescription';
 import { ProductDetailFeatures } from '@/app/(root)/_components/products/ProductDetailFeatures';
 import { ProductDetailCapabilities } from '@/app/(root)/_components/products/ProductDetailCapabilities';
 import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
@@ -15,7 +16,7 @@ interface ProductDetailPageProps {
 
 export async function generateMetadata({ params }: ProductDetailPageProps) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({ where: { slug } });
+  const product = await prisma.product.findFirst({ where: { slug, isActive: true } });
   if (!product) return genPageMetadata({ title: 'Produk Tidak Ditemukan' });
 
   return genPageMetadata({
@@ -29,8 +30,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = await params;
 
-  const product = await prisma.product.findUnique({
-    where: { slug },
+  const product = await prisma.product.findFirst({
+    where: { slug, isActive: true },
     include: {
       benefits: { orderBy: { order: 'asc' } },
       features: { orderBy: { order: 'asc' } },
@@ -55,7 +56,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         slug={product.slug}
       />
       <ProductDetailBenefits benefits={product.benefits} />
-      <ProductDetailFeatures subtitle={product.featureSubtitle} features={product.features} />
+      <ProductDetailDescription content={product.featureSubtitle} />
+      <ProductDetailFeatures features={product.features} />
       <ProductDetailCapabilities capabilities={product.capabilities} />
       <HomeCTA />
     </div>

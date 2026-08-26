@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { Sparkles } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface FeatureItem {
@@ -9,33 +10,28 @@ export interface FeatureItem {
 }
 
 export interface ProductDetailFeaturesProps {
-  subtitle?: string | null;
   features: FeatureItem[];
 }
 
-export const ProductDetailFeatures: FC<ProductDetailFeaturesProps> = ({ subtitle, features }) => {
+export const ProductDetailFeatures: FC<ProductDetailFeaturesProps> = ({ features }) => {
   if (!features || features.length === 0) return null;
 
   return (
-    <section className="bg-[#f7f8fa] py-12 md:py-16">
+    <section className="bg-white py-12 md:py-16">
       <Container>
-        <div className="max-w-2xl mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#07358b] mb-4">Fitur Utama</h2>
-          <p className="text-sm text-neutral-600 leading-relaxed">
-            {subtitle ||
-              'Solusi modular yang dapat disesuaikan dengan kebutuhan unik properti Anda.'}
-          </p>
+        <div className="mb-10 max-w-2xl">
+          <h2 className="text-2xl font-bold text-[#07358b] sm:text-3xl">Fitur Utama</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
+        <div className="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feat) => (
-            <div key={feat.id} className="grid grid-cols-[36px_1fr] gap-3">
-              <div className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#fff0d2] text-[#ae7215] text-xs">
-                ✦
+            <div key={feat.id} className="grid grid-cols-[36px_1fr] gap-4">
+              <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-[#fff0d2] text-[#ae7215]">
+                <Sparkles className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#07358b] mb-2">{feat.title}</h3>
-                <p className="text-sm text-neutral-600 leading-relaxed">{feat.description}</p>
+                <h3 className="mb-2 text-lg font-bold text-[#07358b] sm:text-xl">{feat.title}</h3>
+                <p className="text-base leading-relaxed text-neutral-600">{feat.description}</p>
               </div>
             </div>
           ))}
