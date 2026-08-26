@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface ProductDetailHeroProps {
@@ -20,6 +20,13 @@ export const ProductDetailHero: FC<ProductDetailHeroProps> = ({
   return (
     <section className="bg-[#f7f8fa] pt-28 pb-16 md:pt-36 md:pb-20">
       <Container>
+        <Link
+          href="/products"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-[#07358b] hover:underline"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Kembali ke Produk
+        </Link>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
           <div className="space-y-5 text-left">
             <h1 className="max-w-xl text-4xl sm:text-5xl md:text-6xl font-bold font-heading text-[#07358b] leading-[1.05]">

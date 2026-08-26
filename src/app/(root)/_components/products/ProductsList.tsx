@@ -44,35 +44,43 @@ export const ProductsList: FC<ProductsListProps> = ({ products }) => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
             {products.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-2xl p-6 sm:p-7 border border-neutral-200/80 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#dbe6f7] bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
               >
-                <div>
-                  {product.image ? (
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-6 bg-neutral-100">
-                      <Image src={product.image} alt={product.name} fill className="object-cover" />
-                    </div>
-                  ) : (
-                    <div className="w-full aspect-video bg-neutral-400 rounded-xl mb-6" />
-                  )}
-                  <h3 className="text-lg sm:text-xl font-bold text-neutral-900 mb-3">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-neutral-600 leading-relaxed mb-6">
-                    {product.description || 'Tidak ada deskripsi tersedia.'}
-                  </p>
-                </div>
-                <div>
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-                  >
-                    Pelajari Selengkapnya
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+                {product.image ? (
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-[4/3] w-full bg-[#dbe6f7]" />
+                )}
+                <div className="flex flex-1 flex-col bg-[#eef4ff] p-7 sm:p-8">
+                  <div>
+                    <h3 className="mb-4 text-xl font-semibold tracking-tight text-[#001A53]">
+                      {product.name}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-[#29456f]">
+                      {product.description || 'Tidak ada deskripsi tersedia.'}
+                    </p>
+                  </div>
+                  <div className="mt-auto pt-8">
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[#004AEB] transition-colors hover:text-[#001A53]"
+                    >
+                      Pelajari Selengkapnya
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
