@@ -1,17 +1,27 @@
 'use server';
 
 import { randomUUID } from 'node:crypto';
-import { mkdir, unlink, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 import { verifyPermission } from '@/services/admin/security';
 import sharp from 'sharp';
-import { saveLocalImage, removeLocalImage } from './localUpload';
 
 /** Timeout (ms) untuk seluruh proses upload & kompresi sharp */
 const UPLOAD_TIMEOUT_MS = 30_000;
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_IMAGE_PIXELS = 40_000_000;
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
-const LOCAL_UPLOAD_ROOT = path.resolve(process.cwd(), 'public', 'uploads');
+const ALLOWED_IMAGE_FORMATS = new Set(['jpeg', 'png', 'webp', 'avif']);
+
+async function canUploadTo(subDir: string) {
+  const permissions = subDir.startsWith('products')
+    ? ['product.create', 'product.update']
+    : subDir.startsWith('blog') || subDir.startsWith('articles')
+      ? ['article.create', 'article.update']
+      : ['admin.access'];
+
+  return (await Promise.all(permissions.map((permission) => verifyPermission(permission)))).some(
+    Boolean
+  );
+}
 
 /**
  * Wrapper Promise dengan timeout agar proses tidak hang selamanya.
@@ -33,7 +43,7 @@ export async function uploadImage(
   file: File,
   subDir: string = ''
 ): Promise<{ success: boolean; url?: string; error?: string }> {
-  if (!(await verifyPermission('admin.access'))) {
+  if (!(await canUploadTo(subDir))) {
     return { success: false, error: 'Akses ditolak.' };
   }
   if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
@@ -46,8 +56,6 @@ export async function uploadImage(
     return { success: false, error: 'Folder upload tidak valid.' };
   }
 
-  return saveLocalImage(file, subDir);
-
   const startTime = Date.now();
   console.log(
     `[uploadImage] ▶ Mulai upload ke ImageKit: "${file.name}" (${(file.size / 1024).toFixed(1)} KB) → subDir: "${subDir || '(root)'}"`
@@ -55,12 +63,31 @@ export async function uploadImage(
 
   try {
     const imageBuffer = Buffer.from(await file.arrayBuffer());
+    const image = sharp(imageBuffer, { limitInputPixels: MAX_IMAGE_PIXELS });
+    const metadata = await withTimeout(image.metadata(), UPLOAD_TIMEOUT_MS, 'Validasi gambar');
+    if (
+      !metadata.format ||
+      !ALLOWED_IMAGE_FORMATS.has(metadata.format) ||
+      !metadata.width ||
+      !metadata.height ||
+      metadata.width * metadata.height > MAX_IMAGE_PIXELS
+    ) {
+      return {
+        success: false,
+        error: 'Isi file bukan gambar valid atau dimensinya terlalu besar.',
+      };
+    }
     const optimizedImage = await withTimeout(
-      sharp(imageBuffer).rotate().webp({ quality: 82 }).toBuffer(),
+      image.rotate().webp({ quality: 82 }).toBuffer(),
       UPLOAD_TIMEOUT_MS,
       'Validasi gambar'
     );
-    const fileName = `${file.name.replace(/\.[^.]+$/, '') || 'image'}.webp`;
+    const baseName =
+      file.name
+        .replace(/\.[^.]+$/, '')
+        .replace(/[^a-zA-Z0-9_-]/g, '-')
+        .slice(0, 60) || 'image';
+    const fileName = `${baseName}-${randomUUID()}.webp`;
     const formData = new FormData();
     formData.append(
       'file',
@@ -74,7 +101,10 @@ export async function uploadImage(
 
     const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
     if (!privateKey) {
-      throw new Error('IMAGEKIT_PRIVATE_KEY belum dikonfigurasi.');
+      return {
+        success: false,
+        error: 'ImageKit belum dikonfigurasi. Hubungi administrator sistem.',
+      };
     }
     const authHeader = 'Basic ' + Buffer.from(privateKey + ':').toString('base64');
 
@@ -95,7 +125,8 @@ export async function uploadImage(
       throw new Error(`ImageKit upload failed with status ${res.status}: ${errorText}`);
     }
 
-    const data = await res.json();
+    const data = (await res.json()) as { url?: string };
+    if (!data.url) throw new Error('ImageKit tidak mengembalikan URL gambar.');
     const elapsed = Date.now() - startTime;
     console.log(`[uploadImage] ✅ Upload ImageKit selesai dalam ${elapsed}ms → URL: ${data.url}`);
 
@@ -120,10 +151,6 @@ export async function deleteImage(url: string): Promise<{ success: boolean; erro
 
   try {
     if (!url) return { success: true };
-
-    if (url.startsWith('/uploads/')) {
-      return removeLocalImage(url);
-    }
 
     const parsedUrl = new URL(url);
     if (parsedUrl.protocol !== 'https:' || parsedUrl.hostname !== 'ik.imagekit.io') {
