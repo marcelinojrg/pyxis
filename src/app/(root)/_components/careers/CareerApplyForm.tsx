@@ -2,56 +2,38 @@
 
 import { useState, type FC, type FormEvent } from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
-import { submitCareerApplication } from '@/services/public/careers';
 
 export interface CareerApplyFormProps {
   careerId: string;
   careerTitle: string;
 }
 
-export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitle }) => {
+export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [portfolioUrl, setPortfolioUrl] = useState('');
-  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setStatus(null);
-
-    const res = await submitCareerApplication({
-      careerId,
-      fullName,
-      email,
-      phone,
-      portfolioUrl,
-      resumeUrl: '#placeholder-resume',
+    setStatus({
+      type: 'error',
+      message: 'Lamaran online belum aktif. Silakan kirim CV dan portofolio melalui email karier.',
     });
-
-    setLoading(false);
-    if (res.success) {
-      setStatus({
-        type: 'success',
-        message: 'Lamaran Anda berhasil dikirim! Tim HRD kami akan menghubungi Anda.',
-      });
-      setFullName('');
-      setEmail('');
-      setPhone('');
-      setPortfolioUrl('');
-    } else {
-      setStatus({
-        type: 'error',
-        message: res.error || 'Gagal mengirimkan lamaran. Silakan coba lagi.',
-      });
-    }
   };
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-sm">
       <h3 className="text-lg font-bold text-neutral-900 mb-6">Formulir Lamaran</h3>
+
+      <div
+        id="career-form-note"
+        className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900"
+      >
+        Pengiriman CV melalui formulir ini belum tersedia. Setelah mengisi data, kirim CV dan
+        portofolio ke email karier yang tercantum di halaman lowongan.
+      </div>
 
       {status && (
         <div
@@ -70,7 +52,7 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" aria-describedby="career-form-note">
         <div>
           <label htmlFor="fullName" className="block text-xs font-semibold text-neutral-700 mb-1">
             Nama Lengkap <span className="text-red-500">*</span>
@@ -139,11 +121,11 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitl
 
         <button
           type="submit"
-          disabled={loading}
+          disabled
           className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#07358b] px-4 py-3 text-xs font-bold text-white transition-colors hover:bg-[#052769] disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Send className="w-4 h-4" />
-          <span>{loading ? 'Mengirimkan...' : 'Kirim Lamaran'}</span>
+          <span>Lamaran Online Belum Aktif</span>
         </button>
       </form>
     </div>

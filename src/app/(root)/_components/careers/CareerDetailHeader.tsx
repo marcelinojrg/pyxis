@@ -18,14 +18,14 @@ export const CareerDetailHeader: FC<CareerDetailHeaderProps> = ({
 }) => {
   return (
     <section className="bg-[#f7f8fa] pt-28 pb-8 md:pt-32 md:pb-10">
-      <Container className="text-center">
+      <Container className="text-left">
         <Link
           href="/careers"
           className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold text-[#07358b] hover:underline"
         >
           <ArrowLeft className="h-4 w-4" /> Kembali ke Karir
         </Link>
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-heading text-neutral-900 leading-tight mb-4">
             {title}
           </h1>

@@ -27,6 +27,7 @@ import { uploadImage } from '@/services/public/uploads';
 
 // UI Components
 import { Separator } from '@/components/ui/separator';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { ToolbarProvider } from '@/components/ui/toolbars/toolbar-provider';
 
 // Toolbar Components
@@ -225,49 +226,51 @@ const RichTextEditor = ({ value, onChange, placeholder, folderName }: RichTextEd
   return (
     <div className="border w-full relative rounded-md overflow-hidden pb-3 bg-background min-h-[300px]">
       <div className="flex w-full items-start py-2 px-2 border-b sticky top-0 left-0 bg-background z-20 transition-all">
-        <ToolbarProvider editor={editor}>
-          <div className="flex items-center gap-y-2 gap-x-1 flex-wrap">
-            <UndoToolbar />
-            <RedoToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <HeadingToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <FontFamilyToolbar />
-            <FontSizeToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <LineHeightToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <BoldToolbar />
-            <ItalicToolbar />
-            <UnderlineToolbar />
-            <StrikeThroughToolbar />
-            <SubscriptToolbar />
-            <SuperscriptToolbar />
-            <LinkToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <TextAlignLeftToolbar />
-            <TextAlignCenterToolbar />
-            <TextAlignRightToolbar />
-            <TextAlignJustifyToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <TableToolbar />
-            <EmojiToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <BulletListToolbar />
-            <OrderedListToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <CodeToolbar />
-            <CodeBlockToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <HorizontalRuleToolbar />
-            <BlockquoteToolbar />
-            <HardBreakToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <ImagePlaceholderToolbar />
-            <Separator orientation="vertical" className="h-7 mx-1" />
-            <SearchAndReplaceToolbar />
-          </div>
-        </ToolbarProvider>
+        <TooltipProvider>
+          <ToolbarProvider editor={editor}>
+            <div className="flex items-center gap-y-2 gap-x-1 flex-wrap">
+              <UndoToolbar />
+              <RedoToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <HeadingToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <FontFamilyToolbar />
+              <FontSizeToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <LineHeightToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <BoldToolbar />
+              <ItalicToolbar />
+              <UnderlineToolbar />
+              <StrikeThroughToolbar />
+              <SubscriptToolbar />
+              <SuperscriptToolbar />
+              <LinkToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <TextAlignLeftToolbar />
+              <TextAlignCenterToolbar />
+              <TextAlignRightToolbar />
+              <TextAlignJustifyToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <TableToolbar />
+              <EmojiToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <BulletListToolbar />
+              <OrderedListToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <CodeToolbar />
+              <CodeBlockToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <HorizontalRuleToolbar />
+              <BlockquoteToolbar />
+              <HardBreakToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <ImagePlaceholderToolbar />
+              <Separator orientation="vertical" className="h-7 mx-1" />
+              <SearchAndReplaceToolbar />
+            </div>
+          </ToolbarProvider>
+        </TooltipProvider>
       </div>
       <div
         onClick={() => {

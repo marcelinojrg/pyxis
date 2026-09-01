@@ -5,7 +5,7 @@
 ## 1. Tentang Project
 
 **Nama project**: Company Profile Dinamis — PT. Pyxis Ultimate Solution
-**Deskripsi singkat**: Website company profile untuk PT. Pyxis Ultimate Solution (perusahaan software hotel & restoran, Malang — produk utama: Alcor PMS, Alcor POS). Seluruh konten (hero, about, daftar produk, kontak masuk) dikelola lewat admin dashboard, BUKAN hardcode di kode.
+**Deskripsi singkat**: Website company profile untuk PT. Pyxis Ultimate Solution (perusahaan software hotel & restoran, Malang — produk utama: Alcor PMS, Alcor POS). CMS admin hanya mencakup Produk, Blog, dan Karier. Halaman lain menggunakan konten statis atau konfigurasi/env sesuai kebutuhan.
 
 **Pemilik project**: dikerjakan solo, dibantu penuh oleh AI agent (kamu).
 **Target rilis**: 4 minggu dari kickoff.
@@ -49,7 +49,7 @@ npx prisma studio         # buka GUI database
 ## 5. Aturan Coding (Non-negotiable)
 
 1. **TypeScript strict** — tidak boleh ada `any` tanpa alasan jelas yang dikomentari. Perhatikan `verbatimModuleSyntax`: import type harus pakai `import type`.
-2. **Semua teks yang tampil di halaman publik harus berasal dari database**, bukan hardcode di komponen. Kecuali label UI statis (misal tombol "Kirim", "Simpan"). (Kondisi saat ini: Home masih hardcode — lihat `CONTENT-DATA-MAPPING.md`; jangan menambah hardcode baru.)
+2. **Konten halaman CMS Produk, Blog, dan Karier harus berasal dari database**, bukan hardcode di komponen. Halaman non-CMS boleh memakai konten statis atau env sesuai scope. Label UI statis (misal tombol "Kirim", "Simpan") selalu boleh.
 3. **Setiap Server Action yang mengubah data (create/update/delete) HARUS dilindungi autentikasi + otorisasi** — cek session Better Auth lalu `verifyPermission` dari `services/admin/security.ts`. Tidak ada mutasi publik tanpa proteksi.
 4. **Validasi input di server**, jangan percaya validasi client saja. Gunakan schema Zod di `src/schemas`.
 5. **Upload gambar** lewat `uploadImage` (`services/public/uploads.ts`) — validasi tipe & ukuran di server sebelum kompresi dan kirim ke ImageKit.

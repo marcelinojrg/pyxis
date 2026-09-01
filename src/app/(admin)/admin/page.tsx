@@ -1,93 +1,148 @@
-import { ArrowUpRight, BriefcaseBusiness, Mail, Newspaper, Package } from 'lucide-react';
+import Link from 'next/link';
+import type { Route } from 'next';
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  ExternalLink,
+  Newspaper,
+  Package,
+  Plus,
+} from 'lucide-react';
 import { prisma } from '@/lib/prisma';
+import { Button } from '@/components/ui/button';
 
 export const metadata = {
   title: 'Dashboard Admin — PT. Pyxis Ultimate Solution',
 };
 
 export default async function AdminDashboardPage() {
-  const [productTotal, partnerTotal, articleTotal] = await Promise.all([
+  const [
+    productTotal,
+    activeProducts,
+    articleTotal,
+    publishedArticles,
+    careerTotal,
+    activeCareers,
+  ] = await Promise.all([
     prisma.product.count(),
-    prisma.client.count(),
+    prisma.product.count({ where: { isActive: true } }),
     prisma.article.count(),
+    prisma.article.count({ where: { isPublished: true } }),
+    prisma.career.count(),
+    prisma.career.count({ where: { isActive: true } }),
   ]);
 
   const statistics = [
     {
-      label: 'Total Produk',
+      label: 'Produk',
       value: productTotal,
+      detail: `${activeProducts} aktif · ${productTotal - activeProducts} nonaktif`,
       icon: Package,
-      iconClass: 'bg-[#DCE6FF] text-[#123A91]',
-    },
-    {
-      label: 'Total Partner',
-      value: partnerTotal,
-      icon: BriefcaseBusiness,
-      iconClass: 'bg-[#D6F8E7] text-[#13A36B]',
+      href: '/admin/products' as Route,
     },
     {
       label: 'Artikel Blog',
       value: articleTotal,
+      detail: `${publishedArticles} terbit · ${articleTotal - publishedArticles} draft`,
       icon: Newspaper,
-      iconClass: 'bg-[#F0E1FF] text-[#8A2BE2]',
+      href: '/admin/blog' as Route,
     },
     {
-      label: 'Pesan Belum Dibaca',
-      value: 0,
-      icon: Mail,
-      iconClass: 'bg-[#FFE2BC] text-[#F59E0B]',
-      valueClass: 'text-[#F59E0B]',
+      label: 'Lowongan Karier',
+      value: careerTotal,
+      detail: `${activeCareers} aktif · ${careerTotal - activeCareers} nonaktif`,
+      icon: BriefcaseBusiness,
+      href: '/admin/careers' as Route,
     },
   ];
 
+  const actions = [
+    { label: 'Tambah produk', href: '/admin/products/new' as Route, icon: Package },
+    { label: 'Tulis artikel', href: '/admin/blog/new' as Route, icon: Newspaper },
+    { label: 'Buat lowongan', href: '/admin/careers/new' as Route, icon: BriefcaseBusiness },
+  ];
+
   return (
-    <div className="mx-auto max-w-6xl space-y-10">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-[#172033]">Dashboard</h1>
-        <p className="mt-1 text-base text-[#5A6272]">Selamat datang kembali, Admin Pyxis</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {statistics.map((statistic) => {
-          const Icon = statistic.icon;
-          return (
-            <div
-              key={statistic.label}
-              className="flex min-h-30 items-center gap-4 rounded-xl border border-[#C7CFDF] bg-white px-6 py-5 shadow-[0_8px_24px_rgba(30,41,59,0.05)]"
-            >
-              <div
-                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${statistic.iconClass}`}
-              >
-                <Icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[#4D5361]">{statistic.label}</p>
-                <p
-                  className={`mt-1 text-2xl font-bold ${statistic.valueClass || 'text-[#172033]'}`}
-                >
-                  {statistic.value}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <section className="overflow-hidden rounded-xl border border-[#C7CFDF] bg-white shadow-[0_8px_24px_rgba(30,41,59,0.05)]">
-        <div className="flex items-center justify-between border-b border-[#D5DAE4] px-6 py-5">
-          <h2 className="text-xl font-bold text-[#172033]">Aktivitas Terbaru: Pesan Masuk</h2>
-          <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#123A91]">
-            Lihat Semua <ArrowUpRight className="h-4 w-4" />
-          </span>
+    <div className="space-y-8">
+      <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Console Administrasi</h1>
+          <p className="mt-1 max-w-2xl text-sm text-slate-500">
+            Kelola katalog produk, publikasi blog, dan lowongan karier dari satu tempat.
+          </p>
         </div>
-        <div className="flex min-h-48 items-center justify-center px-6 py-12 text-center">
-          <div>
-            <Mail className="mx-auto h-8 w-8 text-[#AAB3C3]" />
-            <p className="mt-3 text-sm font-medium text-[#5A6272]">Belum ada pesan masuk</p>
-            <p className="mt-1 text-xs text-[#8992A3]">
-              Pesan dari pengunjung akan muncul di sini.
-            </p>
-          </div>
+        <Button asChild variant="outline" className="h-11 w-full sm:w-auto">
+          <Link href={'/' as Route} target="_blank">
+            <ExternalLink className="size-4" />
+            Lihat website
+          </Link>
+        </Button>
+      </div>
+
+      <section aria-labelledby="ringkasan-konten">
+        <h2 id="ringkasan-konten" className="mb-3 text-sm font-semibold text-slate-700">
+          Ringkasan konten
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {statistics.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <Link
+                key={stat.label}
+                href={stat.href}
+                className="group rounded-xl bg-white p-5 shadow-sm outline-none ring-1 ring-slate-200 transition hover:ring-slate-300 focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-slate-500">{stat.label}</p>
+                    <p className="mt-2 text-3xl font-bold tabular-nums text-slate-900">
+                      {stat.value}
+                    </p>
+                  </div>
+                  <span className="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-blue-700 transition-colors group-hover:bg-blue-50">
+                    <Icon className="size-5" />
+                  </span>
+                </div>
+                <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+                  <span className="text-xs text-slate-500">{stat.detail}</span>
+                  <ArrowRight className="size-4 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="aksi-cepat"
+        className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6"
+      >
+        <div className="mb-4">
+          <h2 id="aksi-cepat" className="text-base font-semibold text-slate-900">
+            Aksi cepat
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">Buat konten baru pada tiga kanal publik.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {actions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <Button
+                key={action.label}
+                asChild
+                variant="outline"
+                className="h-12 justify-between px-4"
+              >
+                <Link href={action.href}>
+                  <span className="flex items-center gap-2">
+                    <Icon className="size-4 text-slate-500" />
+                    {action.label}
+                  </span>
+                  <Plus className="size-4" />
+                </Link>
+              </Button>
+            );
+          })}
         </div>
       </section>
     </div>
