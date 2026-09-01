@@ -101,6 +101,10 @@ Model `LegalContent` sudah **tidak ada** di schema. Perlu dibuat ulang bila fitu
 
 ## 10. Aturan CMS
 
+CMS resmi pada scope proyek ini hanya terdiri dari Produk, Blog, dan Karier.
+
+Site Settings, Hero, About, Mitra, Legal, Contact/Leads, dan Page SEO bukan CMS pada scope ini.
+
 Setiap field editorial harus mempunyai:
 
 - owner (role/permission yang boleh edit);

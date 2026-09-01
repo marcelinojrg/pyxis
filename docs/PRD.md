@@ -11,7 +11,7 @@ Saat ini dibutuhkan website company profile baru yang **dinamis** — artinya se
 ## 2. Tujuan (Goals)
 
 1. Menampilkan profil perusahaan, produk unggulan (Alcor PMS, Alcor POS), jaringan mitra, dan legalitas secara profesional kepada calon klien B2B (hotel, restoran, resort, guest house).
-2. Memungkinkan admin internal mengelola seluruh konten website secara mandiri melalui dashboard admin yang intuitif.
+2. Memungkinkan admin internal mengelola konten Produk, Blog, dan Karier melalui dashboard admin yang intuitif.
 3. Menyediakan kanal penangkapan prospek (leads) yang efektif melalui formulir kontak umum dan formulir kemitraan.
 4. Membangun website yang cepat, responsif di semua ukuran layar (mobile-friendly), aman, dan teroptimasi untuk mesin pencari (SEO).
 
@@ -54,17 +54,12 @@ Seluruh mutasi data di admin dashboard dilindungi autentikasi **Better Auth** de
 | :--- | :---: | :--- |
 | **Autentikasi & Akun** | 🚧 | Login via email+password (Better Auth), logout aman, reset password & verifikasi email via antrean email. _Catatan: halaman `/login` masih memakai kode next-auth lama dan route handler Better Auth belum dibuat (lihat `ONLY_ME.md`)._ |
 | **Dashboard Metrics** | 🚧 | Ringkasan metrik konten. _Catatan: `/admin` saat ini baru halaman placeholder._ |
-| **Pengaturan Global (Site Settings)** | ❌ | Edit nama perusahaan, logo URL, alamat kantor, nomor telepon, email resmi, teks footer, dan tautan sosial media. _Saat ini metadata situs via env (`NEXT_PUBLIC_SEO_*`); model `SiteSettings` belum ada di schema._ |
-| **Kelola Hero & Highlights** | ❌ | Edit judul hero, subjudul hero, gambar hero, label CTA, URL CTA, serta CRUD poin-poin *Home Highlights*. |
-| **Kelola Halaman About** | ❌ | Edit teks judul, narasi sejarah, visi, misi, gambar pendukung, dan informasi alamat kantor. _Model `Branch` tersedia untuk alamat kantor._ |
-| **Kelola Produk (CRUD Lengkap)** | ❌ | Tambah/edit/hapus produk: nama, slug unik, deskripsi, benefit, fitur, kapabilitas, upload gambar, dan status tayang. _Model DB sudah siap; server action CRUD belum ada._ |
-| **Kelola Mitra (Partners CMS)** | ❌ | Edit hero & benefit halaman kemitraan, serta CRUD data partner. _Model `Client` tersedia untuk logo partner._ |
-| **Kelola Karir (Career CMS)** | ❌ | CRUD lowongan (kategori, lokasi, tipe, departemen, persyaratan) dan kelola lamaran masuk. _Model DB sudah siap._ |
-| **Kelola Legal (Legal CMS)** | ❌ | Edit konten Privacy Policy, Terms of Service, dan Cookie Policy secara dinamis. _Model belum ada di schema._ |
-| **Kelola Pesan Kontak (Leads)** | ❌ | Daftar pesan masuk dari pengunjung, filter status baca, tandai sudah dibaca, dan hapus pesan. _Model `ContactMessage` belum ada di schema._ |
+| **Pengaturan Global, Hero, Highlights, About, Mitra, Legal, dan Contact** | — | Bukan CMS pada scope ini; gunakan konten statis atau konfigurasi/env sesuai kebutuhan. |
+| **Kelola Produk (CRUD Lengkap)** | ❌ | CMS resmi: tambah/edit/hapus produk, benefit, fitur, kapabilitas, gambar, slug, dan status tayang. |
+| **Kelola Karier (Career CMS)** | ❌ | CMS resmi: CRUD lowongan dan pengelolaan lamaran masuk. |
 | **Kelola Blog (Blog CMS)** | 🚧 | CRUD artikel: judul, slug, konten rich text (TipTap), gambar cover, kategori, dan penulis. _Server action `services/admin/articles.ts` sudah ada; UI admin belum ada._ |
 | **Kelola User & Role (RBAC)** | 🚧 | CRUD user dan role. _Server action `services/admin/users.ts` & `roles.ts` sudah ada; UI admin belum ada._ |
-| **Kelola SEO per Halaman (Page SEO)** | ❌ | Pengaturan meta title, meta description, OG image, canonical URL per halaman. _Model `PageSeo` belum ada di schema; SEO saat ini via env + `genPageMetadata`._ |
+| **Kelola SEO per Halaman (Page SEO)** | — | Bukan CMS pada scope ini; SEO dikelola melalui env dan `genPageMetadata`. |
 
 ---
 
@@ -72,8 +67,7 @@ Seluruh mutasi data di admin dashboard dilindungi autentikasi **Better Auth** de
 
 - Sebagai **calon klien hotel/restoran**, saya ingin mempelajari spesifikasi dan fitur Alcor PMS & POS serta mengirim formulir permintaan demo dengan mudah.
 - Sebagai **calon mitra**, saya ingin melihat daftar integrasi/benefit kemitraan dan mengajukan diri menjadi mitra resmi Pyxis.
-- Sebagai **admin perusahaan**, saya ingin mengunggah produk baru, memperbarui materi legal, atau mengubah status lowongan karir secara mandiri tanpa bantuan developer.
-- Sebagai **admin perusahaan**, saya ingin memantau dan memilah pesan/leads yang masuk dari pengunjung website untuk segera ditindaklanjuti oleh tim sales.
+- Sebagai **admin perusahaan**, saya ingin mengunggah produk baru, menerbitkan artikel blog, atau mengubah status lowongan karier secara mandiri tanpa bantuan developer.
 - Sebagai **admin perusahaan**, saya ingin menulis dan menerbitkan artikel blog (tips, berita perusahaan) secara mandiri untuk mendukung SEO dan kredibilitas.
 - Sebagai **pengunjung**, saya ingin membaca artikel blog perusahaan untuk memahami keahlian Pyxis sebelum memutuskan menghubungi tim sales.
 
@@ -107,10 +101,10 @@ Untuk menjaga fokus, kualitas, dan tenggat waktu rilis:
 
 ## 7. Kriteria Sukses (Acceptance Criteria)
 
-1. Seluruh halaman publik (Produk, Detail Produk, Mitra, Karir, Kontak, Legal, Blog, Detail Artikel) menampilkan data dinamis dari database PostgreSQL.
-2. Form kontak dan form pendaftaran kemitraan tervalidasi dengan baik dan tersimpan ke database.
+1. Halaman CMS Produk, Blog, dan Karier menampilkan data dinamis dari database PostgreSQL.
+2. Halaman non-CMS tetap dapat ditampilkan dengan konten statis/env sesuai scope; form publik yang dipertahankan harus tervalidasi sesuai kebutuhannya.
 3. Akses rute `/admin/*` terlindungi secara ketat; unauthorized user otomatis dialihkan ke halaman login admin.
-4. Admin dapat melakukan operasi CRUD pada seluruh modul konten tanpa menimbulkan error runtime.
+4. Admin dapat melakukan operasi CRUD pada Produk, Blog, dan Karier tanpa menimbulkan error runtime.
 5. Antarmuka 100% responsif pada viewport mobile (360px+), tablet, dan desktop tanpa ada masalah horizontal overflow.
 6. Lolos pemeriksaan `npm run lint`, `npm run typecheck`, dan `npm run build` tanpa error.
 
