@@ -92,16 +92,6 @@ export const BlogList: FC<BlogListProps> = ({ articles }) => {
                 );
               })}
             </div>
-
-            {/* Load More Button */}
-            <div className="flex justify-center mt-12 md:mt-16">
-              <button
-                type="button"
-                className="px-6 py-2.5 rounded-lg border border-neutral-900 bg-white text-neutral-900 font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-xs"
-              >
-                Muat Lebih Banyak
-              </button>
-            </div>
           </>
         )}
       </Container>

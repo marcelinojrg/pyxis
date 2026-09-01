@@ -14,7 +14,7 @@ interface CareerDetailPageProps {
 
 export async function generateMetadata({ params }: CareerDetailPageProps) {
   const { slug } = await params;
-  const career = await prisma.career.findUnique({ where: { slug } });
+  const career = await prisma.career.findFirst({ where: { slug, isActive: true } });
   if (!career) return genPageMetadata({ title: 'Lowongan Tidak Ditemukan' });
 
   return genPageMetadata({
@@ -27,11 +27,11 @@ export async function generateMetadata({ params }: CareerDetailPageProps) {
 export default async function CareerDetailPage({ params }: CareerDetailPageProps) {
   const { slug } = await params;
 
-  const career = await prisma.career.findUnique({
-    where: { slug },
+  const career = await prisma.career.findFirst({
+    where: { slug, isActive: true },
   });
 
-  if (!career || !career.isActive) {
+  if (!career) {
     notFound();
   }
 

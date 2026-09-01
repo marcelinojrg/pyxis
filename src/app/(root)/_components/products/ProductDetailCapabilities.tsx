@@ -52,7 +52,7 @@ export const ProductDetailCapabilities = async ({
   const imageSizes = await Promise.all(capabilities.map((cap) => getImageSize(cap.imageUrl)));
 
   return (
-    <section className="bg-gradient-to-r from-[#062568] to-[#064ee8] py-16 text-white md:py-20">
+    <section className="bg-gradient-to-r from-brand-deep to-brand py-16 text-white md:py-20">
       <Container>
         <div className="space-y-16">
           {capabilities.map((cap, idx) => {
@@ -78,7 +78,7 @@ export const ProductDetailCapabilities = async ({
                         <div key={item.id} className="grid grid-cols-[32px_1fr] gap-3">
                           <Icon className="mt-0.5 h-6 w-6 text-white" />
                           <div>
-                            <h4 className="mb-1 text-lg font-bold">{item.title}</h4>
+                            <h3 className="mb-1 text-lg font-bold">{item.title}</h3>
                             {item.description && (
                               <p className="text-base leading-relaxed text-blue-100">
                                 {item.description}
@@ -96,8 +96,8 @@ export const ProductDetailCapabilities = async ({
                     <Image
                       src={cap.imageUrl}
                       alt={cap.title}
-                      width={size?.width ?? 0}
-                      height={size?.height ?? 0}
+                      width={size?.width ?? 1200}
+                      height={size?.height ?? 675}
                       sizes="(max-width: 1024px) 100vw, 448px"
                       className="mx-auto h-auto w-full max-w-md rounded-2xl border border-white/20 shadow-md"
                     />
