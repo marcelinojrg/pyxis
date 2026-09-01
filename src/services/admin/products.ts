@@ -4,19 +4,27 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/utils';
 import { productSchema, type ProductValues } from '@/schemas/products';
-import { verifyPermission } from './security';
+import { createAuditLog, verifyPermission } from './security';
 
-const productSelect = {
+const productListSelect = {
   id: true,
   name: true,
   slug: true,
-  description: true,
-  featureSubtitle: true,
   image: true,
   order: true,
   isActive: true,
+} as const;
+
+const productSelect = {
+  ...productListSelect,
+  description: true,
+  featureSubtitle: true,
+  benefits: {
+    select: { id: true, title: true, description: true, icon: true, order: true },
+    orderBy: { order: 'asc' as const },
+  },
   features: {
-    select: { id: true, title: true, description: true, order: true },
+    select: { id: true, title: true, description: true, icon: true, order: true },
     orderBy: { order: 'asc' as const },
   },
   capabilities: {
@@ -26,7 +34,7 @@ const productSelect = {
       description: true,
       imageUrl: true,
       items: {
-        select: { id: true, title: true, description: true, order: true },
+        select: { id: true, title: true, description: true, icon: true, order: true },
         orderBy: { order: 'asc' as const },
       },
     },
@@ -39,177 +47,200 @@ async function canManageProducts(action: 'read' | 'create' | 'update' | 'delete'
 }
 
 function revalidateProducts(slug?: string) {
+  revalidatePath('/admin');
   revalidatePath('/admin/products');
   revalidatePath('/products');
   revalidatePath('/sitemap.xml');
   if (slug) revalidatePath(`/products/${slug}`);
 }
 
-async function uniqueSlug(name: string, id?: string) {
-  const base = slugify(name);
+async function uniqueSlug(source: string, id?: string) {
+  const base = slugify(source).replaceAll('_', '-');
   if (!base) return null;
 
-  let slug = base;
-  let suffix = 2;
-  while (
-    await prisma.product.findFirst({
-      where: { slug, ...(id ? { NOT: { id } } : {}) },
-      select: { id: true },
-    })
-  ) {
-    slug = `${base}-${suffix++}`;
-  }
-  return slug;
-}
-
-async function resolveOrder(order: ProductValues['order'], id?: string) {
-  if (order !== 'last') return order;
-  const last = await prisma.product.findFirst({
-    where: id ? { NOT: { id } } : undefined,
-    orderBy: { order: 'desc' },
-    select: { order: true },
+  const matches = await prisma.product.findMany({
+    where: { slug: { startsWith: base }, ...(id ? { NOT: { id } } : {}) },
+    select: { slug: true },
   });
-  return (last?.order ?? 0) + 1;
+  const used = new Set(matches.map(({ slug }) => slug));
+  if (!used.has(base)) return base;
+
+  let suffix = 2;
+  while (used.has(`${base}-${suffix}`)) suffix += 1;
+  return `${base}-${suffix}`;
 }
 
-function featureData(features: ProductValues['features']) {
-  return features.map((feature, index) => ({
-    title: feature.title,
-    description: feature.description || null,
+function itemData(items: ProductValues['features']) {
+  return items.map((item, index) => ({
+    title: item.title,
+    description: item.description || null,
+    icon: item.icon || null,
     order: index + 1,
   }));
 }
 
-function capabilityData(values: ProductValues) {
-  if (
-    !values.capabilityTitle &&
-    !values.capabilityDescription &&
-    !values.capabilityImageUrl &&
-    !values.capabilityItems.length
-  )
-    return undefined;
-  return {
-    title: values.capabilityTitle || 'System Capabilities',
-    description: values.capabilityDescription || null,
-    imageUrl: values.capabilityImageUrl || null,
-    items: {
-      create: values.capabilityItems.map((item, index) => ({
-        title: item.title,
-        description: item.description || null,
-        order: index + 1,
-      })),
-    },
-  };
+function capabilityData(capabilities: ProductValues['capabilities']) {
+  return capabilities.map((capability) => ({
+    title: capability.title,
+    description: capability.description || null,
+    imageUrl: capability.imageUrl || null,
+    items: { create: itemData(capability.items) },
+  }));
+}
+
+function isUniqueConstraintError(error: unknown) {
+  return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002';
 }
 
 export async function getAdminProducts() {
   if (!(await canManageProducts('read')))
-    return { success: false, data: [], error: 'Akses ditolak.' };
+    return { success: false, data: [], error: 'Anda tidak memiliki akses untuk melihat produk.' };
 
-  const data = await prisma.product.findMany({
-    select: productSelect,
-    orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
-  });
-  return { success: true, data };
+  try {
+    const data = await prisma.product.findMany({
+      select: productListSelect,
+      orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
+    });
+    return { success: true, data };
+  } catch (error) {
+    console.error('[getAdminProducts]', error);
+    return { success: false, data: [], error: 'Daftar produk gagal dimuat. Coba muat ulang.' };
+  }
 }
 
 export async function getAdminProductById(id: string) {
-  if (!(await canManageProducts('read'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageProducts('read')))
+    return { success: false, error: 'Anda tidak memiliki akses untuk melihat produk.' };
+  if (!id) return { success: false, error: 'ID produk tidak valid.' };
 
-  const data = await prisma.product.findUnique({ where: { id }, select: productSelect });
-  if (!data) return { success: false, error: 'Produk tidak ditemukan.' };
-  return { success: true, data };
+  try {
+    const data = await prisma.product.findUnique({ where: { id }, select: productSelect });
+    if (!data) return { success: false, error: 'Produk tidak ditemukan.' };
+    return { success: true, data };
+  } catch (error) {
+    console.error('[getAdminProductById]', error);
+    return { success: false, error: 'Produk gagal dimuat. Coba lagi.' };
+  }
 }
 
 export async function createProduct(values: ProductValues) {
-  if (!(await canManageProducts('create'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageProducts('create')))
+    return { success: false, error: 'Anda tidak memiliki akses untuk membuat produk.' };
 
   const parsed = productSchema.safeParse(values);
   if (!parsed.success)
     return { success: false, error: parsed.error.issues[0]?.message || 'Data produk tidak valid.' };
 
-  const slug = await uniqueSlug(parsed.data.name);
-  if (!slug) return { success: false, error: 'Nama produk tidak dapat dijadikan slug.' };
-  const order = await resolveOrder(parsed.data.order);
+  const slug = await uniqueSlug(parsed.data.slug || parsed.data.name);
+  if (!slug) return { success: false, error: 'Nama atau slug produk tidak valid.' };
 
   try {
     const data = await prisma.product.create({
       data: {
         name: parsed.data.name,
-        order,
-        isActive: parsed.data.isActive,
-        image: parsed.data.image || null,
+        slug,
         description: parsed.data.description || null,
         featureSubtitle: parsed.data.featureSubtitle || null,
-        slug,
-        features: { create: featureData(parsed.data.features) },
-        ...(capabilityData(parsed.data)
-          ? { capabilities: { create: capabilityData(parsed.data) } }
-          : {}),
+        image: parsed.data.image || null,
+        order: parsed.data.order,
+        isActive: parsed.data.isActive,
+        benefits: { create: itemData(parsed.data.benefits) },
+        features: { create: itemData(parsed.data.features) },
+        capabilities: { create: capabilityData(parsed.data.capabilities) },
       },
       select: productSelect,
+    });
+    await createAuditLog({
+      action: 'create',
+      table: 'products',
+      recordId: data.id,
+      newValues: JSON.stringify(data),
     });
     revalidateProducts(slug);
     return { success: true, data, message: 'Produk berhasil dibuat.' };
   } catch (error) {
     console.error('[createProduct]', error);
-    return { success: false, error: 'Produk gagal dibuat. Coba lagi.' };
+    return {
+      success: false,
+      error: isUniqueConstraintError(error)
+        ? 'Slug sudah digunakan. Ubah slug lalu coba lagi.'
+        : 'Produk gagal dibuat. Coba lagi.',
+    };
   }
 }
 
 export async function updateProduct(id: string, values: ProductValues) {
-  if (!(await canManageProducts('update'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageProducts('update')))
+    return { success: false, error: 'Anda tidak memiliki akses untuk mengubah produk.' };
+  if (!id) return { success: false, error: 'ID produk tidak valid.' };
 
   const parsed = productSchema.safeParse(values);
   if (!parsed.success)
     return { success: false, error: parsed.error.issues[0]?.message || 'Data produk tidak valid.' };
 
-  const existing = await prisma.product.findUnique({
-    where: { id },
-    select: { id: true, slug: true },
-  });
+  const existing = await prisma.product.findUnique({ where: { id }, select: { slug: true } });
   if (!existing) return { success: false, error: 'Produk tidak ditemukan.' };
 
-  const slug = await uniqueSlug(parsed.data.name, id);
-  if (!slug) return { success: false, error: 'Nama produk tidak dapat dijadikan slug.' };
-  const order = await resolveOrder(parsed.data.order, id);
+  const slug = await uniqueSlug(parsed.data.slug || parsed.data.name, id);
+  if (!slug) return { success: false, error: 'Nama atau slug produk tidak valid.' };
 
   try {
     const data = await prisma.product.update({
       where: { id },
       data: {
         name: parsed.data.name,
-        order,
-        isActive: parsed.data.isActive,
-        image: parsed.data.image || null,
+        slug,
         description: parsed.data.description || null,
         featureSubtitle: parsed.data.featureSubtitle || null,
-        slug,
-        features: { deleteMany: {}, create: featureData(parsed.data.features) },
+        image: parsed.data.image || null,
+        order: parsed.data.order,
+        isActive: parsed.data.isActive,
+        benefits: { deleteMany: {}, create: itemData(parsed.data.benefits) },
+        features: { deleteMany: {}, create: itemData(parsed.data.features) },
         capabilities: {
           deleteMany: {},
-          ...(capabilityData(parsed.data) ? { create: capabilityData(parsed.data) } : {}),
+          create: capabilityData(parsed.data.capabilities),
         },
       },
       select: productSelect,
+    });
+    await createAuditLog({
+      action: 'update',
+      table: 'products',
+      recordId: data.id,
+      oldValues: JSON.stringify(existing),
+      newValues: JSON.stringify(data),
     });
     revalidateProducts(existing.slug);
     if (slug !== existing.slug) revalidateProducts(slug);
     return { success: true, data, message: 'Produk berhasil diperbarui.' };
   } catch (error) {
     console.error('[updateProduct]', error);
-    return { success: false, error: 'Produk gagal diperbarui. Coba lagi.' };
+    return {
+      success: false,
+      error: isUniqueConstraintError(error)
+        ? 'Slug sudah digunakan. Ubah slug lalu coba lagi.'
+        : 'Produk gagal diperbarui. Coba lagi.',
+    };
   }
 }
 
 export async function deleteProductById(id: string) {
-  if (!(await canManageProducts('delete'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageProducts('delete')))
+    return { success: false, error: 'Anda tidak memiliki akses untuk menghapus produk.' };
+  if (!id) return { success: false, error: 'ID produk tidak valid.' };
 
   const existing = await prisma.product.findUnique({ where: { id }, select: { slug: true } });
   if (!existing) return { success: false, error: 'Produk tidak ditemukan.' };
 
   try {
     await prisma.product.delete({ where: { id } });
+    await createAuditLog({
+      action: 'delete',
+      table: 'products',
+      recordId: id,
+      oldValues: JSON.stringify(existing),
+    });
     revalidateProducts(existing.slug);
     return { success: true, message: 'Produk berhasil dihapus.' };
   } catch (error) {

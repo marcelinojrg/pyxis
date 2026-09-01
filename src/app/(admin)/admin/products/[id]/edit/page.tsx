@@ -6,7 +6,7 @@ interface EditProductPageProps {
   params: Promise<{ id: string }>;
 }
 
-export const metadata = { title: 'Edit Produk â€” Pyxis Admin' };
+export const metadata = { title: 'Edit Produk — Pyxis Admin' };
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
   const { id } = await params;
