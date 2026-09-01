@@ -64,7 +64,7 @@ SITIVENT memiliki modul utama:
 | --- | :---: | --- |
 | Login (`/login`) | 🚧 | Halaman ada, tetapi masih memakai kode next-auth lama dan belum berfungsi. Autentikasi sudah pindah ke Better Auth — migrasi halaman login tercatat di `ONLY_ME.md`. |
 | Dashboard (`/admin`) | 🚧 | Baru halaman placeholder ("Dashboard Utama"). Proteksi rute sudah aktif di `src/proxy.ts` (butuh permission `admin.access`). |
-| Modul CRUD konten | ❌ | Belum tersedia (produk, artikel, karir, mitra, legal, pesan, site settings). |
+| Modul CRUD konten | ❌ | Scope CMS hanya Produk, Blog/Artikel, dan Karier. |
 
 **Implikasi praktis**: sampai known issues di `ONLY_ME.md` diperbaiki, admin belum bisa login dan mengelola konten lewat dashboard. Pengelolaan data sementara dilakukan langsung ke database (mis. `npx prisma studio`) oleh developer.
 
@@ -88,9 +88,8 @@ Panduan detail per modul akan ditulis di sini saat UI admin dibangun. Rencana mo
 - **Produk** — CRUD produk (nama, slug, deskripsi, benefit, fitur, kapabilitas, gambar via ImageKit).
 - **Blog/Artikel** — CRUD artikel rich text (TipTap), cover, kategori. Server action sudah tersedia (`services/admin/articles.ts`).
 - **Karir** — CRUD lowongan + kelola lamaran (`CareerApplication`).
-- **Mitra/Partner** — kelola logo klien (`Client`).
 - **User & Role** — CRUD user dan role RBAC. Server action sudah tersedia (`services/admin/users.ts`, `roles.ts`).
-- **Site Settings / Hero / Legal / Pesan** — menunggu model database dibuat ulang (lihat `CONTENT-DATA-MAPPING.md`).
+- **Site Settings / Hero / About / Mitra / Legal / Pesan / Page SEO** — bukan CMS pada scope ini; gunakan konten statis atau konfigurasi/env.
 
 ## 4. Praktik Aman (berlaku sekarang & nanti)
 

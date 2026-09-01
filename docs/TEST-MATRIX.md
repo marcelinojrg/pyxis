@@ -58,13 +58,10 @@ Matriks di bawah adalah **target QA**; skenario untuk fitur yang belum dibangun 
 | ADM-005 | edit product | public reflects change |
 | ADM-006 | delete product | removed |
 | ADM-007 | unpublished product | hidden public |
-| ADM-008 | featured toggle | home changes |
-| ADM-009 | partner CRUD | works |
-| ADM-010 | legal edit | public changes |
-| ADM-011 | career edit | public changes |
-| ADM-012 | site settings | footer/contact changes |
-| ADM-013 | message mark read | state updates |
-| ADM-014 | message delete | removed |
+| ADM-008 | product featured toggle | home changes |
+| ADM-009 | blog CRUD | article list/detail changes |
+| ADM-010 | career CRUD | career list/detail changes |
+| ADM-011 | career application management | application state updates |
 
 ## 4. Upload
 

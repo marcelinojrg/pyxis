@@ -1,52 +1,74 @@
-# AI Agents Guidelines - SITIVENT
+# AGENTS.md — Pyxis
 
-> Version: 1.0.0
->
-> Author: Naufal Akbar Nugroho
->
-> Project: SITIVENT
->
-> Framework: Next.js 16 App Router
->
-> Last Updated: 2026
+## Project
 
-Selamat datang di pedoman pengembangan AI SITIVENT. Dokumentasi ini dipecah menjadi beberapa bagian berikut untuk memudahkan pemeliharaan dan referensi:
+Pyxis is the company-profile website and CMS for PT. Pyxis Ultimate Solution.
+The product scope is public company content plus CMS management for Products,
+Blog, and Careers. Treat `docs/PRD.md` as the current product source of truth.
 
-## Menu Utama
+## Stack
 
-1. **Tentang Project & Roadmap**
-   - [PROJECT.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/PROJECT.md) - Tentang SITIVENT, deskripsi sistem, target event, dan rencana pengembangan di masa depan.
+- Next.js 16 App Router, React 19, TypeScript, and Tailwind CSS 4
+- Base UI/shadcn components, TanStack Query/Table, and Zod
+- Better Auth, Prisma 7, PostgreSQL, and Tiptap
+- ImageKit, Sharp, and Nodemailer integrations
+- npm 11 is the package manager
 
-2. **Arsitektur & Setup**
-   - [STACK.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/STACK.md) - Tech stack yang digunakan di project.
-   - [ARCHITECTURE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/ARCHITECTURE.md) - Prinsip arsitektur dan Route Groups.
-   - [FOLDER_STRUCTURE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/FOLDER_STRUCTURE.md) - Struktur folder dan pola struktur fitur.
+## Repository layout
 
-3. **Konvensi & Standar Kode**
-   - [CODING_STANDARDS.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/CODING_STANDARDS.md) - Aturan pengembangan umum, penamaan, import, React, form, dan validasi.
-   - [TYPESCRIPT.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/TYPESCRIPT.md) - Aturan type safety dan interface.
-   - [DATABASE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/DATABASE.md) - Konvensi database schema dan aturan query Prisma.
-   - [SERVICES.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/SERVICES.md) - Aturan Service Layer, Server Actions, query caching (React Query), dan error handling.
+- `src/app/(root)` — public website routes
+- `src/app/(admin)` — protected CMS routes
+- `src/app/(auth)` — authentication pages
+- `src/app/api` — API routes, including Better Auth
+- `src/components` — reusable UI components
+- `src/services` — server-side business logic and actions
+- `src/schemas` — validation schemas
+- `src/interfaces` — shared contracts and types
+- `src/lib`, `src/providers`, `src/hooks` — integrations, providers, and hooks
+- `prisma` — schema, migrations, and seed data
+- `test` — Playwright scenarios and test cases
 
-4. **Modul Bisnis & Alur Kerja**
-   - [FEATURES.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/FEATURES.md) - Daftar modul utama sistem.
-   - [EVENT_MODULE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/EVENT_MODULE.md) - Alur kerja dan validasi modul Event.
-   - [REGISTRATION_MODULE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/REGISTRATION_MODULE.md) - Alur kerja modul pendaftaran peserta.
-   - [PAYMENT_MODULE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/PAYMENT_MODULE.md) - Alur kerja modul pembayaran dan verifikasi.
-   - [ATTENDANCE_MODULE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/ATTENDANCE_MODULE.md) - Penanganan QR Code dan check-in kehadiran.
-   - [CERTIFICATE_MODULE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/CERTIFICATE_MODULE.md) - Pembuatan dan distribusi sertifikat digital.
-   - [EMAILS.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/EMAILS.md) - Arsitektur pengiriman email antrian.
-   - [FILE_UPLOADS.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/FILE_UPLOADS.md) - Aturan upload file dan kompresi media.
+## Required references
 
-5. **Keamanan, UI/UX, & Kinerja**
-   - [AUTHORIZATION.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/AUTHORIZATION.md) - Autentikasi Better Auth dan PBAC (Permission-based Access Control).
-   - [SECURITY.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/SECURITY.md) - Aturan keamanan umum, validasi input, dan sanitasi.
-   - [UI_GUIDELINES.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/UI_GUIDELINES.md) - Pedoman UI/UX dasar dan SEO.
-   - [COMPONENTS.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/COMPONENTS.md) - Komponen existing, layout form, data table, loading, dan empty states.
-   - [PERFORMANCE.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/PERFORMANCE.md) - Aturan optimasi kinerja.
+Read the relevant local documentation before making architecture or feature
+changes:
 
-6. **Pengujian & Kontribusi**
-   - [TESTING.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/TESTING.md) - Pedoman pengujian unit/integrasi.
-   - [CONTRIBUTING.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/SKILLS/CONTRIBUTING.md) - Alur kerja kontribusi, aturan respons AI, batasan AI, dan konvensi git commit.
-   - [VERSIONING.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/VERSIONING.md) - Aturan semantic versioning dan pembuatan changelog otomatis.
-   - [DOCUMENTATION.md](file:///run/media/nuflakbrr/Daily/Projects/Indevpro/sitivent/PRD/DOCUMENTATION.md) - Cetak biru arsitektur global, workflow fitur baru, dan indeks fitur rinci.
+- Product and architecture: `docs/PRD.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`
+- Folder and documentation conventions: `docs/FOLDER_STRUCTURE.md`, `docs/DOCUMENTATION.md`
+- Code and type standards: `docs/CODING_STANDARDS.md`, `docs/TYPESCRIPT.md`
+- Data and services: `docs/DATABASE.md`, `docs/SERVICES.md`
+- Security and access: `docs/AUTHORIZATION.md`, `docs/SECURITY.md`
+- Testing and contribution: `docs/TESTING.md`, `docs/CONTRIBUTING.md`
+- Private/local constraints: `docs/ONLY_ME.md` (when present and relevant)
+
+`CLAUDE.md` is the agent entry point and may add task-specific guidance.
+
+## Commands
+
+Use npm scripts from `package.json`:
+
+- `npm run dev` — development server
+- `npm run build` / `npm run start` — production build and server
+- `npm run lint` / `npm run lint:fix` — linting
+- `npm run typecheck` — TypeScript validation
+- `npm run test:cms` — CMS tests
+- `npm run db:seed` — seed the database
+
+## Engineering rules
+
+- Preserve unrelated user changes; inspect the diff before editing overlapping files.
+- Prefer the smallest correct change and reuse existing patterns.
+- Keep validation at trust boundaries and preserve security, accessibility, and error handling.
+- For database changes, update Prisma schema/migrations and verify affected services.
+- Do not expose secrets or private configuration.
+- Run the narrowest relevant checks after changes; use `npm run lint` and
+  `npm run typecheck` when the change spans general application code.
+- Never add `Co-Authored-By: Codex` or other Codex authorship attribution to commits.
+
+## Known documentation issues
+
+- `docs/PROJECT.md` currently describes the old SITIVENT project; do not use it
+  as the Pyxis product source of truth until corrected.
+- `docs/STACK.md` mentions pnpm; use npm as declared by `package.json`.
+- `README.md` references `npm run check-types`; the actual script is
+  `npm run typecheck`.

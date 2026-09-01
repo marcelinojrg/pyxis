@@ -1,4 +1,6 @@
-# Cetak Biru Arsitektur & Panduan Dokumentasi Fitur - SITIVENT
+# Cetak Biru Arsitektur & Panduan Dokumentasi Fitur - Pyxis
+
+> Scope CMS aktif: hanya Produk, Blog, dan Karier. Rujukan lama yang menyebut modul CMS lain atau SITIVENT tidak berlaku untuk scope Pyxis.
 
 Dokumen ini berfungsi sebagai peta navigasi utama dan pedoman pengembangan untuk programmer dan AI Agent dalam memahami arsitektur, tech stack, alur kerja pengembangan, serta struktur fitur di proyek **SITIVENT**.
 
