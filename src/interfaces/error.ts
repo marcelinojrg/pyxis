@@ -6,6 +6,7 @@ export interface RequestError extends Error {
 export interface ErrorStateProps {
   code: number;
   error?: Error;
+  onRetry?: () => void;
 }
 
 export interface ErrorMetadata {

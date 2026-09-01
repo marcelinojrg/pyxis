@@ -29,7 +29,7 @@ export default async function CareersPage() {
         select: { name: true },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
   });
 
   return (

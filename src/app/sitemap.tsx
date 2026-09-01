@@ -26,7 +26,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         where: { isActive: true },
         select: { slug: true, updatedAt: true },
       }),
-      prisma.article.findMany({ select: { slug: true, id: true, updatedAt: true } }),
+      prisma.article.findMany({
+        where: { isPublished: true, slug: { not: null } },
+        select: { slug: true, updatedAt: true },
+      }),
       prisma.career.findMany({
         where: { isActive: true },
         select: { slug: true, updatedAt: true },
@@ -40,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: product.updatedAt,
       })),
       ...articles.map((article) => ({
-        url: `${siteUrl}/blog/${article.slug || article.id}`,
+        url: `${siteUrl}/blog/${article.slug!}`,
         lastModified: article.updatedAt,
       })),
       ...careers.map((career) => ({

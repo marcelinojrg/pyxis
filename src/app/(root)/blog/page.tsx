@@ -13,7 +13,12 @@ export const metadata = genPageMetadata({
 export const revalidate = 60;
 
 export default async function BlogPage() {
+  const now = new Date();
   const articles = await prisma.article.findMany({
+    where: {
+      isPublished: true,
+      publishedAt: { not: null, lte: now },
+    },
     select: {
       id: true,
       title: true,
@@ -21,16 +26,20 @@ export default async function BlogPage() {
       cover: true,
       slug: true,
       createdAt: true,
+      publishedAt: true,
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
   });
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <BlogHero />
-      <BlogList articles={articles} />
+      <BlogList
+        articles={articles.map(({ publishedAt, ...article }) => ({
+          ...article,
+          createdAt: publishedAt || article.createdAt,
+        }))}
+      />
     </div>
   );
 }

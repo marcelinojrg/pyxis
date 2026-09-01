@@ -32,6 +32,14 @@ const PERMISSIONS = [
   'product.create',
   'product.update',
   'product.delete',
+  'career.read',
+  'career.create',
+  'career.update',
+  'career.delete',
+  'career.category.read',
+  'career.category.create',
+  'career.category.update',
+  'career.category.delete',
 ];
 
 async function main() {
@@ -63,6 +71,10 @@ async function main() {
 
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@pyxis.co.id';
   const rawPassword = process.env.ADMIN_PASSWORD || 'admin';
+
+  if (process.env.NODE_ENV === 'production' && rawPassword === 'admin') {
+    throw new Error('ADMIN_PASSWORD wajib diatur ke nilai aman pada production.');
+  }
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
