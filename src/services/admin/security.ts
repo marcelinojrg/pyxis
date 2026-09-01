@@ -76,9 +76,10 @@ export async function createAuditLog(params: {
   newValues?: string;
 }) {
   try {
+    const session = params.userId ? null : await verifySession();
     return await prisma.auditLog.create({
       data: {
-        userId: params.userId,
+        userId: params.userId ?? session?.user.id,
         action: params.action,
         table: params.table,
         recordId: params.recordId,
