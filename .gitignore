@@ -87,3 +87,4 @@ bun.lock
 graphify-out
 src/graphify-out
 *.graphify*
+.github/workflows/ci.yml
