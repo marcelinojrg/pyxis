@@ -1,119 +1,21 @@
-# Component Rules & Conventions - SITIVENT
+# Component Rules — Pyxis
 
-## Component Rules
+## Struktur
 
-Component harus:
+- `components/ui`: primitif shadcn/ui dan toolbar Tiptap.
+- `components/Common`: komponen reusable lintas fitur.
+- `components/Mixins`: Navbar dan Footer.
+- `app/(root)/_components`: section halaman publik.
+- `app/(admin)/_components`: form dan table CMS.
 
-Single Responsibility.
+## Aturan
 
-Jika component lebih dari ±250 baris, pecah menjadi component kecil.
+- Reuse komponen yang sudah ada sebelum membuat komponen baru.
+- UI primitive tidak boleh mengakses Prisma atau memuat business logic.
+- Props harus typed.
+- Form wajib memiliki label, error state, disabled state, dan keyboard support.
+- Variant reusable dapat memakai CVA; jangan membuat abstraction untuk satu penggunaan.
+- Styling mengikuti token `globals.css` dan `DESIGN.md`.
+- Gambar memakai `next/image` dan alt text deskriptif.
 
-Gunakan:
-
-```tsx
-Props Interface
-```
-
-untuk seluruh component.
-
-## Existing Components
-
-AI wajib menggunakan component yang sudah tersedia pada project.
-
-Contoh:
-
-```text
-Heading
-DataTable
-ApiAlert
-ApiListAlert
-Loader
-Spinner
-Modal
-ImagePreviewModal
-ImageCropperModal
-ThemeToggle
-RichTextEditor
-EmptyState
-```
-
-Jangan membuat komponen baru apabila fungsi yang sama sudah tersedia.
-
-## Form Components
-
-Gunakan komponen UI bawaan project.
-
-Contoh:
-
-```text
-Input
-Textarea
-Select
-Checkbox
-Switch
-Calendar
-Button
-Dialog
-Popover
-Tooltip
-Pagination
-Badge
-Avatar
-Table
-```
-
-## Data Table Convention
-
-Semua halaman management menggunakan: TanStack Table.
-
-Struktur:
-
-```text
-Columns.tsx
-CellAction.tsx
-DataTable.tsx
-```
-
-CellAction hanya berisi aksi:
-
-- Detail
-- Edit
-- Delete
-
-## Empty State
-
-Apabila data kosong gunakan:
-
-```tsx
-<EmptyState />
-```
-
-Jangan membuat tampilan kosong baru.
-
-## Loading State
-
-Saat mengambil data: Gunakan:
-
-```tsx
-<Loader />
-```
-
-atau
-
-```tsx
-<Spinner />
-```
-
-Jangan menggunakan text: `Loading...`
-
-## Notification
-
-Gunakan: Sonner untuk seluruh notifikasi.
-
-Contoh:
-
-```ts
-toast.success()
-toast.error()
-toast.warning()
-```
+Komponen aktif harus diverifikasi dari source, bukan daftar inventaris statis yang mudah usang.

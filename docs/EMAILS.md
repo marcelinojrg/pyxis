@@ -1,24 +1,5 @@
-# Email Architecture - SITIVENT
+# Email Pyxis — Ditunda
 
-Seluruh email dikirim menggunakan queue.
+Schema `EmailQueue` dan integrasi Nodemailer sudah ada, tetapi verifikasi SMTP production, retry durable, dan observability email tidak dikerjakan pada fase ini.
 
-Jangan mengirim email secara synchronous pada request utama.
-
-Jenis email:
-
-- Welcome Email
-- Email Verification
-- Registration Success
-- Payment Success
-- QR Code Delivery
-- Event Reminder
-- Certificate Ready
-- Password Reset
-
-## Email Rules
-
-Gunakan template yang konsisten.
-
-QR Code dikirim sebagai attachment atau embedded image.
-
-Certificate dikirim sebagai attachment PDF.
+Jangan mengubah implementasi email sampai ada instruksi terpisah.

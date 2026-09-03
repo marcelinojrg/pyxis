@@ -41,4 +41,4 @@ pyxis/
 
 - `npm run dev`: Start the development server
 - `npm run build`: Build for production
-- `npm run check-types`: Check TypeScript types
+- `npm run typecheck`: Check TypeScript types

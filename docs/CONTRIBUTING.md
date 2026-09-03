@@ -1,4 +1,4 @@
-# Contributing & Development Workflow - SITIVENT
+# Contributing & Development Workflow — Pyxis
 
 ## AI Response Rules
 

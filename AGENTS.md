@@ -65,10 +65,12 @@ Use npm scripts from `package.json`:
   `npm run typecheck` when the change spans general application code.
 - Never add `Co-Authored-By: Codex` or other Codex authorship attribution to commits.
 
-## Known documentation issues
+<!-- BEGIN:nextjs-agent-rules -->
 
-- `docs/PROJECT.md` currently describes the old SITIVENT project; do not use it
-  as the Pyxis product source of truth until corrected.
-- `docs/STACK.md` mentions pnpm; use npm as declared by `package.json`.
-- `README.md` references `npm run check-types`; the actual script is
-  `npm run typecheck`.
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

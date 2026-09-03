@@ -34,19 +34,18 @@ Token warna memakai **variabel CSS oklch** di `src/app/globals.css` (pola shadcn
 | `success`       | `#16A34A`              | Notifikasi sukses (misal: pesan terkirim)                     |
 | `error`         | `#DC2626`              | Notifikasi error/validasi gagal                               |
 
-Cara menerapkan palet brand: ubah nilai variabel CSS di `:root` (dan `.dark`) pada `globals.css` — **jangan** menulis hex langsung berulang-ulang di komponen. Aksen hijau editorial `#4e7145` dan hangat `#D97757` yang terlihat di `globals.css` adalah sisa styling konten lama (`.article-content`, `.event-card`) dan akan dirapikan saat konten dibangun ulang.
+Cara menerapkan palet brand: ubah nilai variabel CSS di `:root` (dan `.dark`) pada `globals.css` — **jangan** menulis hex langsung berulang-ulang di komponen.
 
 ## 3. Tipografi
 
 ### Kondisi aktual (2026-08-19)
 
-- Font yang dimuat di `src/app/layout.tsx` (`next/font/google`): **Inter** (body, `--font-sans`; juga dipakai sebagai `--font-heading`), **Geist** (`--font-geist-sans`), **Geist Mono** (`--font-geist-mono`).
-- **Poppins belum dipasang** — daftar di bawah adalah target brand.
+- Font yang dimuat di `src/app/layout.tsx` (`next/font/google`): **Inter** untuk heading dan **Roboto** untuk body.
 
 ### Target brand
 
-- **Font heading**: `Poppins` (600/700 weight) — kesan modern, tegas
-- **Font body**: `Inter` (400/500 weight) — sangat readable untuk teks panjang
+- **Font heading**: `Inter` (600/700 weight) — modern, tegas
+- **Font body**: `Roboto` (400 weight) — readable untuk teks panjang
 - Import lewat `next/font/google`, JANGAN link CDN manual di `<head>`
 
 | Elemen             | Ukuran (desktop)   | Ukuran (mobile)    | Weight |
@@ -134,34 +133,3 @@ Dashboard admin **tidak perlu semewah halaman publik** — prioritaskan fungsi &
 - Bahasa Indonesia formal-semi-santai (bukan kaku birokratis, tapi tetap profesional B2B).
 - CTA button pakai kata kerja aktif: "Hubungi Kami", "Lihat Produk", "Kirim Pesan" — bukan "Klik Disini".
 - Hindari jargon berlebihan; jelaskan fitur produk dengan bahasa yang dipahami pemilik hotel/restoran (bukan hanya developer).
-
-# UI / UX & SEO Guidelines - SITIVENT
-
-## UI / UX Guidelines
-
-Seluruh tampilan harus mengikuti prinsip:
-
-- Clean
-- Modern
-- Responsive
-- Accessible
-- Minimalist
-
-Gunakan komponen yang sudah tersedia.
-
-Jangan membuat ulang component apabila sudah ada.
-
-Prioritaskan reuse dibanding duplicate.
-
-## SEO Rules
-
-Landing page wajib memiliki:
-
-- Metadata
-- OpenGraph
-- Twitter Card
-- Canonical URL
-- Sitemap
-- Robots
-
-Gunakan metadata API bawaan Next.js.

@@ -99,7 +99,7 @@ Sebuah task dianggap selesai HANYA jika:
 - ❌ Jangan membuat fitur di luar scope `PRD.md` bagian "Out of Scope" tanpa persetujuan eksplisit dari user.
 - ❌ Jangan skip validasi auth/permission di server action dengan alasan "biar cepat testing dulu".
 - ❌ Jangan generate desain/komponen yang bertentangan dengan `DESIGN.md`.
-- ❌ Jangan menghidupkan kembali kode leftover sistem event lama (Sitivent) yang sudah dibersihkan 2026-08-19.
+- ❌ Jangan menghidupkan kembali kode leftover sistem event lama yang sudah dibersihkan.
 
 ## 9. Kalau Ragu
 

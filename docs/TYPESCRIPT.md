@@ -1,40 +1,17 @@
-# TypeScript Rules - SITIVENT
+# TypeScript Rules — Pyxis
 
-## Anti Any
+- `strict` wajib aktif.
+- Jangan memakai `any` tanpa alasan yang terdokumentasi.
+- Gunakan `unknown` lalu lakukan narrowing untuk input tidak tepercaya.
+- Gunakan `import type` karena `verbatimModuleSyntax` aktif.
+- Gunakan type hasil Zod untuk data form bila sesuai.
+- Gunakan interface bersama di `src/interfaces`; type lokal tetap dekat dengan pemakaiannya.
+- Jangan memakai non-null assertion untuk menyembunyikan state yang belum divalidasi.
+- Tangani nilai nullable dari Prisma secara eksplisit.
+- Server Action mengembalikan `ServiceResponse<T>` yang typed.
 
-Dilarang:
+Validasi TypeScript:
 
-```ts
-const data: any
+```bash
+npm run typecheck
 ```
-
-Gunakan:
-
-```ts
-const data: Event
-```
-
-atau
-
-```ts
-const data: EventWithRegistration
-```
-
-## Interface First
-
-Semua object kompleks harus memiliki interface.
-
-Lokasi:
-
-```text
-src/interfaces/features/
-```
-
-## Strict Type Safety
-
-AI wajib:
-
-- Menghindari any
-- Menghindari unknown tanpa validasi
-- Menggunakan Zod
-- Menggunakan TypeScript strict mode

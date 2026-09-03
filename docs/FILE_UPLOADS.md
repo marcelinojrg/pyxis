@@ -1,47 +1,22 @@
-# File Upload & Media Rules - SITIVENT
+# Upload Gambar — Pyxis
 
-Seluruh upload dilakukan melalui endpoint upload.
+Semua gambar bisnis diunggah melalui `src/services/public/uploads.ts`.
 
-Jenis file:
+## Alur
 
-### Banner
+1. Verifikasi permission yang sesuai.
+2. Validasi tipe, ukuran, dan dimensi di server.
+3. Kompres gambar dengan Sharp.
+4. Unggah ke ImageKit.
+5. Simpan URL/identitas asset pada model terkait.
+6. Hapus asset lama saat replacement atau penghapusan record berhasil.
 
-- jpg
-- png
-- webp
+## Aturan
 
-### Certificate Template
+- Format gambar mengikuti validasi service yang aktif.
+- Jangan menyimpan upload pada filesystem lokal production.
+- Jangan percaya MIME type atau ukuran dari client.
+- Jangan menaruh ImageKit private key di client.
+- Gunakan `next/image` dan alt text deskriptif saat render.
 
-- pdf
-
-### Attachment
-
-- pdf
-- docx
-- pptx
-- zip
-
-### Avatar
-
-- jpg
-- png
-- webp
-
-Semua gambar wajib dikompresi menggunakan Sharp.
-
-## Media Rules
-
-Lokasi upload:
-
-```text
-public/uploads
-```
-
-Semua file harus memiliki nama unik.
-
-Gunakan:
-
-- UUID
-- Timestamp
-
-Hindari nama asli file sebagai filename.
+Upload dokumen, CV publik, dan attachment bukan bagian pekerjaan deployment saat ini.

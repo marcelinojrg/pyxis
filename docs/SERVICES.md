@@ -1,127 +1,28 @@
-# Service Layer & Query Conventions - SITIVENT
+# Service Layer — Pyxis
 
-Semua business logic berada pada:
+Business logic server berada di `src/services`. Komponen UI tidak boleh memuat authorization atau query database langsung.
 
-```text
-src/services
-```
+## Domain aktif
 
-Service bertanggung jawab terhadap:
+- `admin/products.ts` — CRUD Produk.
+- `admin/articles.ts` — CRUD Blog dan kategori.
+- `admin/careers.ts` — CRUD Karier dan kategori.
+- `admin/security.ts` — session, permission, dan audit log.
+- `admin/users.ts` dan `admin/roles.ts` — service RBAC; UI CMS bukan scope saat ini.
+- `public/uploads.ts` — validasi, kompresi, upload, dan penghapusan gambar.
+- `public/auth.ts` — helper auth yang masih perlu audit scope.
 
-- Authorization
-- Validation
-- Database Query
-- Business Logic
-- Transaction
+## Kontrak
 
-Service TIDAK BOLEH:
+Server Action:
 
-- Render UI
-- Mengakses DOM
-- Menggunakan React Hook
+- memvalidasi input di server;
+- memverifikasi permission sebelum mutasi;
+- memakai Prisma transaction ketika beberapa write harus atomik;
+- mengembalikan `ServiceResponse<T>`;
+- tidak mengirim Error mentah, stack trace, password, token, atau secret;
+- menjalankan `revalidatePath` atau invalidasi query setelah mutasi berhasil.
 
-## Server Action Rules
+Error log harus cukup untuk diagnosis tanpa membocorkan data pribadi.
 
-Seluruh operasi database dilakukan pada:
-
-```text
-src/services
-```
-
-Server Action bertanggung jawab terhadap:
-
-- validation
-- authorization
-- transaction
-- business logic
-
-Component hanya memanggil service.
-
-## Dashboard Convention
-
-Dashboard Admin menampilkan:
-
-- Total Event
-- Event Published
-- Event Closed
-- Total Registration
-- Total Participant
-- Total Revenue
-- Total Check In
-- Total Certificate
-- Popular Event
-
-Dashboard Peserta menampilkan:
-
-- Upcoming Event
-- Riwayat Event
-- QR Code
-- Certificate
-- Payment Status
-
-### Dashboard Query
-
-Gunakan:
-
-```ts
-prisma.$transaction()
-```
-
-untuk seluruh card statistik.
-
-Jangan menjalankan query satu per satu.
-
-## React Query Convention
-
-Seluruh data fetching menggunakan: TanStack Query.
-
-Contoh Query Key:
-
-```ts
-["events"]
-["registrations"]
-["payments"]
-["participants"]
-["dashboard"]
-```
-
-Mutasi wajib: `invalidateQueries()` setelah berhasil.
-
-## Error Handling
-
-Server Action wajib mengembalikan object.
-
-Contoh:
-
-```ts
-{
-    success: true,
-    message: "Event berhasil dibuat.",
-    data
-}
-```
-
-atau
-
-```ts
-{
-    success: false,
-    message: "Kuota sudah penuh."
-}
-```
-
-Jangan melempar Error mentah ke UI.
-
-## Logging
-
-Error server harus dicatat.
-
-Minimal:
-
-- waktu
-- endpoint
-- user
-- action
-- error
-
-Jangan menampilkan stacktrace ke user.
+Pekerjaan email ditunda.

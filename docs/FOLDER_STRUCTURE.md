@@ -1,4 +1,4 @@
-# Folder Structure - SITIVENT
+# Folder Structure — Pyxis
 
 Project menggunakan Feature Based Architecture.
 

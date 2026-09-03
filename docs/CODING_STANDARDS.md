@@ -1,236 +1,43 @@
-# Coding Standards & Guidelines - SITIVENT
+# Coding Standards — Pyxis
 
-## Development Rules
+## TypeScript dan React
 
-AI harus:
+- TypeScript strict; hindari `any`.
+- Gunakan `import type` untuk type-only import.
+- Komponen React berupa function component.
+- Gunakan Server Component secara default; Client Component hanya bila membutuhkan state, event, atau browser API.
+- Gunakan `next/image` untuk gambar.
 
-- Menggunakan kode yang konsisten dengan codebase.
-- Tidak membuat abstraksi berlebihan.
-- Tidak membuat library baru apabila sudah tersedia.
-- Tidak membuat utility baru apabila sudah ada utility yang setara.
-- Tidak membuat komponen baru apabila komponen yang sama sudah tersedia.
-- Tidak melakukan refactor besar tanpa diminta.
-- Meminimalkan perubahan file.
-- Menghindari breaking changes.
-- Menjaga backward compatibility.
+## Struktur
 
-## Naming Convention
+- Primitif UI: `src/components/ui`.
+- Reusable lintas halaman: `src/components/Common`.
+- Komposit layout: `src/components/Mixins`.
+- Section publik: `src/app/(root)/_components`.
+- Business logic dan Server Action: `src/services`.
+- Validasi trust boundary: `src/schemas`.
 
-### Database Table
+## Data dan security
 
-Gunakan:
+- Produk, Blog, dan Karier berasal dari database.
+- Semua mutasi memerlukan auth, permission, dan validasi server.
+- Jangan hardcode secret.
+- Jangan expose stack trace atau data sensitif.
+- Upload gambar hanya melalui service ImageKit.
 
-```text
-snake_case
+## Penamaan
+
+- Primitif UI: kebab-case.
+- Komponen fitur: PascalCase.
+- Variable dan function: camelCase.
+- Model/type/component: PascalCase.
+
+## Selesai
+
+Jalankan pemeriksaan paling sempit yang relevan. Perubahan umum wajib melewati:
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
 ```
-
-Contoh:
-
-```text
-event_registrations
-event_certificates
-payment_transactions
-```
-
-### Prisma Model
-
-Gunakan:
-
-```text
-PascalCase
-```
-
-Contoh:
-
-```ts
-User
-Role
-Permission
-Event
-Registration
-Payment
-Certificate
-```
-
-### Component
-
-Gunakan:
-
-```text
-PascalCase
-```
-
-Contoh:
-
-```tsx
-EventForm
-RegistrationTable
-PaymentCard
-```
-
-### Variables
-
-Gunakan:
-
-```ts
-camelCase
-```
-
-Contoh:
-
-```ts
-eventId
-registrationStatus
-certificateEnabled
-```
-
-### Constants
-
-Gunakan:
-
-```ts
-UPPER_SNAKE_CASE
-```
-
-Contoh:
-
-```ts
-MAX_UPLOAD_SIZE
-DEFAULT_PAGE_SIZE
-```
-
-## Import Rules
-
-Gunakan alias.
-
-Benar:
-
-```ts
-import { prisma } from "@/lib/prisma";
-```
-
-Salah:
-
-```ts
-import { prisma } from "../../../../lib/prisma";
-```
-
-Alias yang diperbolehkan:
-
-```text
-@/components
-@/hooks
-@/interfaces
-@/lib
-@/providers
-@/schemas
-@/services
-@/types
-```
-
-## React Rules
-
-Gunakan:
-
-- Functional Component
-- Hooks
-- Server Component terlebih dahulu
-
-Prioritas:
-
-1. Server Component
-2. Client Component bila diperlukan
-
-Jangan menambahkan:
-
-```tsx
-"use client";
-```
-
-tanpa alasan yang jelas.
-
-## Form Rules
-
-Semua form wajib menggunakan:
-
-- React Hook Form
-- Zod
-
-Contoh:
-
-```ts
-const form = useForm({
-  resolver: zodResolver(eventSchema)
-});
-```
-
-Dilarang melakukan validasi manual apabila dapat dilakukan oleh Zod.
-
-## Validation Rules
-
-Seluruh input wajib divalidasi.
-
-Meliputi:
-
-- Form
-- Query Parameter
-- Route Parameter
-- Server Action
-- Upload File
-
-Tidak ada input yang boleh langsung masuk ke database.
-
-## Coding Style
-
-Gunakan Early Return.
-
-Benar:
-
-```ts
-if (!event) {
-    return ...
-}
-```
-
-Hindari nested if yang terlalu dalam.
-
-Gunakan helper apabila logic mulai panjang.
-
-Business logic tidak boleh berada di component.
-
-## Accessibility
-
-Semua form harus memiliki:
-
-Label.
-
-Semua tombol harus memiliki:
-
-aria-label
-
-apabila hanya berupa icon.
-
-Pastikan seluruh dialog memiliki:
-
-- title
-- description
-
-## Environment Variables
-
-Seluruh environment variable diakses melalui:
-
-```text
-process.env
-```
-
-Jangan melakukan hardcode.
-
-Contoh:
-
-- DATABASE_URL
-- BETTER_AUTH_SECRET
-- SMTP_HOST
-- SMTP_PORT
-- SMTP_USER
-- SMTP_PASS
-- APP_URL

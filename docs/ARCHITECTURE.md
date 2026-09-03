@@ -50,7 +50,6 @@ src/
 │   └── Mixins/               # Komponen komposit (Navbar, Footer)
 ├── services/                 # Server Actions ('use server'), dikelompokkan per aktor
 │   ├── admin/                # users, roles, articles, security (+ audit, cors, inputs)
-│   ├── participant/          # profile
 │   ├── public/               # uploads, emails, auth
 │   └── index.ts              # Barrel re-export
 ├── schemas/                  # Schema validasi Zod per domain (users, roles, articles, auth, ...)
@@ -109,7 +108,7 @@ Relasi role user ada dua jalur: many-to-many `User.roles` dan one-to-many `User.
 
 Enum yang tersedia di generated client: `EmailStatus`, `ApplicationStatus`.
 
-**Catatan penting**: model lama `Admin`, `HeroSection`, `AboutContent`, `ContactMessage`, `SiteSettings`, `PageSeo`, `Partner*`, `LegalContent`, `CareerContent`, `HomeHighlight` **sudah tidak ada** di schema. Konten yang dulu disimpan di model tersebut kini harus dipetakan ulang (lihat `CONTENT-DATA-MAPPING.md`).
+Konten CMS hanya memakai model Produk, Blog, dan Karier. Konten company profile lain berasal dari source statis atau environment sesuai `PRD.md`.
 
 ## 4. Pola Mutasi Data: Server Actions (BUKAN Route Handler)
 
@@ -140,12 +139,12 @@ Alur standar setiap mutasi server action:
 1. Konfigurasi server: `src/lib/auth.ts` — `betterAuth` + Prisma adapter + plugin `admin`; email+password aktif, reset password & verifikasi email dikirim lewat `queueEmail`.
 2. Client: `src/lib/authClient.ts` — `createAuthClient` + `adminClient`; export `useSession`, `signIn`, `signUp`, `signOut`.
 3. Proteksi route: `src/proxy.ts` (Next.js 16 proxy) — cek session langsung dari DB, cek expiry, lalu cek permission RBAC:
-   - `/admin/*` butuh permission `admin.access`; tanpa itu di-redirect ke `/participant/dashboard`.
+   - `/admin/*` butuh permission `admin.access`; tanpa itu di-redirect ke halaman publik.
    - `/login` untuk user yang sudah login di-redirect ke dashboard sesuai role.
 4. Otorisasi di server action: `verifyPermission` membaca permission user dari relasi `roles → permissions` (dan `roleId`).
 5. Di client, `PermissionProvider` menyediakan data permission/role user untuk UI.
 
-> ⚠️ **Known issue**: Route handler Better Auth (`/api/auth/[...all]`) belum dibuat di `src/app` — lihat `ONLY_ME.md`.
+Route handler Better Auth tersedia di `src/app/api/auth/[...all]/route.ts`.
 
 ## 6. Alur Upload Gambar (ImageKit)
 
@@ -189,18 +188,15 @@ SMTP_HOST/PORT/USER/PASS # kredensial SMTP (Nodemailer)
 
 ## 10. Deployment
 
-1. Push repo ke GitHub → connect ke Vercel.
-2. Set semua env dari `.env.example` di dashboard Vercel.
-3. Build command menjalankan `prisma generate` + `prisma migrate deploy` + `next build` (Turbopack).
-4. Seed akun admin awal via `npm run db:seed` (lihat known issue di bawah).
+1. Provision PostgreSQL production dan pasang environment sesuai `.env.example`.
+2. Jalankan `npm run db:migrate:deploy` satu kali melalui deployment job yang terkontrol.
+3. Jalankan `npm run build`.
+4. Jalankan seed admin hanya saat bootstrap awal, lalu ganti password default.
+5. Deploy aplikasi dan verifikasi `/api/health`.
+6. Jalankan smoke test production, observability check, backup/restore check, dan rollback check.
 
-## 11. Known Issues (per 2026-08-19)
+Docker menjalankan migration sebelum aplikasi start. Untuk Vercel, migration harus dijalankan melalui CI/job terpisah agar beberapa build paralel tidak berebut migration.
 
-Daftar lengkap & status perbaikan ada di `ONLY_ME.md`. Ringkasan yang memengaruhi arsitektur:
+## 11. Status Operasional
 
-- `/about` crash: `@/components/ui/container` dan `@/lib/queries/*` hilang; query lama memakai model yang sudah tidak ada di schema.
-- `/admin` crash: `@/lib/requireAdmin` hilang; layout masih memanggil `signOut` yang tidak ada di `lib/auth.ts`.
-- `/login` crash: masih import `next-auth/react` padahal project sudah pindah ke Better Auth.
-- Route handler Better Auth (`/api/auth/[...all]`) belum ada.
-- `prisma/seed.ts` masih memakai model lama (`admin`, `siteSettings`) dan `bcryptjs` yang belum terpasang.
-- Cache `.next` stale (validator route lama) — hapus folder `.next` untuk membersihkan.
+Status implementasi dan blocker terbaru hanya berada di `ONLY_ME.md`. Jangan menyalin daftar known issue bertanggal ke dokumen arsitektur.

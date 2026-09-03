@@ -1,147 +1,47 @@
-# TEST-MATRIX.md
-# QA and Acceptance Test Matrix
+# Matriks QA Pyxis
 
-## 0. Status Kelayakan (per 2026-08-19)
+Status implementasi terbaru berada di `ONLY_ME.md`. Matriks ini menyatakan pemeriksaan yang diperlukan sebelum production.
 
-Legend: ✅ bisa dijalankan sekarang · 🚧 terhalang known issue · ❌ fiturnya belum dibangun
+## Otomatis saat ini
 
-| Grup | Status | Catatan |
-| --- | :---: | --- |
-| 1. Public Navigation | 🚧 | Home ✅, About crash (known issue), Products/Partners/Legal/Careers belum dibangun |
-| 2. Lead Form | ❌ | Form kontak publik belum ada; newsletter (`/` footer) bisa dites |
-| 3. Admin | 🚧 | `/admin` & `/login` rusak (known issue di `ONLY_ME.md`) |
-| 4. Upload | ✅ | `uploadImage`/`deleteImage` (ImageKit) sudah ada di `services/public/uploads.ts` |
-| 5. Responsive | ✅ | Berlaku untuk halaman yang sudah ada |
-| 6. Accessibility | ✅ | Berlaku untuk halaman yang sudah ada |
-| 7. Security | 🚧 | Proteksi proxy ✅ berjalan; mutasi admin belum ada yang bisa dites |
-| 8. SEO | 🚧 | sitemap/robots/metadata ✅; halaman dinamis belum ada |
-| 9. Engineering | 🚧 | `typecheck`/`build` masih gagal karena known issues |
-| 10. Visual QA | 🚧 | Hanya untuk halaman yang sudah ter-render |
+| ID | Pemeriksaan | Implementasi |
+| --- | --- | --- |
+| AUTO-001 | Guest ditolak dari `/admin`, Products, Blog, dan Careers CMS | `cms-admin-access.spec.ts` |
+| AUTO-002 | Delapan halaman publik membuka tanpa HTTP 5xx pada viewport 360 px | `cms-public-pages.spec.ts` |
+| AUTO-003 | Tidak ada overflow horizontal pada delapan halaman publik | `cms-public-pages.spec.ts` |
+| AUTO-004 | TypeScript strict lulus | `npm run typecheck` |
+| AUTO-005 | ESLint lulus | `npm run lint` |
+| AUTO-006 | Prisma generate dan production build lulus | `npm run build` |
 
-Matriks di bawah adalah **target QA**; skenario untuk fitur yang belum dibangun dijalankan saat fiturnya selesai.
+## Wajib sebelum production
 
-## 1. Public Navigation
+### Auth dan security
 
-| ID | Scenario | Expected |
-|---|---|---|
-| PUB-001 | Open Home | loads without error |
-| PUB-002 | Navigate to About | correct page |
-| PUB-003 | Navigate to Products | published products shown |
-| PUB-004 | Open product detail | correct slug data |
-| PUB-005 | Open unpublished slug | not publicly rendered |
-| PUB-006 | Open invalid slug | 404 |
-| PUB-007 | Open Partners | content loads |
-| PUB-008 | Open Contact | form visible |
-| PUB-009 | Open Legal | 3 policy sections |
-| PUB-010 | Open Careers | correct status |
-| PUB-011 | Unknown path | custom 404 |
+- Login admin valid dan invalid.
+- Session kedaluwarsa diarahkan ke login.
+- User tanpa permission ditolak oleh route dan Server Action.
+- Seluruh mutasi Produk, Blog, dan Karier memvalidasi input di server.
+- Secret tidak masuk bundle client atau log.
 
-## 2. Lead Form
+### CMS
 
-| ID | Scenario | Expected |
-|---|---|---|
-| LEAD-001 | valid general contact | saved |
-| LEAD-002 | valid partnership | saved with source partnership |
-| LEAD-003 | invalid email | validation error |
-| LEAD-004 | missing required field | validation error |
-| LEAD-005 | too many requests | 429 |
-| LEAD-006 | server failure | safe error state |
+- CRUD Produk, termasuk slug unik, status aktif, urutan, gambar, benefit, fitur, dan kapabilitas.
+- CRUD Blog, termasuk kategori, cover, rich text, draft/publish, dan artikel draft tidak tampil publik.
+- CRUD Karier, termasuk kategori, slug unik, urutan, status aktif, dan lowongan nonaktif tidak tampil publik.
 
-## 3. Admin
+### Website publik
 
-| ID | Scenario | Expected |
-|---|---|---|
-| ADM-001 | no session /admin | redirect login |
-| ADM-002 | valid login | dashboard |
-| ADM-003 | invalid login | safe failure |
-| ADM-004 | create product | product stored |
-| ADM-005 | edit product | public reflects change |
-| ADM-006 | delete product | removed |
-| ADM-007 | unpublished product | hidden public |
-| ADM-008 | product featured toggle | home changes |
-| ADM-009 | blog CRUD | article list/detail changes |
-| ADM-010 | career CRUD | career list/detail changes |
-| ADM-011 | career application management | application state updates |
+- Home, About, Products, Blog, Careers, Contact, Legal, dan Partners pada mobile, tablet, dan desktop.
+- Detail Products, Blog, dan Careers: slug valid, slug tidak ada, serta content nonaktif/draft.
+- Metadata, canonical, sitemap, robots, Open Graph, dan halaman 404.
+- Keyboard navigation, focus, label form, heading, alt text, dan contrast.
 
-## 4. Upload
+### Deployment
 
-- valid JPG under 2MB;
-- valid PNG;
-- valid WebP;
-- invalid extension;
-- too large;
-- upload failure;
-- URL stored;
-- image rendered with next/image.
+- Environment production lengkap dan tervalidasi.
+- Migration deploy dan seed admin dilakukan secara terkendali.
+- `/api/health` mengembalikan 200 saat DB sehat dan 503 saat DB tidak sehat.
+- Production smoke test dijalankan setelah deploy.
+- Backup/restore, observability, alerting, dan rollback diverifikasi.
 
-## 5. Responsive
-
-Test:
-- 360x800;
-- 390x844;
-- 768x1024;
-- 1024x768;
-- 1280x800;
-- 1440x900.
-
-Check:
-- no horizontal scroll;
-- heading wrap;
-- CTA;
-- menu;
-- image crop;
-- forms;
-- tables.
-
-## 6. Accessibility
-
-- keyboard tab through navbar;
-- mobile menu keyboard;
-- Escape closes modal/menu;
-- form labels;
-- error announcement where appropriate;
-- visible focus;
-- color contrast;
-- semantic heading order.
-
-## 7. Security
-
-- guest cannot PUT product;
-- guest cannot DELETE product;
-- guest cannot update legal;
-- invalid JSON handled;
-- XSS payload safely rendered;
-- no secret in client bundle;
-- rate limit enforced.
-
-## 8. SEO
-
-- titles;
-- descriptions;
-- canonical;
-- sitemap;
-- robots;
-- OG;
-- product metadata;
-- no unpublished page leakage.
-
-## 9. Engineering
-
-- npm run lint;
-- npm run typecheck;
-- npm run build;
-- production smoke test.
-
-Baseline 2026-08-19: `typecheck`/`build` masih gagal karena known issues (`ONLY_ME.md`) — sebagian besar error leftover sudah dibersihkan (30 file sistem event lama dihapus), sisa error adalah modul hilang di `/about`, `/admin`, `/login`, dan `prisma/seed.ts` yang usang.
-
-## 10. Visual QA
-
-For each public page:
-- compare screenshot to Figma;
-- compare section order;
-- typography;
-- spacing;
-- imagery;
-- CTA;
-- responsive behavior;
-- hover/focus state.
+Pengujian email/SMTP tidak dikerjakan sampai ada instruksi terpisah.

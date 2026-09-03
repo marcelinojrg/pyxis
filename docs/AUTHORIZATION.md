@@ -1,65 +1,35 @@
-# Authentication & Authorization - SITIVENT
+# Authentication & Authorization — Pyxis
 
-Project menggunakan Better Auth.
+Pyxis memakai Better Auth untuk login, session, role, dan permission. Jangan membuat mekanisme auth kedua.
 
-Semua autentikasi harus menggunakan Better Auth.
+## Lapisan proteksi
 
-Jangan membuat authentication baru.
+1. `src/proxy.ts` melindungi route `/admin/*`.
+2. Server Action memverifikasi session dan permission sebelum membaca data sensitif atau melakukan mutasi.
+3. Client guard hanya untuk UX; client bukan batas keamanan.
 
-## Session
+## Permission aktif
 
-Selalu gunakan session Better Auth.
+- `admin.access`
+- `product.create|update|delete`
+- `article.create|update|delete`
+- `article.category.create|update|delete`
+- `career.create|update|delete`
+- `career.category.create|update|delete`
+- `user.read|create|update|delete`
+- `role.read|create|update|delete`
 
-Jangan menggunakan JWT custom.
+Beberapa service menerima `admin.access` sebagai fallback. Ikuti pola service domain yang sudah ada.
 
-## Permission
+## Aturan mutasi
 
-Menggunakan Permission Based Access Control (PBAC).
+Urutan wajib:
 
-Setiap endpoint wajib melakukan pengecekan permission.
+1. Ambil session dari Better Auth.
+2. Verifikasi permission di server.
+3. Validasi input dengan Zod.
+4. Jalankan operasi Prisma.
+5. Tulis audit log bila domain mendukungnya.
+6. Kembalikan error aman tanpa stack trace atau secret.
 
-Contoh:
-
-```text
-events.read
-
-events.create
-
-events.update
-
-events.delete
-
-events.publish
-
-registrations.read
-
-payments.verify
-```
-
-## Route Protection
-
-Route admin harus dilindungi.
-
-Gunakan:
-
-```text
-src/proxy.ts
-```
-
-Jangan menggunakan middleware lama.
-
-## Authorization Rules
-
-Seluruh Server Action wajib memvalidasi permission.
-
-Contoh:
-
-```ts
-await verifyPermission("events.create");
-```
-
-Jangan hanya melakukan pengecekan di client.
-
-Client hanya untuk UX.
-
-Server adalah sumber validasi utama.
+Guest dan user tanpa permission harus gagal tertutup.

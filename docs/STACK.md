@@ -1,53 +1,37 @@
-# Technology Stack - SITIVENT
+# Technology Stack — Pyxis
 
-AI wajib menggunakan stack yang sudah tersedia pada project.
+Gunakan dependency yang sudah tersedia. Jangan menambah package tanpa kebutuhan nyata dan persetujuan.
 
-## Frontend
+## Application
 
 - Next.js 16 App Router
 - React 19
-- TypeScript
-- TailwindCSS v4
-- Base UI
-- Shadcn UI
+- TypeScript strict
+- Tailwind CSS 4
+- shadcn/ui, Base UI, dan komponen lokal
 
-## State Management
-
-- TanStack Query
-
-## Form Handling
-
-- React Hook Form
-- Zod
-
-## Database
+## Data dan backend
 
 - PostgreSQL
-
-## ORM
-
-- Prisma ORM 7
-
-## Authentication
-
+- Prisma ORM 7 dengan PostgreSQL driver adapter
 - Better Auth
+- Zod 4
+- Server Actions untuk mutasi data
 
-## Table
+## UI dan content
 
-- TanStack Table
-
-## Charts
-
-- Recharts
-
-## Rich Text Editor
-
+- TanStack Query dan TanStack Table
+- React Hook Form
 - Tiptap
+- ImageKit dan Sharp
+- Lucide React
 
-## Image Processing
+## Tooling
 
-- Sharp
+- npm 11
+- ESLint
+- Playwright
+- Docker
+- GitHub Actions
 
-## Package Manager
-
-- pnpm
+Perintah resmi berada di `package.json`. Gunakan `npm run typecheck`, bukan `npm run check-types`.

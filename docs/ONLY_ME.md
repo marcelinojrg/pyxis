@@ -42,14 +42,15 @@ Status ini adalah baseline kerja berdasarkan PRD, arsitektur, dokumentasi desain
 - ✅ Tombol Blog “Muat Lebih Banyak” yang belum memiliki fungsi sudah dihapus.
 - ✅ Contact dan lamaran Karier tidak lagi menampilkan konfirmasi sukses palsu saat backend/upload belum aktif.
 - ⚠️ Home (`/`) sudah memiliki struktur dan section, tetapi sebagian konten masih hardcode.
-- ⚠️ About (`/about` atau `/tentang`) tersedia sebagian tetapi pernah tercatat crash karena import/query lama.
+- ⚠️ ~About (`/about` atau `/tentang`) tersedia sebagian tetapi pernah tercatat crash karena import/query lama.
 - ✅ Products (`/products` atau `/produk`) dan detail produk `[slug]` kini terhubung ke CMS lengkap: benefit, feature, beberapa capability, gambar, urutan, status aktif, validasi, dan slug unik.
 - ⚠️ Partners (`/partners` atau `/mitra`) sudah memiliki struktur halaman; data dan form kemitraan belum lengkap.
 - ✅ Careers (`/careers` atau `/karir`) kini memiliki CMS lowongan lengkap: kategori, detail peran, urutan, status aktif, dan slug unik. Lamaran online tetap dinonaktifkan sesuai scope.
 - ⚠️ Contact (`/contact` atau `/kontak`) memiliki halaman/form visual; form sengaja dinonaktifkan dan belum menyimpan leads.
-- ⚠️ Legal (`/legal`) bukan bagian CMS; halaman dapat memakai konten statis sesuai scope.
+- ✅ Legal (`/legal`) bukan bagian CMS; halaman statis sudah sesuai scope.
 - ✅ Blog list/detail kini memiliki CMS artikel, kategori, cover, rich-text editor, serta draft/publish. Artikel draft tidak tampil di publik atau sitemap.
 - ✅ Root layout, metadata helper, sitemap, robots, error, loading, dan not-found sudah tersedia.
+- ✅ Placeholder gambar publik pada Home dan About sudah diisi dengan aset lokal di `public/assets/img` dan terhubung melalui `next/image`.
 - ⚠️ Verifikasi seluruh halaman publik pada viewport 360px+, tablet, dan desktop belum selesai.
 
 ### 4. Database dan data layer
@@ -105,5 +106,20 @@ Scope CMS resmi hanya Produk, Blog, dan Karier. Halaman lain bukan CMS pada vers
 - Akses admin lokal: buka `http://localhost:3000/admin` setelah menjalankan `docker compose up -d` dan `npm run dev`.
 - Kredensial seed development: `admin@pyxis.co.id` / `admin`, kecuali `ADMIN_EMAIL` dan `ADMIN_PASSWORD` di `.env` diatur.
 - Password default hanya untuk development; wajib diganti sebelum production.
+
+## Log Audit Production Readiness
+
+### 2026-09-01 — Full production/deployment audit
+
+- Status: **NO-GO production**; project masih berada pada tahap staging/internal QA.
+- Estimasi readiness: **40/100**.
+- Blocker deployment: Dockerfile memakai pnpm sementara project memakai npm, `.next/standalone` dipakai tanpa `output: 'standalone'`, dan migration production belum dijalankan secara eksplisit.
+- Blocker build: production build belum tervalidasi; penggunaan `next/font/google` membutuhkan akses Google Fonts saat build.
+- Risiko security: server action newsletter/email belum seluruhnya memiliki authorization dan rate limiting; email verification belum diwajibkan; upload publik belum memiliki quota.
+- Risiko reliability: email queue memakai in-memory lock dan diproses langsung dari request, sehingga belum aman untuk multi-instance/serverless.
+- Quality gap: belum ada CI/CD, health check, observability, alerting, backup/restore drill, rollback validation, atau production smoke test.
+- Scope/documentation gap: masih terdapat referensi dan test legacy SITIVENT yang dapat menghasilkan branding, URL, atau rasa aman palsu.
+- Validasi yang berhasil: TypeScript lulus; ESLint lulus dengan satu warning React Compiler/TanStack Table.
+- Tindak lanjut wajib: benahi Docker/build, environment validation, migration pipeline, authorization/rate limit, durable email worker, CI/CD, monitoring, rollback, dan test E2E sesuai scope Pyxis.
 
 ---
