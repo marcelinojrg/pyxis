@@ -1,5 +1,3 @@
-import type { Headers } from 'undici'; // Node v22 compatible
-
 export const addCorsHeaders = (
   headers: Headers,
   origin: string | null,

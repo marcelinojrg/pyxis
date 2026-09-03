@@ -24,14 +24,22 @@ export default function Navbar() {
   const isAdmin = pathname.startsWith('/admin') || pathname.startsWith('/login');
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     // Check initial scroll position
     handleScroll();
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -53,12 +61,12 @@ export default function Navbar() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        'fixed top-0 left-0 right-0 z-50 py-3.5 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-200',
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-md py-3.5 border-b border-neutral-200/80'
+          ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-neutral-200/80'
           : isWhite
-            ? 'bg-white py-4'
-            : 'bg-transparent py-4'
+            ? 'bg-white border-b border-transparent'
+            : 'bg-transparent border-b border-transparent'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between">

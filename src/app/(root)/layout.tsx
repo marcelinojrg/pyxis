@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import { Geist, Geist_Mono, Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { headers } from 'next/headers';
 
 import Footer from '@/components/Mixins/Footer';
 import Navbar from '@/components/Mixins/Navbar';
+import PublicReveal from '@/components/Common/PublicReveal';
 import ScrollToTop from '@/components/Common/ScrollToTop';
 import { cn } from '@/lib/utils';
 import { auth } from '@/lib/auth';
@@ -13,24 +13,6 @@ import { PermissionProvider } from '@/providers/PermissionProvider';
 type Props = {
   children: ReactNode;
 };
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-
-const jakartaSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['400', '500', '600', '700', '800'],
-});
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 const LandingPageLayout = async ({ children }: Props) => {
   // 1. Ambil session di server
@@ -44,18 +26,13 @@ const LandingPageLayout = async ({ children }: Props) => {
     : { roles: [], permissions: [] };
 
   return (
-    <div
-      className={cn(
-        'font-sans',
-        inter.variable,
-        jakartaSans.variable,
-        geistSans.variable,
-        geistMono.variable
-      )}
-    >
+    <div className={cn('font-sans')}>
       <PermissionProvider initialPermissions={permissions} initialRoles={roles}>
         <Navbar />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen">
+          <PublicReveal />
+          {children}
+        </main>
         <Footer />
         <ScrollToTop />
       </PermissionProvider>

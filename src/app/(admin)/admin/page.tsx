@@ -90,7 +90,7 @@ export default async function AdminDashboardPage() {
               <Link
                 key={stat.label}
                 href={stat.href}
-                className="group rounded-xl bg-white p-5 shadow-sm outline-none ring-1 ring-slate-200 transition hover:ring-slate-300 focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="group rounded-md bg-white p-5 shadow-sm outline-none ring-1 ring-slate-200 transition hover:ring-slate-300 focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -115,7 +115,7 @@ export default async function AdminDashboardPage() {
 
       <section
         aria-labelledby="aksi-cepat"
-        className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6"
+        className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6"
       >
         <div className="mb-4">
           <h2 id="aksi-cepat" className="text-base font-semibold text-slate-900">

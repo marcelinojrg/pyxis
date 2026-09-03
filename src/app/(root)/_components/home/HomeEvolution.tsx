@@ -1,4 +1,6 @@
-// import { Container } from '@/components/ui/container';
+'use client';
+
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { cn } from '@/lib/utils';
 
 const EVOLUTION_NODES = [
@@ -55,20 +57,79 @@ const EVOLUTION_NODES = [
 ];
 
 export default function HomeEvolution() {
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timeline = timelineRef.current;
+    if (!timeline) return;
+
+    const media = window.matchMedia(
+      '(min-width: 768px) and (prefers-reduced-motion: no-preference)'
+    );
+    let observer: IntersectionObserver | undefined;
+    const items = Array.from(timeline.querySelectorAll<HTMLElement>('[data-evolution-item]'));
+
+    const reset = () => {
+      observer?.disconnect();
+      observer = undefined;
+      delete timeline.dataset.evolutionMotion;
+      items.forEach((item) => delete item.dataset.evolutionItemState);
+    };
+
+    const mount = () => {
+      reset();
+      if (!media.matches) return;
+
+      items.forEach((item) => (item.dataset.evolutionItemState = 'pending'));
+      timeline.dataset.evolutionMotion = 'ready';
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            const item = entry.target as HTMLElement;
+            item.dataset.evolutionItemState = 'visible';
+            observer?.unobserve(item);
+          });
+        },
+        { rootMargin: '0px 0px -30px 0px', threshold: 0.08 }
+      );
+
+      requestAnimationFrame(() => {
+        items.forEach((item) => observer?.observe(item));
+      });
+    };
+
+    media.addEventListener('change', mount);
+    mount();
+
+    return () => {
+      media.removeEventListener('change', mount);
+      reset();
+    };
+  }, []);
+
   return (
     <section className="py-16 bg-[#F1F5F9]/70 border-t border-neutral-200/70">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900">
+          <h2
+            data-home-reveal="heading"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900"
+          >
             Evolusi Produk Kami
           </h2>
-          <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+          <p
+            data-home-reveal="copy"
+            className="text-sm sm:text-base text-neutral-600 leading-relaxed"
+          >
             Sejarah panjang inovasi berkelanjutan untuk memenuhi kebutuhan industri perhotelan yang
             terus berkembang.
           </p>
         </div>
 
-        <div className="relative max-w-4xl mx-auto">
+        <div ref={timelineRef} className="relative max-w-4xl mx-auto">
           {/* Vertical Center Line */}
           <div className="absolute top-4 bottom-4 left-4 md:left-1/2 -translate-x-1/2 w-0.5 bg-neutral-300/80 z-0" />
 
@@ -79,12 +140,14 @@ export default function HomeEvolution() {
               return (
                 <div
                   key={item.step}
+                  data-evolution-item
+                  style={{ '--evolution-delay': `${(item.step - 1) * 80}ms` } as CSSProperties}
                   className="flex flex-col md:flex-row items-start md:items-center relative"
                 >
                   {/* Left Side Container */}
                   <div className="w-full md:w-1/2 md:pr-10 md:text-right pl-12 md:pl-0">
                     {!isRight && (
-                      <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-2 text-left">
+                      <div className="evolution-card evolution-card-left bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-2 text-left">
                         <div className="flex items-center justify-between">
                           <h3 className="text-base font-bold font-heading text-neutral-900">
                             {item.title}
@@ -118,7 +181,7 @@ export default function HomeEvolution() {
                   {/* Right Side Container */}
                   <div className="w-full md:w-1/2 md:pl-10 text-left pl-12 mt-3 md:mt-0">
                     {isRight && (
-                      <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-2">
+                      <div className="evolution-card evolution-card-right bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm space-y-2">
                         <div className="flex items-center justify-between">
                           <h3 className="text-base font-bold font-heading text-neutral-900">
                             {item.title}

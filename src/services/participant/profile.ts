@@ -1,8 +1,11 @@
 'use server';
 
 import { headers } from 'next/headers';
+import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
+
+const emailSchema = z.string().trim().toLowerCase().email().max(254);
 
 export async function updateUserName(name: string): Promise<{ success: boolean; error?: string }> {
   try {
@@ -30,6 +33,12 @@ export async function updateUserEmail(
   newEmail: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const parsedEmail = emailSchema.safeParse(newEmail);
+    if (!parsedEmail.success) {
+      return { success: false, error: 'Format email tidak valid.' };
+    }
+
+    const cleanEmail = parsedEmail.data;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -48,7 +57,7 @@ export async function updateUserEmail(
 
     // Check if new email is already in use by another user
     const emailExists = await prisma.user.findUnique({
-      where: { email: newEmail.toLowerCase() },
+      where: { email: cleanEmail },
     });
 
     if (emailExists) {
@@ -59,7 +68,7 @@ export async function updateUserEmail(
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        email: newEmail.toLowerCase(),
+        email: cleanEmail,
       },
     });
 

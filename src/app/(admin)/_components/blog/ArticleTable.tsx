@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useMemo, useState, useTransition } from 'react';
+import { flushSync } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Edit3, ExternalLink, FileText, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -40,8 +41,8 @@ function ArticleDeleteButton({ article }: { article: Article }) {
         setError(result.error || 'Artikel gagal dihapus.');
         return;
       }
-      toast.success(result.message);
-      setOpen(false);
+      flushSync(() => setOpen(false));
+      toast.success(result.message || 'Artikel berhasil dihapus.');
       router.refresh();
     });
   }
@@ -180,7 +181,7 @@ export function ArticleTable({ articles }: ArticleTableProps) {
         </div>
       </div>
 
-      <section className="overflow-hidden rounded-xl bg-card ring-1 ring-border">
+      <section className="overflow-hidden rounded-md bg-card ring-1 ring-border">
         {articles.length === 0 ? (
           <div className="flex min-h-64 flex-col items-center justify-center p-8 text-center">
             <FileText className="size-8 text-muted-foreground" aria-hidden="true" />

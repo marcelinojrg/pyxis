@@ -1,6 +1,6 @@
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { BlogHero } from '@/app/(root)/_components/blog/BlogHero';
+import PageHero from '@/components/Common/PageHero';
 import { BlogList } from '@/app/(root)/_components/blog/BlogList';
 
 export const metadata = genPageMetadata({
@@ -33,7 +33,10 @@ export default async function BlogPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <BlogHero />
+      <PageHero
+        title="Berita & Kegiatan Kami"
+        description="Ikuti perkembangan terbaru dan kegiatan tim Pyxis"
+      />
       <BlogList
         articles={articles.map(({ publishedAt, ...article }) => ({
           ...article,

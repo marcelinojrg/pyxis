@@ -1,9 +1,9 @@
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { CareerHero } from '@/app/(root)/_components/careers/CareerHero';
+import PageHero from '@/components/Common/PageHero';
 import { CareerCulture } from '@/app/(root)/_components/careers/CareerCulture';
 import { CareerList } from '@/app/(root)/_components/careers/CareerList';
-import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
+import CTASection from '@/components/Common/CTASection';
 
 export const metadata = genPageMetadata({
   title: 'Karir — Bergabung dengan PT. Pyxis Ultimate Solution',
@@ -34,10 +34,13 @@ export default async function CareersPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <CareerHero />
+      <PageHero
+        title="Bergabung dengan Tim Pyxis"
+        description="Membangun masa depan teknologi bersama talenta terbaik."
+      />
       <CareerCulture />
       <CareerList careers={careers} />
-      <HomeCTA />
+      <CTASection />
     </div>
   );
 }

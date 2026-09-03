@@ -1,8 +1,9 @@
+import { ArrowDown } from 'lucide-react';
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import { ProductsHero } from '@/app/(root)/_components/products/ProductsHero';
+import PageHero from '@/components/Common/PageHero';
 import { ProductsList } from '@/app/(root)/_components/products/ProductsList';
-import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
+import CTASection from '@/components/Common/CTASection';
 
 export const metadata = genPageMetadata({
   title: 'Produk — Solusi Software Hotel & Restoran Terintegrasi',
@@ -30,9 +31,15 @@ export default async function ProductsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50/50">
-      <ProductsHero />
+      <PageHero
+        title="Solusi Hospitality Terintegrasi"
+        description="Berdayakan operasional hotel Anda dengan teknologi modern yang dirancang untuk efisiensi, skalabilitas, dan pengalaman tamu yang tak terlupakan."
+        ctaText="Lihat Produk"
+        ctaHref="#products-list"
+        ctaIcon={<ArrowDown className="w-4 h-4" />}
+      />
       <ProductsList products={products} />
-      <HomeCTA />
+      <CTASection />
     </div>
   );
 }

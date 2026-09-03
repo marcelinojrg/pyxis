@@ -1,4 +1,3 @@
-'use server';
 import nodemailer from 'nodemailer';
 import { prisma } from '@/lib/prisma';
 import { EmailStatus } from '@/generated/prisma/enums';
@@ -52,7 +51,7 @@ export async function createEmailHtmlWrapper(title: string, contentHtml: string)
 </head>
 <body style="margin: 0; padding: 0; background-color: #FAF9F5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #141413;">
   <span style="display: none; font-size: 1px; color: #FAF9F5; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    ${title} - SITIVENT Platform Event
+    ${title} - Pyxis Ultimate Solution
   </span>
   <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FAF9F5; padding: 30px 10px;">
     <tr>
@@ -60,7 +59,7 @@ export async function createEmailHtmlWrapper(title: string, contentHtml: string)
         <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; background-color: #FFFFFF; border: 1px solid #E3DACC; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
           <tr>
             <td style="background-color: #FFFFFF; padding: 24px 32px; text-align: left; border-bottom: 1px solid #E3DACC;">
-              <span style="color: #D97757; font-size: 22px; font-weight: 800; letter-spacing: 1px; font-family: Georgia, serif;">SITIVENT</span>
+          <span style="color: #D97757; font-size: 22px; font-weight: 800; letter-spacing: 1px; font-family: Georgia, serif;">PYXIS</span>
             </td>
           </tr>
           <tr>
@@ -70,8 +69,8 @@ export async function createEmailHtmlWrapper(title: string, contentHtml: string)
           </tr>
           <tr>
             <td style="background-color: #FAF9F5; padding: 20px 32px; border-top: 1px solid #E3DACC; font-size: 12px; color: #87867F; text-align: center; line-height: 1.5;">
-              <p style="margin: 0 0 4px 0;">&copy; ${currentYear} Sitivent. Hak cipta dilindungi.</p>
-              <p style="margin: 0;">Email ini dikirim secara otomatis oleh sistem pendaftaran Sitivent Platform.</p>
+            <p style="margin: 0 0 4px 0;">&copy; ${currentYear} Pyxis. Hak cipta dilindungi.</p>
+            <p style="margin: 0;">Email ini dikirim secara otomatis oleh sistem Pyxis.</p>
             </td>
           </tr>
         </table>
@@ -142,9 +141,22 @@ export async function processEmailQueue() {
 
       try {
         if (!transporter) {
-          console.log(
-            `\n========================================\n[SIMULATED EMAIL]\nTo: ${email.to}\nSubject: ${email.subject}\nBody: ${email.body}\n========================================\n`
-          );
+          if (process.env.NODE_ENV === 'production') {
+            await prisma.emailQueue.update({
+              where: { id: email.id },
+              data: {
+                status: EmailStatus.FAILED,
+                error: 'SMTP is not configured in production.',
+              },
+            });
+            continue;
+          }
+
+          console.log('[SIMULATED EMAIL]', {
+            queueId: email.id,
+            recipientDomain: email.to.split('@')[1] || 'unknown',
+            subjectLength: email.subject.length,
+          });
           await prisma.emailQueue.update({
             where: { id: email.id },
             data: {
@@ -171,14 +183,14 @@ export async function processEmailQueue() {
         const plainText = email.body.replace(/<[^>]*>?/gm, '').trim();
 
         await transporter.sendMail({
-          from: `"Sitivent" <${senderEmail}>`,
+          from: `"Pyxis" <${senderEmail}>`,
           replyTo: senderEmail,
           to: email.to,
           subject: email.subject,
           text: plainText,
           html: email.body,
           headers: {
-            'X-Mailer': 'Sitivent Platform App',
+            'X-Mailer': 'Pyxis Platform App',
             'X-Priority': '3',
           },
           attachments: parsedAttachments,

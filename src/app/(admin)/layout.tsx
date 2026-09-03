@@ -5,10 +5,13 @@ import { Settings } from 'lucide-react';
 import { requireAdmin } from '@/lib/requireAdmin';
 import { AdminNavigation } from '@/app/(admin)/_components/AdminNavigation';
 import { AdminHeader } from '@/app/(admin)/_components/AdminHeader';
+import { AdminIdleTracker } from '@/app/(admin)/_components/AdminIdleTracker';
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   robots: {
@@ -35,14 +38,17 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-900 antialiased">
+    <div
+      data-admin-shell
+      className="flex min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-900 antialiased"
+    >
       {/* Desktop Fixed Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-hidden border-r border-slate-800/60 bg-slate-950 text-white shadow-xl lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-hidden border-r border-slate-200 bg-white text-slate-900 shadow-sm lg:flex">
         {/* Brand Header */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-5">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-5">
           <div className="flex items-center gap-3">
             <div>
-              <span className="text-sm font-bold tracking-tight text-white">Pyxis Admin</span>
+              <span className="text-sm font-bold tracking-tight text-slate-900">Pyxis Admin</span>
             </div>
           </div>
         </div>
@@ -51,13 +57,13 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
         <AdminNavigation />
 
         {/* Sidebar Bottom / Version info */}
-        <div className="border-t border-white/10 p-4">
-          <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2 text-xs text-slate-400">
+        <div className="border-t border-slate-200 p-4">
+          <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-500">
             <div className="flex items-center gap-2">
               <Settings className="h-4 w-4 text-slate-400" />
               <span>Pyxis Core</span>
             </div>
-            <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-mono text-slate-300">
+            <span className="rounded bg-slate-200/70 px-1.5 py-0.5 text-[10px] font-mono text-slate-600">
               v1.0
             </span>
           </div>
@@ -66,6 +72,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
+        {/* Inactivity Auto Logout Tracker */}
+        <AdminIdleTracker />
+
         {/* Top Header */}
         <AdminHeader
           adminName={admin.name || 'Admin Pyxis'}

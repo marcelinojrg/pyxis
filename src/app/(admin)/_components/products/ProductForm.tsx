@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -569,7 +569,7 @@ export function ProductForm({ product }: ProductFormProps) {
         </p>
       </div>
 
-      <section className="space-y-5 rounded-xl border border-border bg-card p-4 sm:p-6">
+      <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={FileText}
           title="Informasi produk"
@@ -700,7 +700,7 @@ export function ProductForm({ product }: ProductFormProps) {
         />
       </section>
 
-      <section className="space-y-5 rounded-xl border border-border bg-card p-4 sm:p-6">
+      <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={Sparkles}
           title="Manfaat produk"
@@ -767,7 +767,7 @@ export function ProductForm({ product }: ProductFormProps) {
         </div>
       </section>
 
-      <section className="space-y-5 rounded-xl border border-border bg-card p-4 sm:p-6">
+      <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={Layers3}
           title="Fitur produk"
@@ -834,7 +834,7 @@ export function ProductForm({ product }: ProductFormProps) {
         </div>
       </section>
 
-      <section className="space-y-5 rounded-xl border border-border bg-card p-4 sm:p-6">
+      <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={Cpu}
           title="Grup kapabilitas"
@@ -852,7 +852,7 @@ export function ProductForm({ product }: ProductFormProps) {
             <Plus className="mr-2 h-4 w-4" aria-hidden /> Tambah grup
           </Button>
         </div>
-        <div className="overflow-hidden rounded-xl border border-border">
+        <div className="overflow-hidden rounded-md border border-border">
           {capabilities.fields.length ? (
             capabilities.fields.map((field, index) => (
               <CapabilityGroupFields
@@ -874,7 +874,7 @@ export function ProductForm({ product }: ProductFormProps) {
         </div>
       </section>
 
-      <div className="sticky bottom-4 z-20 rounded-xl border border-border bg-background/95 p-3 shadow-lg backdrop-blur-sm supports-[backdrop-filter]:bg-background/85">
+      <div className="sticky bottom-4 z-20 rounded-md border border-border bg-background/95 p-3 shadow-lg backdrop-blur-sm supports-[backdrop-filter]:bg-background/85">
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button asChild variant="outline" className="min-h-10 sm:min-w-28">
             <Link href={'/admin/products' as Route}>Batal</Link>
@@ -886,7 +886,7 @@ export function ProductForm({ product }: ProductFormProps) {
           >
             {form.formState.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Menyimpan…
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Menyimpan...
               </>
             ) : (
               <>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -99,7 +99,9 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
       return;
     }
 
-    toast.success(result.message);
+    toast.success(
+      result.message || (article ? 'Artikel berhasil diperbarui.' : 'Artikel berhasil dibuat.')
+    );
     router.push('/admin/blog' as Route);
     router.refresh();
   }
@@ -132,7 +134,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
 
       <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-6">
-          <section className="space-y-5 rounded-xl bg-card p-5 ring-1 ring-border sm:p-6">
+          <section className="space-y-5 rounded-md bg-card p-5 ring-1 ring-border sm:p-6">
             <div className="space-y-2">
               <Label htmlFor="title">Judul artikel</Label>
               <Input
@@ -177,7 +179,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
-          <section className="space-y-4 rounded-xl bg-card p-5 ring-1 ring-border">
+          <section className="space-y-4 rounded-md bg-card p-5 ring-1 ring-border">
             <div>
               <h2 className="font-semibold text-foreground">Publikasi</h2>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
@@ -206,7 +208,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
             </div>
           </section>
 
-          <section className="space-y-3 rounded-xl bg-card p-5 ring-1 ring-border">
+          <section className="space-y-3 rounded-md bg-card p-5 ring-1 ring-border">
             <div>
               <h2 className="font-semibold text-foreground">Kategori</h2>
               <p className="mt-1 text-xs text-muted-foreground">Pilih maksimal 8 kategori.</p>
@@ -242,7 +244,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
             )}
           </section>
 
-          <section className="space-y-3 rounded-xl bg-card p-5 ring-1 ring-border">
+          <section className="space-y-3 rounded-md bg-card p-5 ring-1 ring-border">
             <div>
               <h2 className="font-semibold text-foreground">Cover</h2>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">

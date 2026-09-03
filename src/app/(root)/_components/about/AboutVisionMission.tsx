@@ -44,17 +44,26 @@ export const AboutVisionMission: FC<AboutVisionMissionProps> = ({ vision, missio
           {/* Left Column: Vision & Mission */}
           <div className="space-y-6">
             <div className="space-y-3">
-              <h2 className="text-2xl sm:text-3xl font-bold font-heading text-neutral-900 leading-tight underline underline-offset-8 decoration-2 decoration-[#1D4ED8]">
+              <h2
+                data-home-reveal="heading"
+                className="text-2xl sm:text-3xl font-bold font-heading text-neutral-900 leading-tight underline underline-offset-8 decoration-2 decoration-[#1D4ED8]"
+              >
                 Vision & Mission
               </h2>
-              <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+              <p
+                data-home-reveal="copy"
+                className="text-sm sm:text-base text-neutral-600 leading-relaxed"
+              >
                 Fondasi kami dalam memberikan layanan terbaik untuk industri perhotelan.
               </p>
             </div>
 
             <div className="space-y-4">
               {/* Visi Card */}
-              <div className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex items-start gap-4">
+              <div
+                data-home-reveal="card"
+                className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex items-start gap-4"
+              >
                 <div className="w-10 h-10 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center shrink-0 shadow-sm">
                   <Eye className="w-5 h-5" />
                 </div>
@@ -68,7 +77,10 @@ export const AboutVisionMission: FC<AboutVisionMissionProps> = ({ vision, missio
               </div>
 
               {/* Misi Card */}
-              <div className="bg-[#0B1E48] text-white rounded-2xl p-6 border border-blue-950 shadow-md flex items-start gap-4">
+              <div
+                data-home-reveal="card"
+                className="bg-[#0B1E48] text-white rounded-2xl p-6 border border-blue-950 shadow-md flex items-start gap-4"
+              >
                 <div className="w-10 h-10 rounded-xl bg-[#F59E0B] text-white flex items-center justify-center shrink-0 shadow-sm">
                   <Rocket className="w-5 h-5" />
                 </div>
@@ -85,7 +97,10 @@ export const AboutVisionMission: FC<AboutVisionMissionProps> = ({ vision, missio
 
           {/* Right Column: Evolusi Produk Timeline */}
           <div className="space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold font-heading text-[#1D4ED8] leading-tight">
+            <h2
+              data-home-reveal="heading"
+              className="text-2xl sm:text-3xl font-bold font-heading text-[#1D4ED8] leading-tight"
+            >
               Evolusi Produk
             </h2>
 

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
@@ -25,12 +25,15 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  function finish(result: { success: boolean; error?: string; message?: string }) {
+  function finish(
+    result: { success: boolean; error?: string; message?: string },
+    fallback: { error: string; success: string }
+  ) {
     if (!result.success) {
-      toast.error(result.error || 'Kategori gagal diproses.');
+      toast.error(result.error || fallback.error);
       return false;
     }
-    toast.success(result.message || 'Kategori berhasil diproses.');
+    toast.success(result.message || fallback.success);
     router.refresh();
     return true;
   }
@@ -38,7 +41,13 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
   function create() {
     startTransition(async () => {
       const result = await createCareerCategory(newName);
-      if (finish(result)) setNewName('');
+      if (
+        finish(result, {
+          error: 'Kategori gagal dibuat.',
+          success: 'Kategori berhasil dibuat.',
+        })
+      )
+        setNewName('');
     });
   }
 
@@ -46,20 +55,32 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
     if (!editId) return;
     startTransition(async () => {
       const result = await updateCareerCategory(editId, editName);
-      if (finish(result)) setEditId(null);
+      if (
+        finish(result, {
+          error: 'Kategori gagal diperbarui.',
+          success: 'Kategori berhasil diperbarui.',
+        })
+      )
+        setEditId(null);
     });
   }
 
   function remove(id: string) {
     startTransition(async () => {
       const result = await deleteCareerCategory(id);
-      if (finish(result)) setDeleteId(null);
+      if (
+        finish(result, {
+          error: 'Kategori gagal dihapus.',
+          success: 'Kategori berhasil dihapus.',
+        })
+      )
+        setDeleteId(null);
     });
   }
 
   return (
     <section
-      className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6"
+      className="rounded-md border border-slate-200 bg-white p-5 sm:p-6"
       aria-labelledby="career-categories-title"
     >
       <div className="flex items-center gap-2 border-b border-slate-100 pb-3">

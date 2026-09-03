@@ -26,19 +26,19 @@ export async function loginWithCleanState(
     .catch(() => {});
 
   // Wait for login form inputs to be ready
-  const emailInput = page.locator('#login-email');
+  const emailInput = page.locator('#email');
   await expect(emailInput).toBeVisible({ timeout: 10000 });
 
   // Clear inputs and type fresh credentials
   await emailInput.click();
   await emailInput.fill(email);
 
-  const passwordInput = page.locator('#login-password');
+  const passwordInput = page.locator('#password');
   await passwordInput.click();
   await passwordInput.fill(password);
 
   // Click login submit
-  await page.click('#btn-login-submit');
+  await page.getByRole('button', { name: 'Masuk' }).click();
 
   // Self-healing re-submit if server rate limit or cookie propagation delayed the first submit
   try {
@@ -46,7 +46,10 @@ export async function loginWithCleanState(
   } catch (e) {
     if (page.url().includes('/login')) {
       await passwordInput.fill(password);
-      await page.click('#btn-login-submit').catch(() => {});
+      await page
+        .getByRole('button', { name: 'Masuk' })
+        .click()
+        .catch(() => {});
     }
   }
 

@@ -130,6 +130,8 @@ export async function getUserById(id: string): Promise<UserResponse> {
  */
 export async function getParticipantUser(id: string) {
   try {
+    if (!(await verifyPermission('user.read'))) return null;
+
     return await prisma.user.findUnique({
       where: { id },
       select: {

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useMemo, useState, useTransition } from 'react';
+import { flushSync } from 'react-dom';
 import type { ColumnDef } from '@tanstack/react-table';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import {
@@ -74,8 +75,8 @@ function ProductActions({ product }: { product: ProductTableItem }) {
         toast.error(result.error || 'Produk gagal dihapus.');
         return;
       }
+      flushSync(() => setOpen(false));
       toast.success(result.message || 'Produk berhasil dihapus.');
-      setOpen(false);
       router.refresh();
     });
   }
@@ -348,7 +349,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
       </div>
 
       {/* Main Table Card */}
-      <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+      <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-xs">
         {error ? (
           <div
             className="flex min-h-56 flex-col items-center justify-center p-8 text-center"

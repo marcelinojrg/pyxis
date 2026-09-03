@@ -6,7 +6,7 @@ import { ProductDetailBenefits } from '@/app/(root)/_components/products/Product
 import { ProductDetailDescription } from '@/app/(root)/_components/products/ProductDetailDescription';
 import { ProductDetailFeatures } from '@/app/(root)/_components/products/ProductDetailFeatures';
 import { ProductDetailCapabilities } from '@/app/(root)/_components/products/ProductDetailCapabilities';
-import HomeCTA from '@/app/(root)/_components/home/HomeCTA';
+import CTASection from '@/components/Common/CTASection';
 
 export const revalidate = 60;
 
@@ -59,7 +59,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <ProductDetailDescription content={product.featureSubtitle} />
       <ProductDetailFeatures features={product.features} />
       <ProductDetailCapabilities capabilities={product.capabilities} />
-      <HomeCTA />
+      <CTASection />
     </div>
   );
 }

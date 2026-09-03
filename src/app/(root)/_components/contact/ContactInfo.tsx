@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { cn } from '@/lib/utils';
 import { Building2, Store, MapPin, Phone, Mail } from 'lucide-react';
 
 export interface BranchItem {
@@ -12,6 +13,7 @@ export interface BranchItem {
 
 export interface ContactInfoProps {
   branches?: BranchItem[];
+  className?: string;
 }
 
 const DEFAULT_BRANCHES: BranchItem[] = [
@@ -33,11 +35,11 @@ const DEFAULT_BRANCHES: BranchItem[] = [
   },
 ];
 
-export const ContactInfo: FC<ContactInfoProps> = ({ branches = [] }) => {
+export const ContactInfo: FC<ContactInfoProps> = ({ branches = [], className }) => {
   const displayBranches = branches.length > 0 ? branches : DEFAULT_BRANCHES;
 
   return (
-    <div className="space-y-6">
+    <div className={cn('space-y-6', className)}>
       {displayBranches.map((branch) => {
         const Icon = branch.isPrimary ? Building2 : Store;
         const badge = branch.isPrimary ? 'KANTOR PUSAT' : 'CABANG / MITRA';

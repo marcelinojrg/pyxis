@@ -25,7 +25,10 @@ export default function HomePartnersBar() {
     <section className="py-16 bg-white border-b border-neutral-100">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center space-y-6">
-          <p className="text-[11px] sm:text-xs font-semibold tracking-widest text-neutral-400 uppercase">
+          <p
+            data-home-reveal="heading"
+            className="text-[11px] sm:text-xs font-semibold tracking-widest text-neutral-400 uppercase"
+          >
             DIPERCAYA OLEH LEBIH DARI 50+ PROPERTI DI SELURUH INDONESIA
           </p>
 
@@ -33,6 +36,7 @@ export default function HomePartnersBar() {
             {PARTNERS.map((partner) => (
               <span
                 key={partner.name}
+                data-home-reveal="card"
                 className={`${partner.style} select-none transition-opacity duration-200 hover:opacity-100 hover:text-neutral-700`}
               >
                 {partner.name}

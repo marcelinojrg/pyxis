@@ -1,5 +1,4 @@
-// import { Container } from '@/components/ui/container';
-import { Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 const MILESTONES = [
   {
@@ -32,23 +31,34 @@ export default function HomeAboutSummary() {
   return (
     <section className="py-16 bg-[#F8FAFC] border-t border-neutral-200/70">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        {/* Top Split: Text Left + Empty Photo Container Right */}
+        {/* Top Split: Text Left + Hospitality Photo Right */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-14">
           <div className="lg:col-span-6 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold font-heading text-neutral-900 leading-tight">
+            <h2
+              data-home-reveal="heading"
+              className="text-3xl sm:text-4xl font-bold font-heading text-neutral-900 leading-tight"
+            >
               Tentang Pyxis
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+            <p
+              data-home-reveal="copy"
+              className="text-sm sm:text-base text-neutral-600 leading-relaxed"
+            >
               PT PYXIS Ultimate Solution (PYXIS) adalah perusahaan teknologi informasi yang
               membangun inovatif solusi digital dengan menyediakan infrastruktur digital berbasis
               cloud dan layanan teknologi, memungkinkan pelanggan untuk tetap berada di depan kurva.
             </p>
           </div>
 
-          <div className="lg:col-span-6">
-            {/* Clean Empty Photo Container prepared for photo */}
-            <div className="w-full h-56 sm:h-64 rounded-2xl bg-[#E8EEFB] border border-blue-200/60 flex items-center justify-center shadow-sm">
-              <ImageIcon className="w-12 h-12 text-[#1D4ED8]/30" />
+          <div data-home-reveal="media" className="lg:col-span-6">
+            <div className="relative w-full h-56 sm:h-64 overflow-hidden rounded-2xl shadow-sm">
+              <Image
+                src="/assets/img/home-about-hospitality-lobby.jpg"
+                alt="Lobi hotel modern sebagai gambaran industri hospitality yang dilayani Pyxis"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
             </div>
           </div>
         </div>
@@ -58,6 +68,7 @@ export default function HomeAboutSummary() {
           {MILESTONES.map((item) => (
             <div
               key={item.year}
+              data-home-reveal="card"
               className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col space-y-3"
             >
               <span className="text-xl font-extrabold font-heading text-[#1D4ED8]">

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { useMemo, useState, useTransition } from 'react';
+import { flushSync } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { ExternalLink, Pencil, Plus, Search, Trash2, TriangleAlert } from 'lucide-react';
 import { toast } from 'sonner';
@@ -86,8 +87,8 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
         toast.error(result.error || 'Lowongan gagal dihapus.');
         return;
       }
+      flushSync(() => setCandidate(null));
       toast.success(result.message || 'Lowongan berhasil dihapus.');
-      setCandidate(null);
       router.refresh();
     });
   }
@@ -121,7 +122,7 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
         </div>
 
         <section
-          className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+          className="overflow-hidden rounded-md border border-slate-200 bg-white"
           aria-label="Daftar lowongan"
         >
           {careers.length === 0 ? (

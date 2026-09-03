@@ -52,10 +52,10 @@ export function AdminHeader({ adminName, adminEmail, initials, onSignOut }: Admi
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="w-72 gap-0 border-slate-800 bg-slate-950 p-0 text-white [&_[data-slot=sheet-close]]:text-white"
+            className="w-72 gap-0 border-slate-200 bg-white p-0 text-slate-900 [&_[data-slot=sheet-close]]:text-slate-500"
           >
-            <SheetHeader className="h-16 justify-center border-b border-white/10 px-5 py-0 text-left">
-              <SheetTitle className="text-sm font-bold text-white">Pyxis Admin</SheetTitle>
+            <SheetHeader className="h-16 justify-center border-b border-slate-200 px-5 py-0 text-left">
+              <SheetTitle className="text-sm font-bold text-slate-900">Pyxis Admin</SheetTitle>
             </SheetHeader>
             <AdminNavigation onNavigate={() => setMenuOpen(false)} />
           </SheetContent>
@@ -85,7 +85,7 @@ export function AdminHeader({ adminName, adminEmail, initials, onSignOut }: Admi
           </p>
         </div>
         <div
-          className="flex size-8 items-center justify-center rounded-lg bg-slate-900 text-xs font-bold text-white shadow-xs"
+          className="flex size-8 items-center justify-center rounded-md bg-blue-600 text-xs font-bold text-white shadow-xs"
           aria-hidden="true"
         >
           {initials}

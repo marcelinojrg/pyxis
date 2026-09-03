@@ -17,6 +17,7 @@ import {
   type ArticleValues,
 } from '@/schemas/articles';
 import { createAuditLog, verifyPermission, verifySession } from './security';
+import { deleteImage } from '@/services/public/uploads';
 
 const ADMIN_PATH = '/admin/blog';
 const PUBLIC_PATH = '/blog';
@@ -55,6 +56,12 @@ function revalidateArticles(...slugs: Array<string | null | undefined>) {
   revalidatePath(PUBLIC_PATH);
   revalidatePath('/sitemap.xml');
   for (const slug of new Set(slugs.filter(Boolean))) revalidatePath(`/blog/${slug}`);
+}
+
+async function cleanupArticleCover(url: string | null | undefined) {
+  if (!url) return;
+  const result = await deleteImage(url);
+  if (!result.success) console.error('[cleanupArticleCover]', url, result.error);
 }
 
 async function uniqueSlug(title: string, id?: string) {
@@ -220,7 +227,7 @@ export async function updateArticleById(
 
   const existing = await prisma.article.findUnique({
     where: { id },
-    select: { id: true, slug: true, isPublished: true, publishedAt: true },
+    select: { id: true, slug: true, cover: true, isPublished: true, publishedAt: true },
   });
   if (!existing) return { success: false, error: 'Artikel tidak ditemukan.' };
 
@@ -251,6 +258,7 @@ export async function updateArticleById(
       },
       select: articleSelect,
     });
+    if (existing.cover && existing.cover !== data.cover) await cleanupArticleCover(existing.cover);
     await createAuditLog({
       action: 'update',
       table: 'articles',
@@ -275,11 +283,15 @@ export async function updateArticleById(
 export async function deleteArticleById(id: string): Promise<ArticleResponse> {
   if (!(await canManageArticle('delete'))) return { success: false, error: 'Akses ditolak.' };
 
-  const existing = await prisma.article.findUnique({ where: { id }, select: { slug: true } });
+  const existing = await prisma.article.findUnique({
+    where: { id },
+    select: { slug: true, cover: true },
+  });
   if (!existing) return { success: false, error: 'Artikel tidak ditemukan.' };
 
   try {
     await prisma.article.delete({ where: { id } });
+    await cleanupArticleCover(existing.cover);
     await createAuditLog({
       action: 'delete',
       table: 'articles',
@@ -300,8 +312,14 @@ export async function deleteBulkArticles(ids: string[]): Promise<ArticleResponse
   const validIds = [...new Set(ids.filter((id) => /^[0-9a-f-]{36}$/i.test(id)))].slice(0, 100);
   if (!validIds.length) return { success: false, error: 'Pilih artikel yang akan dihapus.' };
 
+  const existing = await prisma.article.findMany({
+    where: { id: { in: validIds } },
+    select: { id: true, cover: true },
+  });
+
   try {
     await prisma.article.deleteMany({ where: { id: { in: validIds } } });
+    await Promise.all(existing.map(({ cover }) => cleanupArticleCover(cover)));
     await Promise.all(
       validIds.map((recordId) => createAuditLog({ action: 'delete', table: 'articles', recordId }))
     );

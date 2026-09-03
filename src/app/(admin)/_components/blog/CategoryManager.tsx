@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useTransition } from 'react';
 import type { FormEvent } from 'react';
@@ -33,7 +33,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
         return;
       }
       setNewName('');
-      toast.success(result.message);
+      toast.success(result.message || 'Kategori berhasil dibuat.');
       router.refresh();
     });
   }
@@ -48,7 +48,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
       }
       setEditingId(null);
       setEditingName('');
-      toast.success(result.message);
+      toast.success(result.message || 'Kategori berhasil diperbarui.');
       router.refresh();
     });
   }
@@ -56,7 +56,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
   function removeCategory(category: ArticleCategory) {
     if (
       !window.confirm(
-        `Hapus kategori “${category.name}”? Kategori yang sudah dihapus tidak dapat dipulihkan.`
+        `Hapus kategori "${category.name}"? Kategori yang sudah dihapus tidak dapat dipulihkan.`
       )
     )
       return;
@@ -68,13 +68,13 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
         setError(result.error || 'Kategori gagal dihapus.');
         return;
       }
-      toast.success(result.message);
+      toast.success(result.message || 'Kategori berhasil dihapus.');
       router.refresh();
     });
   }
 
   return (
-    <aside className="space-y-5 rounded-xl bg-card p-5 ring-1 ring-border">
+    <aside className="space-y-5 rounded-md bg-card p-5 ring-1 ring-border">
       <div className="flex items-start gap-3">
         <Tags className="mt-0.5 size-5 text-muted-foreground" aria-hidden="true" />
         <div>

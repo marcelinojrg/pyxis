@@ -1,7 +1,6 @@
 'use client';
 
 import { type FC, useState, useEffect } from 'react';
-import smoothscroll from 'smoothscroll-polyfill';
 
 import { cn } from '@/lib/utils';
 import { ArrowUp } from 'lucide-react';
@@ -9,29 +8,34 @@ import { ArrowUp } from 'lucide-react';
 const ScrollToTop: FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const toggleVisibility = () => {
-    if (window.pageYOffset > 300) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
-  };
-
-  const scrollTop = () => {
-    smoothscroll.polyfill();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
-
   useEffect(() => {
-    window.addEventListener('scroll', toggleVisibility);
+    let ticking = false;
+
+    const toggleVisibility = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsVisible(window.scrollY > 300);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    toggleVisibility();
+
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', toggleVisibility);
     };
   }, []);
+
+  const scrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   return (
     <>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import type { Route } from 'next';
@@ -114,7 +114,7 @@ export function CareerForm({ career, categories }: CareerFormProps) {
         </p>
       </header>
 
-      <section className="space-y-5 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+      <section className="space-y-5 rounded-md border border-slate-200 bg-white p-5 sm:p-6">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <BriefcaseBusiness className="h-4 w-4 text-slate-700" />
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
@@ -237,7 +237,7 @@ export function CareerForm({ career, categories }: CareerFormProps) {
       ).map(([field, title, items]) => (
         <section
           key={field}
-          className="space-y-4 rounded-xl border border-slate-200 bg-white p-5 sm:p-6"
+          className="space-y-4 rounded-md border border-slate-200 bg-white p-5 sm:p-6"
         >
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
@@ -280,7 +280,7 @@ export function CareerForm({ career, categories }: CareerFormProps) {
         </section>
       ))}
 
-      <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+      <section className="rounded-md border border-slate-200 bg-white p-5 sm:p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label htmlFor="isActive" className="text-sm font-semibold text-slate-900">
@@ -308,7 +308,7 @@ export function CareerForm({ career, categories }: CareerFormProps) {
         </p>
       </section>
 
-      <div className="sticky bottom-4 z-20 flex flex-col-reverse gap-2 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur-sm sm:flex-row sm:justify-end">
+      <div className="sticky bottom-4 z-20 flex flex-col-reverse gap-2 rounded-md border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur-sm sm:flex-row sm:justify-end">
         <Button asChild variant="outline">
           <Link href={'/admin/careers' as Route}>Batal</Link>
         </Button>

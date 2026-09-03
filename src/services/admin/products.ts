@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { slugify } from '@/lib/utils';
 import { productSchema, type ProductValues } from '@/schemas/products';
+import { deleteImage } from '@/services/public/uploads';
 import { createAuditLog, verifyPermission } from './security';
 
 const productListSelect = {
@@ -92,6 +93,14 @@ function isUniqueConstraintError(error: unknown) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002';
 }
 
+async function cleanupImages(urls: Array<string | null | undefined>) {
+  const uniqueUrls = [...new Set(urls.filter((url): url is string => Boolean(url)))];
+  const results = await Promise.all(uniqueUrls.map((url) => deleteImage(url)));
+  results.forEach((result, index) => {
+    if (!result.success) console.error('[cleanupImages]', uniqueUrls[index], result.error);
+  });
+}
+
 export async function getAdminProducts() {
   if (!(await canManageProducts('read')))
     return { success: false, data: [], error: 'Anda tidak memiliki akses untuk melihat produk.' };
@@ -178,7 +187,10 @@ export async function updateProduct(id: string, values: ProductValues) {
   if (!parsed.success)
     return { success: false, error: parsed.error.issues[0]?.message || 'Data produk tidak valid.' };
 
-  const existing = await prisma.product.findUnique({ where: { id }, select: { slug: true } });
+  const existing = await prisma.product.findUnique({
+    where: { id },
+    select: { slug: true, image: true, capabilities: { select: { imageUrl: true } } },
+  });
   if (!existing) return { success: false, error: 'Produk tidak ditemukan.' };
 
   const slug = await uniqueSlug(parsed.data.slug || parsed.data.name, id);
@@ -204,6 +216,11 @@ export async function updateProduct(id: string, values: ProductValues) {
       },
       select: productSelect,
     });
+    await cleanupImages(
+      [existing.image, ...existing.capabilities.map(({ imageUrl }) => imageUrl)].filter(
+        (url) => url && url !== data.image
+      )
+    );
     await createAuditLog({
       action: 'update',
       table: 'products',
@@ -230,11 +247,15 @@ export async function deleteProductById(id: string) {
     return { success: false, error: 'Anda tidak memiliki akses untuk menghapus produk.' };
   if (!id) return { success: false, error: 'ID produk tidak valid.' };
 
-  const existing = await prisma.product.findUnique({ where: { id }, select: { slug: true } });
+  const existing = await prisma.product.findUnique({
+    where: { id },
+    select: { slug: true, image: true, capabilities: { select: { imageUrl: true } } },
+  });
   if (!existing) return { success: false, error: 'Produk tidak ditemukan.' };
 
   try {
     await prisma.product.delete({ where: { id } });
+    await cleanupImages([existing.image, ...existing.capabilities.map(({ imageUrl }) => imageUrl)]);
     await createAuditLog({
       action: 'delete',
       table: 'products',

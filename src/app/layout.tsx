@@ -1,25 +1,25 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Inter } from 'next/font/google';
+import { Inter, Roboto } from 'next/font/google';
 import { headers } from 'next/headers';
 
+import 'sonner/dist/styles.css';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { siteMetadata } from '@/data/siteMetadata';
 import QueryProvider from '@/providers/QueryProvider';
 import { Toaster } from '@/components/ui/sonner';
-// import { ImageKitProvider } from '@imagekit/next';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
   subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-inter',
   display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const roboto = Roboto({
   subsets: ['latin'],
+  weight: '400',
+  variable: '--font-roboto',
   display: 'swap',
 });
 
@@ -81,8 +81,7 @@ export default async function RootLayout({
     <html
       lang="id"
       suppressHydrationWarning
-      data-scroll-behavior="smooth"
-      className={cn('font-sans', inter.variable)}
+      className={cn(inter.variable, roboto.variable, 'font-sans')}
     >
       <head>
         <script
@@ -96,11 +95,9 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://ik.imagekit.io" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <QueryProvider>{children}</QueryProvider>
-        {/* <ImageKitProvider urlEndpoint={process.env.IMAGEKIT_URL}>
-        </ImageKitProvider> */}
-        <Toaster position="top-center" />
+        <Toaster />
       </body>
     </html>
   );

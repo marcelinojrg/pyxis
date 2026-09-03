@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
+import { usePathname } from 'next/navigation';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 import {
   CircleCheckIcon,
@@ -10,15 +11,19 @@ import {
   Loader2Icon,
 } from 'lucide-react';
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const Toaster = ({ position: requestedPosition, ...props }: ToasterProps) => {
   const { theme = 'light' } = useTheme();
+  const pathname = usePathname();
+  const position = pathname.startsWith('/admin')
+    ? 'bottom-center'
+    : requestedPosition || 'top-center';
 
   return (
     <Sonner
       theme={theme as ToasterProps['theme']}
       className="toaster group"
-      position="top-center"
-      duration={2000}
+      position={position}
+      duration={4000}
       icons={{
         success: <CircleCheckIcon className="size-4" />,
         info: <InfoIcon className="size-4" />,

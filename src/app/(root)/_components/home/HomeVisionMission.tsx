@@ -8,10 +8,16 @@ export default function HomeVisionMission() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Text */}
           <div className="lg:col-span-6 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold font-heading text-neutral-900 leading-tight">
+            <h2
+              data-home-reveal="heading"
+              className="text-3xl sm:text-4xl font-bold font-heading text-neutral-900 leading-tight"
+            >
               Visi & Misi Perjalanan Kami
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
+            <p
+              data-home-reveal="copy"
+              className="text-sm sm:text-base text-neutral-600 leading-relaxed"
+            >
               Sepanjang perjalanan kami, kami telah melayani berbagai industri. Pada tahun 2011,
               kami melihat peluang di industri operasi tambang batu bara dan perhotelan. Namun,
               untuk memberikan solusi terbaik, kami memutuskan untuk memfokuskan kembali dedikasi
@@ -23,7 +29,10 @@ export default function HomeVisionMission() {
           {/* Right Stacked Cards */}
           <div className="lg:col-span-6 space-y-4">
             {/* Visi Card */}
-            <div className="bg-[#EFF6FF] rounded-2xl p-6 border border-blue-200/80 flex items-start gap-4 shadow-sm">
+            <div
+              data-home-reveal="card"
+              className="bg-[#EFF6FF] rounded-2xl p-6 border border-blue-200/80 flex items-start gap-4 shadow-sm"
+            >
               <div className="w-10 h-10 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center shrink-0 shadow-sm">
                 <Eye className="w-5 h-5" />
               </div>
@@ -37,7 +46,10 @@ export default function HomeVisionMission() {
             </div>
 
             {/* Misi Card */}
-            <div className="bg-[#0B1E48] text-white rounded-2xl p-6 border border-blue-950 shadow-md flex items-start gap-4">
+            <div
+              data-home-reveal="card"
+              className="bg-[#0B1E48] text-white rounded-2xl p-6 border border-blue-950 shadow-md flex items-start gap-4"
+            >
               <div className="w-10 h-10 rounded-xl bg-[#F59E0B] text-white flex items-center justify-center shrink-0 shadow-sm">
                 <Rocket className="w-5 h-5" />
               </div>

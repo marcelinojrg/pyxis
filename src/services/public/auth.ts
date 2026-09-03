@@ -208,21 +208,21 @@ export async function registerAction(values: RegisterValues): Promise<AuthRespon
     const welcomeBody = `
       <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Selamat Datang!</h2>
       <p>Halo <strong>${userName}</strong>,</p>
-      <p>Terima kasih telah mendaftar di <strong>Sitivent</strong>. Akun Anda telah aktif dan siap digunakan untuk memilih serta mengikuti berbagai event, seminar, dan workshop pilihan.</p>
+      <p>Terima kasih telah mendaftar di <strong>Pyxis</strong>. Akun Anda telah aktif dan siap digunakan.</p>
       <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
         <tr>
           <td align="center" style="border-radius: 8px; background-color: #D97757;">
-            <a href="https://qa-sitivent.vercel.app/login" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Masuk ke Akun Anda &rarr;</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Masuk ke Akun Anda &rarr;</a>
           </td>
         </tr>
       </table>
       <p style="font-size: 13px; color: #87867F; margin-bottom: 0;">
-        Jika Anda merasa tidak mendaftar di Sitivent, Anda dapat mengabaikan email ini.
+        Jika Anda merasa tidak mendaftar di Pyxis, Anda dapat mengabaikan email ini.
       </p>
     `;
     await queueEmail(
       body.user.email,
-      'Selamat Datang di Sitivent - Konfirmasi Pendaftaran',
+      'Selamat Datang di Pyxis - Konfirmasi Pendaftaran',
       welcomeBody
     );
 
@@ -243,7 +243,7 @@ export async function registerAction(values: RegisterValues): Promise<AuthRespon
 /**
  * Mengirim email notifikasi perubahan password
  */
-export async function sendPasswordChangeNotificationEmail(
+async function sendPasswordChangeNotificationEmail(
   email: string,
   name?: string
 ): Promise<{ success: boolean }> {
@@ -253,11 +253,11 @@ export async function sendPasswordChangeNotificationEmail(
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E3DACC; border-radius: 12px; background-color: #FAF9F5;">
         <h2 style="color: #D97757; font-family: serif;">Keamanan Akun: Password Diubah</h2>
         <p>Halo ${name || email},</p>
-        <p>Password untuk akun SITIVENT Anda baru saja berhasil diperbarui/diubah.</p>
+        <p>Password untuk akun Pyxis Anda baru saja berhasil diperbarui/diubah.</p>
         <p>Jika Anda tidak merasa melakukan perubahan ini, segera hubungi tim dukungan kami.</p>
       </div>
     `;
-    await queueEmail(email, 'Notifikasi Perubahan Password - SITIVENT', body);
+    await queueEmail(email, 'Notifikasi Perubahan Password - Pyxis', body);
     return { success: true };
   } catch (error) {
     console.error('Send Password Change Email Error:', error);

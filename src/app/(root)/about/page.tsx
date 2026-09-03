@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { AboutHero } from '@/app/(root)/_components/about/AboutHero';
+import PageHero from '@/components/Common/PageHero';
 import { AboutProfile } from '@/app/(root)/_components/about/AboutProfile';
 import { AboutVisionMission } from '@/app/(root)/_components/about/AboutVisionMission';
 import { AboutContact } from '@/app/(root)/_components/about/AboutContact';
-import AboutCTA from '@/app/(root)/_components/about/AboutCTA';
+import CTASection from '@/components/Common/CTASection';
 
 export const metadata: Metadata = {
   title: 'Tentang Kami — PT. Pyxis Ultimate Solution',
@@ -23,9 +23,9 @@ export default function AboutPage() {
   return (
     <div className="w-full flex flex-col">
       {/* 1. Hero Section — Navy gradient with bold heading */}
-      <AboutHero
+      <PageHero
         title="Membangun Masa Depan Teknologi Hospitality"
-        content="PT PYXIS Ultimate Solution menyediakan infrastruktur digital inovatif untuk membantu bisnis Anda tetap unggul."
+        description="PT PYXIS Ultimate Solution menyediakan infrastruktur digital inovatif untuk membantu bisnis Anda tetap unggul."
       />
 
       {/* 2. Our Journey — Image + text + 30+ badge */}
@@ -38,7 +38,7 @@ export default function AboutPage() {
       <AboutContact />
 
       {/* 5. CTA — Saatnya Bergabung */}
-      <AboutCTA />
+      <CTASection />
     </div>
   );
 }
