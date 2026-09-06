@@ -69,6 +69,8 @@ yarn.lock
 bun.lock
 
 # file uploads
+/laporan
+
 /public/uploads/*
 
 /nginx
