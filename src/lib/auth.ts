@@ -93,8 +93,8 @@ export const auth = betterAuth({
   },
   session: {
     expiresIn: 60 * 60 * 24, // 1 Day
-    freshAge: 0, // Disable auto-renewal for strict testing
-    updateAge: 0, // Force update check on every request
+    freshAge: 0, // Admin session does not require a fresh login for each action
+    updateAge: 60 * 60, // Refresh at most once per hour to avoid concurrent refresh races
   },
   plugins: [admin()],
   databaseHooks: {
