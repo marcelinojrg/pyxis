@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+﻿import { notFound } from 'next/navigation';
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
 import { ProductDetailHero } from '@/app/(root)/_components/products/ProductDetailHero';
@@ -17,10 +17,10 @@ interface ProductDetailPageProps {
 export async function generateMetadata({ params }: ProductDetailPageProps) {
   const { slug } = await params;
   const product = await prisma.product.findFirst({ where: { slug, isActive: true } });
-  if (!product) return genPageMetadata({ title: 'Produk Tidak Ditemukan' });
+  if (!product) return genPageMetadata({ title: 'Product not found' });
 
   return genPageMetadata({
-    title: `${product.name} — Pyxis Ultimate Solution`,
+    title: `${product.name} | Pyxis Ultimate Solution`,
     description: product.description || undefined,
     image: product.image || undefined,
     path: `/products/${product.slug}`,

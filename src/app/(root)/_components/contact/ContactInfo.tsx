@@ -39,55 +39,58 @@ export const ContactInfo: FC<ContactInfoProps> = ({ branches = [], className }) 
   const displayBranches = branches.length > 0 ? branches : DEFAULT_BRANCHES;
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div
+      className={cn(
+        'grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-2 md:gap-x-0 md:gap-y-0 md:divide-x md:divide-neutral-200',
+        className
+      )}
+    >
       {displayBranches.map((branch) => {
         const Icon = branch.isPrimary ? Building2 : Store;
-        const badge = branch.isPrimary ? 'KANTOR PUSAT' : 'CABANG / MITRA';
+        const badge = branch.isPrimary ? 'HEAD OFFICE' : 'DISTRIBUTOR / PARTNER';
 
         return (
-          <div
+          <article
             key={branch.id}
-            className="bg-white rounded-2xl p-6 sm:p-7 border border-neutral-200/70 shadow-xs space-y-5"
+            className="border-t border-neutral-300 py-6 md:px-8 md:first:pl-0 md:last:pr-0"
           >
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-xl bg-blue-50 text-blue-600 shrink-0">
-                <Icon className="w-6 h-6" />
-              </div>
+            <div className="flex items-start justify-between gap-6">
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-neutral-900 leading-snug">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1D4ED8]">
+                  {badge}
+                </p>
+                <h3 className="mt-3 text-lg font-semibold leading-snug tracking-tight text-neutral-900">
                   {branch.name}
                 </h3>
-                <span className="inline-block text-[11px] font-bold tracking-wider text-neutral-400 uppercase mt-0.5">
-                  {badge}
-                </span>
               </div>
+              <Icon className="mt-1 h-5 w-5 shrink-0 text-[#1D4ED8]" aria-hidden="true" />
             </div>
 
-            <div className="space-y-3 pt-2 text-sm text-neutral-600">
+            <div className="mt-6 space-y-4 border-t border-neutral-200 pt-5 text-sm text-neutral-600">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-neutral-400 shrink-0 mt-1" />
-                <span className="whitespace-pre-line leading-relaxed">{branch.address}</span>
+                <MapPin className="mt-1 h-4 w-4 shrink-0 text-neutral-400" aria-hidden="true" />
+                <span className="whitespace-pre-line leading-6">{branch.address}</span>
               </div>
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-neutral-400 shrink-0" />
+                <Phone className="h-4 w-4 shrink-0 text-neutral-400" aria-hidden="true" />
                 <a
                   href={`tel:${branch.phone.replace(/[^0-9+]/g, '')}`}
-                  className="hover:text-blue-600 transition-colors"
+                  className="transition-colors hover:text-blue-600"
                 >
                   {branch.phone}
                 </a>
               </div>
               <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-neutral-400 shrink-0" />
+                <Mail className="h-4 w-4 shrink-0 text-neutral-400" aria-hidden="true" />
                 <a
                   href={`mailto:${branch.email}`}
-                  className="hover:text-blue-600 transition-colors"
+                  className="transition-colors hover:text-blue-600"
                 >
                   {branch.email}
                 </a>
               </div>
             </div>
-          </div>
+          </article>
         );
       })}
     </div>

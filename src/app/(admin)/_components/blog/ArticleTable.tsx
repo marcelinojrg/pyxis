@@ -38,11 +38,11 @@ function ArticleDeleteButton({ article }: { article: Article }) {
     startTransition(async () => {
       const result = await deleteArticleById(article.id);
       if (!result.success) {
-        setError(result.error || 'Artikel gagal dihapus.');
+        setError(result.error || 'Failed to delete the article.');
         return;
       }
       flushSync(() => setOpen(false));
-      toast.success(result.message || 'Artikel berhasil dihapus.');
+      toast.success(result.message || 'Article deleted.');
       router.refresh();
     });
   }
@@ -54,16 +54,16 @@ function ArticleDeleteButton({ article }: { article: Article }) {
         variant="ghost"
         size="icon-sm"
         onClick={() => setOpen(true)}
-        aria-label={`Hapus artikel ${article.title}`}
+        aria-label={`Delete article ${article.title}`}
       >
         <Trash2 className="size-4" aria-hidden="true" />
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Hapus artikel?</DialogTitle>
+            <DialogTitle>Delete article?</DialogTitle>
             <DialogDescription>
-              &ldquo;{article.title}&rdquo; akan dihapus permanen dan tidak dapat dipulihkan.
+              &ldquo;{article.title}&rdquo; will be permanently deleted and cannot be recovered.
             </DialogDescription>
           </DialogHeader>
           {error && (
@@ -73,11 +73,11 @@ function ArticleDeleteButton({ article }: { article: Article }) {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
-              Batal
+              Cancel
             </Button>
             <Button variant="destructive" onClick={remove} disabled={isPending}>
               {isPending && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-              {isPending ? 'Menghapus...' : 'Hapus artikel'}
+              {isPending ? 'Deleting...' : 'Delete article'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -116,13 +116,13 @@ export function ArticleTable({ articles }: ArticleTableProps) {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Blog</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Kelola artikel, status publikasi, dan konten website.
+            Manage articles, publication status, and website content.
           </p>
         </div>
         <Button asChild className="w-full sm:w-auto">
           <Link href={'/admin/blog/new' as Route}>
             <Plus className="size-4" aria-hidden="true" />
-            Tulis artikel
+            Write an article
           </Link>
         </Button>
       </header>
@@ -137,8 +137,8 @@ export function ArticleTable({ articles }: ArticleTableProps) {
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Cari judul, slug, atau kategori..."
-            aria-label="Cari artikel"
+            placeholder="Search title, slug, or category..."
+            aria-label="Search articles"
             className="pl-9 pr-9"
           />
           {search && (
@@ -146,7 +146,7 @@ export function ArticleTable({ articles }: ArticleTableProps) {
               type="button"
               onClick={() => setSearch('')}
               className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              aria-label="Bersihkan pencarian"
+              aria-label="Clear search"
             >
               <X className="size-4" aria-hidden="true" />
             </button>
@@ -155,12 +155,12 @@ export function ArticleTable({ articles }: ArticleTableProps) {
 
         <div
           className="flex w-full overflow-x-auto rounded-lg bg-muted p-1 sm:w-auto"
-          aria-label="Filter status artikel"
+          aria-label="Filter article status"
         >
           {(
             [
-              ['all', `Semua (${articles.length})`],
-              ['published', `Terbit (${publishedCount})`],
+              ['all', `All (${articles.length})`],
+              ['published', `Published (${publishedCount})`],
               ['draft', `Draft (${draftCount})`],
             ] as const
           ).map(([value, label]) => (
@@ -185,20 +185,20 @@ export function ArticleTable({ articles }: ArticleTableProps) {
         {articles.length === 0 ? (
           <div className="flex min-h-64 flex-col items-center justify-center p-8 text-center">
             <FileText className="size-8 text-muted-foreground" aria-hidden="true" />
-            <h2 className="mt-4 font-semibold text-foreground">Belum ada artikel</h2>
+            <h2 className="mt-4 font-semibold text-foreground">No articles yet</h2>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-              Tulis artikel pertama dan simpan sebagai draft sebelum diterbitkan.
+              Write your first article and save it as a draft before publishing.
             </p>
             <Button asChild className="mt-5">
-              <Link href={'/admin/blog/new' as Route}>Tulis artikel</Link>
+              <Link href={'/admin/blog/new' as Route}>Write an article</Link>
             </Button>
           </div>
         ) : filteredArticles.length === 0 ? (
           <div className="flex min-h-48 flex-col items-center justify-center p-8 text-center">
             <Search className="size-7 text-muted-foreground" aria-hidden="true" />
-            <h2 className="mt-3 font-semibold text-foreground">Artikel tidak ditemukan</h2>
+            <h2 className="mt-3 font-semibold text-foreground">Article not found</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Ubah kata kunci atau filter status untuk melihat hasil lain.
+              Change the search term or status filter to see other results.
             </p>
             <Button
               type="button"
@@ -216,7 +216,7 @@ export function ArticleTable({ articles }: ArticleTableProps) {
         ) : (
           <ul className="divide-y divide-border">
             {filteredArticles.map((article) => {
-              const date = new Intl.DateTimeFormat('id-ID', {
+              const date = new Intl.DateTimeFormat('en-US', {
                 day: 'numeric',
                 month: 'short',
                 year: 'numeric',
@@ -253,7 +253,7 @@ export function ArticleTable({ articles }: ArticleTableProps) {
                             : 'rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'
                         }
                       >
-                        {article.isPublished ? 'Terbit' : 'Draft'}
+                        {article.isPublished ? 'Published' : 'Draft'}
                       </span>
                       <span className="text-xs text-muted-foreground">{date}</span>
                     </div>
@@ -284,7 +284,7 @@ export function ArticleTable({ articles }: ArticleTableProps) {
                         <Link
                           href={`/blog/${article.slug}` as Route}
                           target="_blank"
-                          aria-label={`Lihat artikel ${article.title} di halaman publik`}
+                          aria-label={`View ${article.title} on the public page`}
                         >
                           <ExternalLink className="size-4" aria-hidden="true" />
                         </Link>
@@ -293,7 +293,7 @@ export function ArticleTable({ articles }: ArticleTableProps) {
                     <Button variant="ghost" size="icon-sm" asChild>
                       <Link
                         href={`/admin/blog/${article.id}/edit` as Route}
-                        aria-label={`Edit artikel ${article.title}`}
+                        aria-label={`Edit article ${article.title}`}
                       >
                         <Edit3 className="size-4" aria-hidden="true" />
                       </Link>

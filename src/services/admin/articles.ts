@@ -100,7 +100,7 @@ export async function getArticles(
       success: false,
       data: [],
       meta: { total: 0, page: 1, lastPage: 1 },
-      error: 'Akses ditolak.',
+      error: 'Access denied.',
     };
   }
 
@@ -143,39 +143,39 @@ export async function getArticles(
       success: false,
       data: [],
       meta: { total: 0, page: safePage, lastPage: 1 },
-      error: 'Artikel gagal dimuat.',
+      error: 'Failed to load articles.',
     };
   }
 }
 
 export async function getArticleById(id: string): Promise<ArticleResponse> {
-  if (!(await canManageArticle('read'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageArticle('read'))) return { success: false, error: 'Access denied.' };
 
   const data = await prisma.article.findUnique({ where: { id }, select: articleSelect });
-  if (!data) return { success: false, error: 'Artikel tidak ditemukan.' };
+  if (!data) return { success: false, error: 'Article not found.' };
   return { success: true, data: data as Article };
 }
 
 export async function createArticle(values: ArticleValues): Promise<ArticleResponse> {
-  if (!(await canManageArticle('create'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageArticle('create'))) return { success: false, error: 'Access denied.' };
 
   const parsed = articleSchema.safeParse(values);
   if (!parsed.success) {
     return {
       success: false,
-      error: parsed.error.issues[0]?.message || 'Data artikel tidak valid.',
+      error: parsed.error.issues[0]?.message || 'Article data is invalid.',
     };
   }
 
   const session = await verifySession();
-  if (!session?.user) return { success: false, error: 'Sesi Anda telah berakhir.' };
+  if (!session?.user) return { success: false, error: 'Your session has expired.' };
 
   const [slug, categories] = await Promise.all([
     uniqueSlug(parsed.data.title),
     validCategoryConnections(parsed.data.categoryIds),
   ]);
-  if (!slug) return { success: false, error: 'Judul tidak dapat dijadikan slug.' };
-  if (!categories) return { success: false, error: 'Satu atau lebih kategori tidak ditemukan.' };
+  if (!slug) return { success: false, error: 'The title cannot be converted into a slug.' };
+  if (!categories) return { success: false, error: 'One or more categories were not found.' };
 
   try {
     const data = await prisma.article.create({
@@ -201,13 +201,11 @@ export async function createArticle(values: ArticleValues): Promise<ArticleRespo
     return {
       success: true,
       data: data as Article,
-      message: parsed.data.isPublished
-        ? 'Artikel berhasil diterbitkan.'
-        : 'Draft berhasil disimpan.',
+      message: parsed.data.isPublished ? 'Article published.' : 'Draft saved.',
     };
   } catch (error) {
     console.error('[createArticle]', error);
-    return { success: false, error: 'Artikel gagal disimpan. Coba lagi.' };
+    return { success: false, error: 'Failed to save the article. Try again.' };
   }
 }
 
@@ -215,13 +213,13 @@ export async function updateArticleById(
   id: string,
   values: ArticleValues
 ): Promise<ArticleResponse> {
-  if (!(await canManageArticle('update'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageArticle('update'))) return { success: false, error: 'Access denied.' };
 
   const parsed = articleSchema.safeParse(values);
   if (!parsed.success) {
     return {
       success: false,
-      error: parsed.error.issues[0]?.message || 'Data artikel tidak valid.',
+      error: parsed.error.issues[0]?.message || 'Article data is invalid.',
     };
   }
 
@@ -229,14 +227,14 @@ export async function updateArticleById(
     where: { id },
     select: { id: true, slug: true, cover: true, isPublished: true, publishedAt: true },
   });
-  if (!existing) return { success: false, error: 'Artikel tidak ditemukan.' };
+  if (!existing) return { success: false, error: 'Article not found.' };
 
   const [slug, categories] = await Promise.all([
     uniqueSlug(parsed.data.title, id),
     validCategoryConnections(parsed.data.categoryIds),
   ]);
-  if (!slug) return { success: false, error: 'Judul tidak dapat dijadikan slug.' };
-  if (!categories) return { success: false, error: 'Satu atau lebih kategori tidak ditemukan.' };
+  if (!slug) return { success: false, error: 'The title cannot be converted into a slug.' };
+  if (!categories) return { success: false, error: 'One or more categories were not found.' };
 
   const publishedAt = parsed.data.isPublished
     ? existing.isPublished
@@ -270,24 +268,22 @@ export async function updateArticleById(
     return {
       success: true,
       data: data as Article,
-      message: parsed.data.isPublished
-        ? 'Artikel berhasil diperbarui dan diterbitkan.'
-        : 'Draft berhasil diperbarui.',
+      message: parsed.data.isPublished ? 'Article updated and published.' : 'Draft updated.',
     };
   } catch (error) {
     console.error('[updateArticleById]', error);
-    return { success: false, error: 'Artikel gagal diperbarui. Coba lagi.' };
+    return { success: false, error: 'Failed to update the article. Try again.' };
   }
 }
 
 export async function deleteArticleById(id: string): Promise<ArticleResponse> {
-  if (!(await canManageArticle('delete'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageArticle('delete'))) return { success: false, error: 'Access denied.' };
 
   const existing = await prisma.article.findUnique({
     where: { id },
     select: { slug: true, cover: true },
   });
-  if (!existing) return { success: false, error: 'Artikel tidak ditemukan.' };
+  if (!existing) return { success: false, error: 'Article not found.' };
 
   try {
     await prisma.article.delete({ where: { id } });
@@ -299,18 +295,18 @@ export async function deleteArticleById(id: string): Promise<ArticleResponse> {
       oldValues: JSON.stringify(existing),
     });
     revalidateArticles(existing.slug);
-    return { success: true, message: 'Artikel berhasil dihapus.' };
+    return { success: true, message: 'Article deleted.' };
   } catch (error) {
     console.error('[deleteArticleById]', error);
-    return { success: false, error: 'Artikel gagal dihapus. Coba lagi.' };
+    return { success: false, error: 'Failed to delete the article. Try again.' };
   }
 }
 
 export async function deleteBulkArticles(ids: string[]): Promise<ArticleResponse> {
-  if (!(await canManageArticle('delete'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageArticle('delete'))) return { success: false, error: 'Access denied.' };
 
   const validIds = [...new Set(ids.filter((id) => /^[0-9a-f-]{36}$/i.test(id)))].slice(0, 100);
-  if (!validIds.length) return { success: false, error: 'Pilih artikel yang akan dihapus.' };
+  if (!validIds.length) return { success: false, error: 'Select articles to delete.' };
 
   const existing = await prisma.article.findMany({
     where: { id: { in: validIds } },
@@ -324,16 +320,16 @@ export async function deleteBulkArticles(ids: string[]): Promise<ArticleResponse
       validIds.map((recordId) => createAuditLog({ action: 'delete', table: 'articles', recordId }))
     );
     revalidateArticles();
-    return { success: true, message: `${validIds.length} artikel berhasil dihapus.` };
+    return { success: true, message: `${validIds.length} articles deleted.` };
   } catch (error) {
     console.error('[deleteBulkArticles]', error);
-    return { success: false, error: 'Artikel gagal dihapus. Coba lagi.' };
+    return { success: false, error: 'Failed to delete the articles. Try again.' };
   }
 }
 
 export async function getCategories(): Promise<ArticleCategoryListResponse> {
   if (!(await canManageCategory('read'))) {
-    return { success: false, data: [], error: 'Akses ditolak.' };
+    return { success: false, data: [], error: 'Access denied.' };
   }
 
   try {
@@ -350,14 +346,14 @@ export async function getCategories(): Promise<ArticleCategoryListResponse> {
     };
   } catch (error) {
     console.error('[getCategories]', error);
-    return { success: false, data: [], error: 'Kategori gagal dimuat.' };
+    return { success: false, data: [], error: 'Failed to load categories.' };
   }
 }
 
 export async function createCategory(
   values: ArticleCategoryValues
 ): Promise<ArticleCategoryResponse> {
-  if (!(await canManageCategory('create'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCategory('create'))) return { success: false, error: 'Access denied.' };
 
   const parsed = articleCategorySchema.safeParse(values);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
@@ -366,7 +362,7 @@ export async function createCategory(
     where: { name: { equals: parsed.data.name, mode: 'insensitive' } },
     select: { id: true },
   });
-  if (exists) return { success: false, error: 'Kategori dengan nama ini sudah ada.' };
+  if (exists) return { success: false, error: 'A category with this name already exists.' };
 
   try {
     const data = await prisma.articleCategory.create({ data: parsed.data });
@@ -377,10 +373,10 @@ export async function createCategory(
       newValues: JSON.stringify(data),
     });
     revalidateArticles();
-    return { success: true, data, message: 'Kategori berhasil dibuat.' };
+    return { success: true, data, message: 'Category created.' };
   } catch (error) {
     console.error('[createCategory]', error);
-    return { success: false, error: 'Kategori gagal dibuat. Coba lagi.' };
+    return { success: false, error: 'Failed to create the category. Try again.' };
   }
 }
 
@@ -388,7 +384,7 @@ export async function updateCategory(
   id: string,
   values: ArticleCategoryValues
 ): Promise<ArticleCategoryResponse> {
-  if (!(await canManageCategory('update'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCategory('update'))) return { success: false, error: 'Access denied.' };
 
   const parsed = articleCategorySchema.safeParse(values);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
@@ -400,8 +396,8 @@ export async function updateCategory(
       select: { id: true },
     }),
   ]);
-  if (!category) return { success: false, error: 'Kategori tidak ditemukan.' };
-  if (conflict) return { success: false, error: 'Kategori dengan nama ini sudah ada.' };
+  if (!category) return { success: false, error: 'Category not found.' };
+  if (conflict) return { success: false, error: 'A category with this name already exists.' };
 
   try {
     const data = await prisma.articleCategory.update({ where: { id }, data: parsed.data });
@@ -413,23 +409,23 @@ export async function updateCategory(
       newValues: JSON.stringify(data),
     });
     revalidateArticles();
-    return { success: true, data, message: 'Kategori berhasil diperbarui.' };
+    return { success: true, data, message: 'Category updated.' };
   } catch (error) {
     console.error('[updateCategory]', error);
-    return { success: false, error: 'Kategori gagal diperbarui. Coba lagi.' };
+    return { success: false, error: 'Failed to update the category. Try again.' };
   }
 }
 
 export async function deleteCategory(id: string): Promise<ArticleCategoryResponse> {
-  if (!(await canManageCategory('delete'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCategory('delete'))) return { success: false, error: 'Access denied.' };
 
   const category = await prisma.articleCategory.findUnique({
     where: { id },
     include: { _count: { select: { articles: true } } },
   });
-  if (!category) return { success: false, error: 'Kategori tidak ditemukan.' };
+  if (!category) return { success: false, error: 'Category not found.' };
   if (category._count.articles > 0) {
-    return { success: false, error: 'Kategori masih digunakan oleh artikel.' };
+    return { success: false, error: 'This category is still used by articles.' };
   }
 
   try {
@@ -441,9 +437,9 @@ export async function deleteCategory(id: string): Promise<ArticleCategoryRespons
       oldValues: JSON.stringify(category),
     });
     revalidateArticles();
-    return { success: true, message: 'Kategori berhasil dihapus.' };
+    return { success: true, message: 'Category deleted.' };
   } catch (error) {
     console.error('[deleteCategory]', error);
-    return { success: false, error: 'Kategori gagal dihapus. Coba lagi.' };
+    return { success: false, error: 'Failed to delete the category. Try again.' };
   }
 }

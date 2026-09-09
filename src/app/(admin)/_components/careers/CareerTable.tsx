@@ -44,15 +44,15 @@ export function CareerListHeader() {
     <header className="flex flex-col justify-between gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-center">
       <div>
         <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-          Kelola Lowongan
+          Manage openings
         </h1>
         <p className="mt-1 text-xs text-slate-500">
-          Atur posisi, status publikasi, dan kategori karier.
+          Manage positions, publication status, and career categories.
         </p>
       </div>
       <Button asChild className="self-start bg-blue-600 text-white hover:bg-blue-700 sm:self-auto">
         <Link href={'/admin/careers/new' as Route}>
-          <Plus className="h-4 w-4" /> Tambah Lowongan
+          <Plus className="h-4 w-4" /> Add opening
         </Link>
       </Button>
     </header>
@@ -84,11 +84,11 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
     startTransition(async () => {
       const result = await deleteCareerById(candidate.id);
       if (!result.success) {
-        toast.error(result.error || 'Lowongan gagal dihapus.');
+        toast.error(result.error || 'Failed to delete the opening.');
         return;
       }
       flushSync(() => setCandidate(null));
-      toast.success(result.message || 'Lowongan berhasil dihapus.');
+      toast.success(result.message || 'Opening deleted.');
       router.refresh();
     });
   }
@@ -102,8 +102,8 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Cari judul, lokasi, atau kategori"
-              aria-label="Cari lowongan"
+              placeholder="Search title, location, or category"
+              aria-label="Search openings"
               className="pl-9"
             />
           </div>
@@ -114,8 +114,8 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
               onChange={(event) => setStatus(event.target.value as typeof status)}
               className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
             >
-              <option value="all">Semua</option>
-              <option value="active">Aktif</option>
+              <option value="all">All</option>
+              <option value="active">Active</option>
               <option value="draft">Draft</option>
             </select>
           </label>
@@ -123,30 +123,30 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
 
         <section
           className="overflow-hidden rounded-md border border-slate-200 bg-white"
-          aria-label="Daftar lowongan"
+          aria-label="Opening list"
         >
           {careers.length === 0 ? (
             <div className="flex min-h-56 flex-col items-center justify-center p-8 text-center">
-              <h2 className="text-sm font-bold text-slate-900">Belum ada lowongan</h2>
+              <h2 className="text-sm font-bold text-slate-900">No openings yet</h2>
               <p className="mt-1 max-w-sm text-xs text-slate-500">
-                Tambahkan lowongan pertama untuk mulai mengisi halaman karier publik.
+                Add your first opening to start building the public careers page.
               </p>
             </div>
           ) : filtered.length === 0 ? (
             <div className="min-h-40 p-8 text-center text-xs text-slate-500">
-              Tidak ada lowongan yang cocok dengan filter.
+              No openings match the current filter.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table className="min-w-[760px]">
                 <TableHeader className="bg-slate-50">
                   <TableRow>
-                    <TableHead>Posisi</TableHead>
-                    <TableHead>Lokasi</TableHead>
-                    <TableHead>Kategori</TableHead>
-                    <TableHead>Urutan</TableHead>
+                    <TableHead>Position</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Order</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aksi</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -163,7 +163,7 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
                       </TableCell>
                       <TableCell className="text-sm text-slate-600">{career.location}</TableCell>
                       <TableCell className="text-sm text-slate-600">
-                        {career.category?.name || career.department || 'Tanpa kategori'}
+                        {career.category?.name || career.department || 'No category'}
                       </TableCell>
                       <TableCell className="text-sm tabular-nums text-slate-600">
                         {career.order}
@@ -171,7 +171,7 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
                       <TableCell>
                         {career.isActive ? (
                           <span className="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">
-                            Aktif
+                            Active
                           </span>
                         ) : (
                           <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
@@ -186,7 +186,7 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
                               <Link
                                 href={`/careers/${career.slug}` as Route}
                                 target="_blank"
-                                aria-label={`Lihat ${career.title} di website`}
+                                aria-label={`View ${career.title} on the website`}
                               >
                                 <ExternalLink className="h-4 w-4" />
                               </Link>
@@ -205,7 +205,7 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
                             variant="ghost"
                             size="icon"
                             onClick={() => setCandidate(career)}
-                            aria-label={`Hapus ${career.title}`}
+                            aria-label={`Delete ${career.title}`}
                           >
                             <Trash2 className="h-4 w-4 text-red-600" />
                           </Button>
@@ -224,18 +224,18 @@ export function CareerTable({ careers }: { careers: CareerTableItem[] }) {
         <DialogContent showCloseButton={false}>
           <DialogHeader>
             <TriangleAlert className="h-8 w-8 text-red-600" />
-            <DialogTitle>Hapus lowongan?</DialogTitle>
+            <DialogTitle>Delete opening?</DialogTitle>
             <DialogDescription>
-              Lowongan “{candidate?.title}” akan dihapus permanen. Data lamaran lama yang terkait
-              juga akan ikut terhapus.
+              “{candidate?.title}” will be permanently deleted. Related application data will also
+              be deleted.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCandidate(null)} disabled={isPending}>
-              Batal
+              Cancel
             </Button>
             <Button variant="destructive" onClick={removeCareer} disabled={isPending}>
-              {isPending ? 'Menghapus...' : 'Hapus Lowongan'}
+              {isPending ? 'Deleting...' : 'Delete opening'}
             </Button>
           </DialogFooter>
         </DialogContent>

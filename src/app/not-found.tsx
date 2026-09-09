@@ -4,8 +4,8 @@ import { ArrowLeft } from 'lucide-react';
 import { genPageMetadata } from '@/app/seo';
 
 export const metadata: Metadata = genPageMetadata({
-  title: '404 — Halaman Tidak Ditemukan',
-  description: 'Maaf, halaman yang Anda cari tidak tersedia atau telah dipindahkan.',
+  title: '404 — Page Not Found',
+  description: 'The page you requested is unavailable or may have moved.',
 });
 
 export default function NotFound() {
@@ -19,12 +19,12 @@ export default function NotFound() {
 
         {/* Subtitle Heading */}
         <h2 className="font-heading font-bold text-2xl sm:text-3xl text-neutral-900 tracking-tight mb-3">
-          Halaman Tidak Ditemukan
+          Page Not Found
         </h2>
 
         {/* Description Paragraph */}
         <p className="text-neutral-500 text-sm sm:text-base leading-relaxed max-w-md mb-8">
-          Maaf, halaman yang Anda cari tidak tersedia atau telah dipindahkan.
+          The page you requested is unavailable or may have moved.
         </p>
 
         {/* Action Button */}
@@ -33,7 +33,7 @@ export default function NotFound() {
           className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#0C235A] hover:bg-[#08183E] text-white font-medium text-sm transition-colors shadow-sm active:scale-95"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Kembali ke Beranda</span>
+          <span>Back to home</span>
         </Link>
       </div>
     </div>

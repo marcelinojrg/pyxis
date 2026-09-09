@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { verifyPermission } from '@/services/admin/security';
 import sharp from 'sharp';
 
-/** Timeout (ms) untuk seluruh proses upload & kompresi sharp */
+/** Timeout (ms) for the complete upload and Sharp compression process. */
 const UPLOAD_TIMEOUT_MS = 30_000;
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 const MAX_IMAGE_PIXELS = 40_000_000;
@@ -24,8 +24,8 @@ async function canUploadTo(subDir: string) {
 }
 
 /**
- * Wrapper Promise dengan timeout agar proses tidak hang selamanya.
- * Jika melebihi batas waktu, Promise di-reject dengan error yang jelas.
+ * Promise wrapper with a timeout so the process cannot hang indefinitely.
+ * If the limit is exceeded, the Promise is rejected with a clear error.
  */
 function withTimeout<T>(promise: Promise<T>, ms: number, label = 'Operasi'): Promise<T> {
   return Promise.race([
@@ -37,23 +37,23 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label = 'Operasi'): Pro
 }
 
 /**
- * Upload dan Kompres Gambar ke ImageKit
+ * Upload and compress an image with ImageKit.
  */
 export async function uploadImage(
   file: File,
   subDir: string = ''
 ): Promise<{ success: boolean; url?: string; error?: string }> {
   if (!(await canUploadTo(subDir))) {
-    return { success: false, error: 'Akses ditolak.' };
+    return { success: false, error: 'Access denied.' };
   }
   if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-    return { success: false, error: 'Format gambar harus JPEG, PNG, WebP, atau AVIF.' };
+    return { success: false, error: 'The image must be JPEG, PNG, WebP, or AVIF.' };
   }
   if (file.size === 0 || file.size > MAX_IMAGE_SIZE_BYTES) {
-    return { success: false, error: 'Ukuran gambar harus antara 1 byte dan 10 MB.' };
+    return { success: false, error: 'The image size must be between 1 byte and 10 MB.' };
   }
   if (!/^[a-zA-Z0-9/_-]{0,120}$/.test(subDir) || subDir.split('/').includes('..')) {
-    return { success: false, error: 'Folder upload tidak valid.' };
+    return { success: false, error: 'The upload folder is invalid.' };
   }
 
   const startTime = Date.now();
@@ -64,7 +64,7 @@ export async function uploadImage(
   try {
     const imageBuffer = Buffer.from(await file.arrayBuffer());
     const image = sharp(imageBuffer, { limitInputPixels: MAX_IMAGE_PIXELS });
-    const metadata = await withTimeout(image.metadata(), UPLOAD_TIMEOUT_MS, 'Validasi gambar');
+    const metadata = await withTimeout(image.metadata(), UPLOAD_TIMEOUT_MS, 'Image validation');
     if (
       !metadata.format ||
       !ALLOWED_IMAGE_FORMATS.has(metadata.format) ||
@@ -74,13 +74,13 @@ export async function uploadImage(
     ) {
       return {
         success: false,
-        error: 'Isi file bukan gambar valid atau dimensinya terlalu besar.',
+        error: 'The file is not a valid image or its dimensions are too large.',
       };
     }
     const optimizedImage = await withTimeout(
       image.rotate().webp({ quality: 82 }).toBuffer(),
       UPLOAD_TIMEOUT_MS,
-      'Validasi gambar'
+      'Image validation'
     );
     const baseName =
       file.name
@@ -103,7 +103,7 @@ export async function uploadImage(
     if (!privateKey) {
       return {
         success: false,
-        error: 'ImageKit belum dikonfigurasi. Hubungi administrator sistem.',
+        error: 'ImageKit is not configured. Contact the system administrator.',
       };
     }
     const authHeader = 'Basic ' + Buffer.from(privateKey + ':').toString('base64');
@@ -117,7 +117,7 @@ export async function uploadImage(
         body: formData,
       }),
       UPLOAD_TIMEOUT_MS,
-      'Upload gambar'
+      'Image upload'
     );
 
     if (!res.ok) {
@@ -126,7 +126,7 @@ export async function uploadImage(
     }
 
     const data = (await res.json()) as { url?: string };
-    if (!data.url) throw new Error('ImageKit tidak mengembalikan URL gambar.');
+    if (!data.url) throw new Error('ImageKit did not return an image URL.');
     const elapsed = Date.now() - startTime;
     console.log(`[uploadImage] ✅ Upload ImageKit selesai dalam ${elapsed}ms → URL: ${data.url}`);
 
@@ -136,17 +136,17 @@ export async function uploadImage(
     };
   } catch (error) {
     const elapsed = Date.now() - startTime;
-    console.error(`[uploadImage] ❌ ERROR setelah ${elapsed}ms untuk file "${file.name}":`, error);
-    return { success: false, error: 'Gagal mengunggah gambar ke ImageKit.' };
+    console.error(`[uploadImage] ❌ Failed after ${elapsed}ms for file "${file.name}":`, error);
+    return { success: false, error: 'Failed to upload the image to ImageKit.' };
   }
 }
 
 /**
- * Hapus gambar dari ImageKit.
+ * Delete an image from ImageKit.
  */
 export async function deleteImage(url: string): Promise<{ success: boolean; error?: string }> {
   if (!(await verifyPermission('admin.access'))) {
-    return { success: false, error: 'Akses ditolak.' };
+    return { success: false, error: 'Access denied.' };
   }
 
   try {
@@ -154,14 +154,14 @@ export async function deleteImage(url: string): Promise<{ success: boolean; erro
 
     const parsedUrl = new URL(url);
     if (parsedUrl.protocol !== 'https:' || parsedUrl.hostname !== 'ik.imagekit.io') {
-      return { success: false, error: 'URL gambar tidak valid.' };
+      return { success: false, error: 'The image URL is invalid.' };
     }
 
     const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    if (pathParts.length < 2) return { success: false, error: 'URL gambar tidak valid.' };
+    if (pathParts.length < 2) return { success: false, error: 'The image URL is invalid.' };
 
     const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
-    if (!privateKey) throw new Error('IMAGEKIT_PRIVATE_KEY belum dikonfigurasi.');
+    if (!privateKey) throw new Error('IMAGEKIT_PRIVATE_KEY is not configured.');
     const authHeader = 'Basic ' + Buffer.from(privateKey + ':').toString('base64');
     const imageKitPath =
       '/' +
@@ -177,10 +177,10 @@ export async function deleteImage(url: string): Promise<{ success: boolean; erro
         }
       ),
       UPLOAD_TIMEOUT_MS,
-      'Pencarian gambar'
+      'Image search'
     );
 
-    if (!searchRes.ok) throw new Error(`Pencarian ImageKit gagal (${searchRes.status}).`);
+    if (!searchRes.ok) throw new Error(`ImageKit search failed (${searchRes.status}).`);
     const files = (await searchRes.json()) as { fileId: string }[];
     if (!files[0]) return { success: true };
 
@@ -190,13 +190,13 @@ export async function deleteImage(url: string): Promise<{ success: boolean; erro
         headers: { Authorization: authHeader },
       }),
       UPLOAD_TIMEOUT_MS,
-      'Penghapusan gambar'
+      'Image deletion'
     );
-    if (!deleteRes.ok) throw new Error(`Penghapusan ImageKit gagal (${deleteRes.status}).`);
+    if (!deleteRes.ok) throw new Error(`ImageKit deletion failed (${deleteRes.status}).`);
 
     return { success: true };
   } catch (error) {
     console.error('Delete Image Error:', error);
-    return { success: false, error: 'Gagal menghapus file gambar.' };
+    return { success: false, error: 'Failed to delete the image file.' };
   }
 }

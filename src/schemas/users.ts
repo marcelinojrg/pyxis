@@ -2,27 +2,27 @@ import { z } from 'zod';
 
 export const userSchema = z.object({
   name: z.string().min(3, {
-    message: 'Nama minimal 3 karakter.',
+    message: 'Name must be at least 3 characters.',
   }),
   email: z.string().email({
-    message: 'Email tidak valid.',
+    message: 'Email is invalid.',
   }),
   password: z
     .string()
     .min(8, {
-      message: 'Password minimal 8 karakter.',
+      message: 'Password must be at least 8 characters.',
     })
     .optional()
     .or(z.literal('')),
   newPassword: z
     .string()
     .min(8, {
-      message: 'Password baru minimal 8 karakter.',
+      message: 'New password must be at least 8 characters.',
     })
     .optional()
     .or(z.literal('')),
   roleId: z.string().min(1, {
-    message: 'Jabatan harus dipilih.',
+    message: 'Role is required.',
   }),
   image: z.string().optional().nullable(),
 });

@@ -3,32 +3,35 @@ import HomePartnersBar from './_components/home/HomePartnersBar';
 import HomeFeatures from './_components/home/HomeFeatures';
 import HomeAboutSummary from './_components/home/HomeAboutSummary';
 import HomeVisionMission from './_components/home/HomeVisionMission';
-import HomeEvolution from './_components/home/HomeEvolution';
 import CTASection from '@/components/Common/CTASection';
+import { prisma } from '@/lib/prisma';
 
 export default async function HomePage() {
+  const partners = await prisma.partner.findMany({
+    where: { isActive: true },
+    select: { name: true, image: true },
+    orderBy: { order: 'asc' },
+  });
+
   return (
     <div className="w-full flex flex-col">
       {/* 1. Hero Section */}
       <HomeHero />
 
       {/* 2. Client / Partner Logos Bar */}
-      <HomePartnersBar />
+      <HomePartnersBar partners={partners} />
 
-      {/* 3. Features Grid: Fitur Lengkap untuk Segala Kebutuhan */}
+      {/* 3. Features Grid */}
       <HomeFeatures />
 
-      {/* 4. About Summary: Tentang Pyxis & 4 Milestone Cards */}
+      {/* 4. About summary: Pyxis and four milestone cards */}
       <HomeAboutSummary />
 
-      {/* 5. Vision & Mission: Visi & Misi Perjalanan Kami */}
+      {/* 5. Vision and mission: the Pyxis journey */}
       <HomeVisionMission />
 
-      {/* 6. Product Evolution: Evolusi Produk Kami (Nodes 1-5) */}
-      <HomeEvolution />
-
-      {/* 7. Conversion CTA: Saatnya Bergabung */}
-      <CTASection />
+      {/* 6. Conversion CTA */}
+      <CTASection spacing="comfortable" />
     </div>
   );
 }

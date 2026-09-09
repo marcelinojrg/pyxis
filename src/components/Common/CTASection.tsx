@@ -1,48 +1,53 @@
 import type { FC } from 'react';
 import type { Route } from 'next';
 import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 
 export interface CTASectionProps {
   title?: string;
   description?: string;
   buttonText?: string;
   buttonHref?: string;
+  spacing?: 'default' | 'comfortable';
 }
 
 export const CTASection: FC<CTASectionProps> = ({
-  title = 'Saatnya Bergabung',
-  description = 'Perkembangan teknologi begitu cepat dan perusahaan atau platform baru bermunculan setiap saat. Pyxis memberikan salah satu solusi terbaik untuk mengelola properti Anda dengan lebih cerdas.',
-  buttonText = 'Hubungi Tim Kami',
+  title = 'Make your hotel operations ready to grow',
+  description = "Talk to Pyxis about your hotel's needs and find the right solution for your operation.",
+  buttonText = 'Talk to Our Team',
   buttonHref = '/contact',
+  spacing = 'default',
 }) => {
   return (
-    <section className="relative py-16 overflow-hidden bg-[#0A1222] text-white">
-      {/* Background Architectural Overlay Gradient */}
-      <div className="absolute inset-0 bg-linear-to-r from-[#0B1E48]/80 via-[#0A1222]/95 to-[#050B14] -z-10" />
-
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="rounded-3xl bg-[#111C33] border border-white/10 p-8 sm:p-12 md:p-14 max-w-5xl mx-auto shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-4 max-w-2xl text-left">
+    <section
+      className={`relative overflow-hidden bg-[#08152F] text-white ${
+        spacing === 'comfortable' ? 'py-14 sm:py-16' : 'py-16'
+      }`}
+    >
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8">
+        <div className="grid gap-7 border-y border-white/20 py-7 md:grid-cols-[1fr_auto] md:items-end md:gap-12 md:py-9">
+          <div className="max-w-2xl">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-200">
+              Next step
+            </p>
             <h2
               data-home-reveal="heading"
-              className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-white leading-tight"
+              className="max-w-lg text-2xl font-bold leading-[1.08] tracking-tight text-white sm:text-3xl md:text-4xl"
             >
               {title}
             </h2>
-            <p
-              data-home-reveal="copy"
-              className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-xl"
-            >
+            <p data-home-reveal="copy" className="mt-4 max-w-lg text-sm leading-6 text-blue-100">
               {description}
             </p>
           </div>
 
-          <div data-home-reveal="cta" className="shrink-0 w-full md:w-auto">
+          <div data-home-reveal="cta" className="flex flex-col items-start md:items-end">
             <Link
               href={buttonHref as Route}
-              className="inline-flex items-center justify-center w-full md:w-auto px-7 py-3 rounded-xl bg-[#F59E0B] hover:bg-[#D97706] text-neutral-950 font-bold text-sm transition-all duration-200 shadow-lg active:scale-95 text-center"
+              className="group inline-flex w-full items-center justify-between gap-6 border-b border-[#F59E0B] pb-2 text-sm font-semibold text-white transition-colors duration-200 hover:text-[#FBBF24] md:w-auto"
             >
               {buttonText}
+              <ArrowUpRight className="h-5 w-5 rotate-90 transition-transform duration-300 group-hover:rotate-0" />
             </Link>
           </div>
         </div>

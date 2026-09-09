@@ -12,7 +12,7 @@ const BASE_PATH = '/admin/managements/roles';
 export type RoleValues = z.infer<typeof roleSchema>;
 
 /**
- * Mengambil data roles dengan pagination dan pencarian
+ * Fetch roles with pagination and search.
  */
 export async function getRoles(
   page: number = 1,
@@ -25,7 +25,7 @@ export async function getRoles(
       success: false,
       data: [],
       meta: { total: 0, page: 1, lastPage: 0 },
-      error: 'Anda tidak memiliki hak akses untuk melihat data ini.',
+      error: 'You do not have permission to view this data.',
     } satisfies RolePaginationResponse;
   }
 
@@ -84,12 +84,12 @@ export async function getRoles(
 }
 
 /**
- * Mengambil data role berdasarkan nama
+ * Fetch a role by name.
  */
 export async function getRoleByName(name: string): Promise<RoleResponse> {
   const hasAccess = await verifyPermission('role.read');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses.' };
+    return { success: false, error: 'You do not have permission.' };
   }
 
   try {
@@ -103,22 +103,22 @@ export async function getRoleByName(name: string): Promise<RoleResponse> {
     });
 
     if (!role) {
-      return { success: false, error: 'Jabatan tidak ditemukan.' };
+      return { success: false, error: 'Role not found.' };
     }
 
     return { success: true, data: role as unknown as Role };
   } catch (error) {
-    return { success: false, error: 'Gagal mengambil data jabatan.' };
+    return { success: false, error: 'Failed to load the role.' };
   }
 }
 
 /**
- * Mengambil data role berdasarkan ID (UUID)
+ * Fetch a role by ID (UUID).
  */
 export async function getRoleById(id: string): Promise<RoleResponse> {
   const hasAccess = await verifyPermission('role.read');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses.' };
+    return { success: false, error: 'You do not have permission.' };
   }
 
   try {
@@ -132,28 +132,28 @@ export async function getRoleById(id: string): Promise<RoleResponse> {
     });
 
     if (!role) {
-      return { success: false, error: 'Jabatan tidak ditemukan.' };
+      return { success: false, error: 'Role not found.' };
     }
 
     return { success: true, data: role as unknown as Role };
   } catch (error) {
-    return { success: false, error: 'Gagal mengambil data jabatan.' };
+    return { success: false, error: 'Failed to load the role.' };
   }
 }
 
 /**
- * Membuat Role baru
+ * Create a new role.
  */
 export async function createRole(values: RoleValues): Promise<RoleResponse> {
   const hasAccess = await verifyPermission('role.create');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk membuat data.' };
+    return { success: false, error: 'You do not have permission to create data.' };
   }
 
   const validatedFields = roleSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { success: false, error: 'Input tidak valid.' };
+    return { success: false, error: 'The input is invalid.' };
   }
 
   try {
@@ -162,7 +162,7 @@ export async function createRole(values: RoleValues): Promise<RoleResponse> {
     });
 
     if (existing) {
-      return { success: false, error: 'Nama jabatan sudah digunakan.' };
+      return { success: false, error: 'That role name is already in use.' };
     }
 
     const role = await prisma.role.create({
@@ -180,10 +180,10 @@ export async function createRole(values: RoleValues): Promise<RoleResponse> {
     return {
       success: true,
       data: role as unknown as Role,
-      message: 'Jabatan berhasil dibuat.',
+      message: 'Role created.',
     };
   } catch (error) {
-    return { success: false, error: 'Gagal membuat jabatan.' };
+    return { success: false, error: 'Failed to create the role.' };
   }
 }
 
@@ -193,13 +193,13 @@ export async function createRole(values: RoleValues): Promise<RoleResponse> {
 export async function updateRole(name: string, values: RoleValues): Promise<RoleResponse> {
   const hasAccess = await verifyPermission('role.update');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk mengubah data.' };
+    return { success: false, error: 'You do not have permission to update data.' };
   }
 
   const validatedFields = roleSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { success: false, error: 'Input tidak valid.' };
+    return { success: false, error: 'The input is invalid.' };
   }
 
   try {
@@ -208,7 +208,7 @@ export async function updateRole(name: string, values: RoleValues): Promise<Role
     });
 
     if (existing && existing.name !== name) {
-      return { success: false, error: 'Nama jabatan sudah digunakan.' };
+      return { success: false, error: 'That role name is already in use.' };
     }
 
     const role = await prisma.role.update({
@@ -228,26 +228,26 @@ export async function updateRole(name: string, values: RoleValues): Promise<Role
     return {
       success: true,
       data: role as unknown as Role,
-      message: 'Jabatan berhasil diperbarui.',
+      message: 'Role updated.',
     };
   } catch (error) {
-    return { success: false, error: 'Gagal memperbarui jabatan.' };
+    return { success: false, error: 'Failed to update the role.' };
   }
 }
 
 /**
- * Update Role berdasarkan ID (UUID)
+ * Update a role by ID (UUID).
  */
 export async function updateRoleById(id: string, values: RoleValues): Promise<RoleResponse> {
   const hasAccess = await verifyPermission('role.update');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk mengubah data.' };
+    return { success: false, error: 'You do not have permission to update data.' };
   }
 
   const validatedFields = roleSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { success: false, error: 'Input tidak valid.' };
+    return { success: false, error: 'The input is invalid.' };
   }
 
   try {
@@ -256,10 +256,10 @@ export async function updateRoleById(id: string, values: RoleValues): Promise<Ro
     });
 
     if (!current) {
-      return { success: false, error: 'Jabatan tidak ditemukan.' };
+      return { success: false, error: 'Role not found.' };
     }
 
-    // Cek duplikasi nama jika nama berubah
+    // Check for duplicate names when the name changes.
     if (validatedFields.data.name !== current.name) {
       const duplicate = await prisma.role.findFirst({
         where: {
@@ -268,7 +268,7 @@ export async function updateRoleById(id: string, values: RoleValues): Promise<Ro
         },
       });
       if (duplicate) {
-        return { success: false, error: 'Nama jabatan sudah digunakan.' };
+        return { success: false, error: 'That role name is already in use.' };
       }
     }
 
@@ -289,20 +289,20 @@ export async function updateRoleById(id: string, values: RoleValues): Promise<Ro
     return {
       success: true,
       data: role as unknown as Role,
-      message: 'Jabatan berhasil diperbarui.',
+      message: 'Role updated.',
     };
   } catch (error) {
-    return { success: false, error: 'Gagal memperbarui jabatan.' };
+    return { success: false, error: 'Failed to update the role.' };
   }
 }
 
 /**
- * Hapus Role
+ * Delete a role.
  */
 export async function deleteRole(id: string): Promise<RoleResponse> {
   const hasAccess = await verifyPermission('role.delete');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk menghapus data.' };
+    return { success: false, error: 'You do not have permission to delete data.' };
   }
 
   try {
@@ -318,7 +318,7 @@ export async function deleteRole(id: string): Promise<RoleResponse> {
     if (existing && existing._count.users > 0) {
       return {
         success: false,
-        error: 'Jabatan tidak bisa dihapus karena masih digunakan oleh user.',
+        error: 'The role cannot be deleted because it is still used by a user.',
       };
     }
 
@@ -328,8 +328,8 @@ export async function deleteRole(id: string): Promise<RoleResponse> {
 
     revalidatePath(BASE_PATH);
 
-    return { success: true, message: 'Jabatan berhasil dihapus.' };
+    return { success: true, message: 'Role deleted.' };
   } catch (error) {
-    return { success: false, error: 'Gagal menghapus jabatan.' };
+    return { success: false, error: 'Failed to delete the role.' };
   }
 }

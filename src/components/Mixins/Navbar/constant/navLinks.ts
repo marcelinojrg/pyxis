@@ -1,7 +1,7 @@
 export const navlinks = [
-  { title: 'Beranda', path: '/' },
-  { title: 'Fitur', path: '#features' },
-  { title: 'Cara Kerja', path: '#steps' },
-  { title: 'Tentang', path: '/about' },
-  { title: 'Kontak', path: '/contact' },
+  { title: 'Home', path: '/' },
+  { title: 'Features', path: '#features' },
+  { title: 'How it works', path: '#steps' },
+  { title: 'About', path: '/about' },
+  { title: 'Contact', path: '/contact' },
 ];

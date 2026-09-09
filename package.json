@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "db:migrate:deploy": "prisma migrate deploy",
     "test:cms": "playwright test cms-admin-access.spec.ts cms-public-pages.spec.ts",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts && tsx prisma/seed-official-products.ts && tsx prisma/seed-blog.ts && tsx prisma/seed-site-content.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

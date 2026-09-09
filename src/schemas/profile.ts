@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
 export const updateNameSchema = z.object({
-  name: z.string().min(2, 'Nama minimal 2 karakter'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
 });
 
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Password saat ini wajib diisi'),
-    newPassword: z.string().min(8, 'Password baru minimal 8 karakter'),
-    confirmPassword: z.string().min(1, 'Konfirmasi password wajib diisi'),
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: z.string().min(8, 'New password must be at least 8 characters'),
+    confirmPassword: z.string().min(1, 'Password confirmation is required'),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Konfirmasi password tidak cocok',
+    message: 'Password confirmation does not match',
     path: ['confirmPassword'],
   });
 

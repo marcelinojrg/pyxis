@@ -49,12 +49,12 @@ export async function proxy(request: NextRequest) {
   }
 
   try {
-    // Ambil session secara langsung dari database via Better Auth
+    // Read the session directly from the database through Better Auth.
     const session = await auth.api.getSession({
       headers: request.headers,
     });
 
-    // Cek apakah session benar-benar valid dan belum kedaluwarsa
+    // Check whether the session is valid and has not expired.
     const isAuthenticated = !!(
       session &&
       session.user &&
@@ -66,7 +66,7 @@ export async function proxy(request: NextRequest) {
       return redirectWithSecurityHeaders(new URL('/login', request.url), csp);
     }
 
-    // Ambil permissions jika sudah login
+    // Read permissions when the user is signed in.
     let permissionsSet = new Set<string>();
     if (isAuthenticated) {
       const user = await prisma.user.findUnique({
@@ -83,12 +83,12 @@ export async function proxy(request: NextRequest) {
       });
 
       if (user) {
-        // Ambil permissions dari relasi many-to-many (roles)
+        // Read permissions from the many-to-many roles relation.
         user.roles.forEach((role) => {
           role.permissions.forEach((p) => permissionsSet.add(p.name));
         });
 
-        // Jika ada roleId (one-to-many), ambil juga permissions-nya
+        // If roleId exists (one-to-many), read its permissions as well.
         if (user.roleId) {
           const singleRole = await prisma.role.findUnique({
             where: { id: user.roleId },
@@ -119,7 +119,7 @@ export async function proxy(request: NextRequest) {
       error: error instanceof Error ? error.message : String(error),
       timestamp: new Date().toISOString(),
     });
-    // Fail-safe: Jika sistem auth down, proteksi halaman admin tetap berjalan
+    // Fail-safe: keep admin pages protected if the auth system is unavailable.
     if (isAdminPath) {
       return redirectWithSecurityHeaders(new URL('/login', request.url), csp);
     }

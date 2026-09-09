@@ -2,7 +2,7 @@ import { ArticleTable } from '@/app/(admin)/_components/blog/ArticleTable';
 import { CategoryManager } from '@/app/(admin)/_components/blog/CategoryManager';
 import { getArticles, getCategories } from '@/services/admin/articles';
 
-export const metadata = { title: 'Kelola Blog — Pyxis Admin' };
+export const metadata = { title: 'Manage blog — Pyxis Admin' };
 
 export default async function AdminBlogPage() {
   const [articles, categories] = await Promise.all([getArticles(), getCategories()]);

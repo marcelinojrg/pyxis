@@ -132,7 +132,7 @@ function OrderControls({
         size="icon"
         className="h-9 w-9 text-muted-foreground hover:text-destructive"
         onClick={onRemove}
-        aria-label={`Hapus ${label}`}
+        aria-label={`Delete ${label}`}
       >
         <Trash2 className="h-4 w-4" aria-hidden />
       </Button>
@@ -192,7 +192,7 @@ function ImagePicker({
         ) : (
           <span className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
             <UploadCloud className="h-6 w-6" aria-hidden />
-            <span className="font-medium text-foreground">Pilih gambar</span>
+            <span className="font-medium text-foreground">Choose image</span>
           </span>
         )}
       </label>
@@ -208,7 +208,7 @@ function ImagePicker({
             className="h-8 text-destructive"
             onClick={onRemove}
           >
-            <Trash2 className="mr-1.5 h-3.5 w-3.5" aria-hidden /> Hapus gambar
+            <Trash2 className="mr-1.5 h-3.5 w-3.5" aria-hidden /> Remove image
           </Button>
         ) : null}
       </div>
@@ -263,7 +263,7 @@ function CapabilityGroupFields({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor={`capability-${fieldId}-title`}>Judul grup</Label>
+          <Label htmlFor={`capability-${fieldId}-title`}>Group title</Label>
           <Input
             id={`capability-${fieldId}-title`}
             maxLength={120}
@@ -274,7 +274,7 @@ function CapabilityGroupFields({
           <FieldError id={`capability-${fieldId}-title-error`} message={errors?.title?.message} />
         </div>
         <div className="space-y-2 md:col-span-2">
-          <Label htmlFor={`capability-${fieldId}-description`}>Deskripsi grup</Label>
+          <Label htmlFor={`capability-${fieldId}-description`}>Group description</Label>
           <Textarea
             id={`capability-${fieldId}-description`}
             className="min-h-24 resize-y"
@@ -294,10 +294,10 @@ function CapabilityGroupFields({
 
       <ImagePicker
         id={`capability-${fieldId}-image`}
-        label="Gambar atau diagram grup"
-        hint="JPG, PNG, WEBP, atau AVIF; maksimal 10 MB."
+        label="Group image or diagram"
+        hint="JPG, PNG, WEBP, or AVIF; maximum 10 MB."
         preview={preview ?? persistedImage ?? ''}
-        alt={`Pratinjau gambar grup kapabilitas ${groupIndex + 1}`}
+        alt={`Capability group image preview ${groupIndex + 1}`}
         onChange={onImageChange}
         onRemove={onImageRemove}
       />
@@ -305,8 +305,8 @@ function CapabilityGroupFields({
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h4 className="text-sm font-semibold text-foreground">Item kapabilitas</h4>
-            <p className="text-xs text-muted-foreground">Urutan item mengikuti susunan di bawah.</p>
+            <h4 className="text-sm font-semibold text-foreground">Capability items</h4>
+            <p className="text-xs text-muted-foreground">Item order follows the list below.</p>
           </div>
           <Button
             type="button"
@@ -315,7 +315,7 @@ function CapabilityGroupFields({
             disabled={items.fields.length >= 30}
             onClick={() => items.append({ title: '', description: '', icon: '' })}
           >
-            <Plus className="mr-1.5 h-4 w-4" aria-hidden /> Tambah item
+            <Plus className="mr-1.5 h-4 w-4" aria-hidden /> Add item
           </Button>
         </div>
 
@@ -334,7 +334,7 @@ function CapabilityGroupFields({
                   />
                   <div className="space-y-2">
                     <Label htmlFor={`capability-${fieldId}-item-${item.id}-title`}>
-                      Judul item
+                      Item title
                     </Label>
                     <Input
                       id={`capability-${fieldId}-item-${item.id}-title`}
@@ -354,7 +354,7 @@ function CapabilityGroupFields({
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor={`capability-${fieldId}-item-${item.id}-description`}>
-                      Deskripsi
+                      Description
                     </Label>
                     <Textarea
                       id={`capability-${fieldId}-item-${item.id}-description`}
@@ -376,7 +376,7 @@ function CapabilityGroupFields({
               );
             })
           ) : (
-            <p className="p-4 text-sm text-muted-foreground">Belum ada item dalam grup ini.</p>
+            <p className="p-4 text-sm text-muted-foreground">No items in this group yet.</p>
           )}
         </div>
       </div>
@@ -454,11 +454,11 @@ export function ProductForm({ product }: ProductFormProps) {
 
   function validImage(file: File) {
     if (!IMAGE_TYPES.has(file.type)) {
-      toast.error('Format gambar harus JPG, PNG, WEBP, atau AVIF.');
+      toast.error('The image must be JPG, PNG, WEBP, or AVIF.');
       return false;
     }
     if (file.size > MAX_IMAGE_SIZE) {
-      toast.error('Ukuran gambar maksimal 10 MB.');
+      toast.error('The image must be no larger than 10 MB.');
       return false;
     }
     return true;
@@ -511,7 +511,7 @@ export function ProductForm({ product }: ProductFormProps) {
       if (imageFile) {
         const upload = await uploadImage(imageFile, 'products');
         if (!upload.success || !upload.url)
-          throw new Error(upload.error || 'Gambar utama gagal diunggah.');
+          throw new Error(upload.error || 'Failed to upload the main image.');
         image = upload.url;
       }
 
@@ -522,7 +522,7 @@ export function ProductForm({ product }: ProductFormProps) {
           if (!file) return group;
           const upload = await uploadImage(file, 'products');
           if (!upload.success || !upload.url) {
-            throw new Error(upload.error || `Gambar kapabilitas ${index + 1} gagal diunggah.`);
+            throw new Error(upload.error || `Failed to upload capability image ${index + 1}.`);
           }
           return { ...group, imageUrl: upload.url };
         })
@@ -533,23 +533,23 @@ export function ProductForm({ product }: ProductFormProps) {
         ? await updateProduct(product.id, payload)
         : await createProduct(payload);
       if (!result.success) {
-        toast.error(result.error || 'Produk gagal disimpan.');
+        toast.error(result.error || 'Failed to save the product.');
         return;
       }
 
-      toast.success(result.message || 'Produk berhasil disimpan.');
+      toast.success(result.message || 'Product saved.');
       router.push('/admin/products' as Route);
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Gambar gagal diunggah. Coba lagi.');
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to upload the image. Try again.'
+      );
     }
   }
 
   return (
     <form
-      onSubmit={form.handleSubmit(onSubmit, () =>
-        toast.error('Periksa kembali kolom yang ditandai.')
-      )}
+      onSubmit={form.handleSubmit(onSubmit, () => toast.error('Check the highlighted fields.'))}
       className="mx-auto w-full max-w-5xl min-w-0 space-y-6 pb-12"
       noValidate
     >
@@ -559,29 +559,29 @@ export function ProductForm({ product }: ProductFormProps) {
           href={'/admin/products' as Route}
           className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ArrowLeft className="h-4 w-4" aria-hidden /> Kembali ke daftar produk
+          <ArrowLeft className="h-4 w-4" aria-hidden /> Back to products
         </Link>
         <h1 className="mt-2 break-words text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          {product ? 'Edit produk' : 'Tambah produk'}
+          {product ? 'Edit product' : 'Add product'}
         </h1>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Kelola informasi katalog, manfaat, fitur, media, dan grup kapabilitas produk.
+          Manage product catalog information, benefits, features, media, and capability groups.
         </p>
       </div>
 
       <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={FileText}
-          title="Informasi produk"
-          description="Identitas, permalink, deskripsi, dan urutan tampil produk."
+          title="Product information"
+          description="Identity, permalink, description, and display order."
         />
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="name">Nama produk *</Label>
+            <Label htmlFor="name">Product name *</Label>
             <Input
               id="name"
               maxLength={120}
-              placeholder="Contoh: Pyxis Hotel Management"
+              placeholder="Example: Pyxis Hotel Management"
               aria-invalid={!!form.formState.errors.name}
               aria-describedby={form.formState.errors.name ? 'name-error' : 'name-hint'}
               {...form.register('name')}
@@ -589,7 +589,7 @@ export function ProductForm({ product }: ProductFormProps) {
             <FieldError id="name-error" message={form.formState.errors.name?.message} />
             {!form.formState.errors.name ? (
               <p id="name-hint" className="text-xs text-muted-foreground">
-                Maksimal 120 karakter.
+                Maximum 120 characters.
               </p>
             ) : null}
           </div>
@@ -598,7 +598,7 @@ export function ProductForm({ product }: ProductFormProps) {
             <Input
               id="slug"
               maxLength={120}
-              placeholder="Otomatis dari nama jika dikosongkan"
+              placeholder="Generated from the name when empty"
               aria-invalid={!!form.formState.errors.slug}
               aria-describedby={form.formState.errors.slug ? 'slug-error' : 'slug-hint'}
               {...form.register('slug')}
@@ -606,13 +606,13 @@ export function ProductForm({ product }: ProductFormProps) {
             <FieldError id="slug-error" message={form.formState.errors.slug?.message} />
             {!form.formState.errors.slug ? (
               <p id="slug-hint" className="text-xs text-muted-foreground">
-                Slug duplikat akan diberi akhiran angka secara otomatis.
+                Duplicate slugs receive a numeric suffix automatically.
               </p>
             ) : null}
           </div>
           <div className="space-y-2 md:col-span-2">
             <div className="flex items-center justify-between gap-3">
-              <Label htmlFor="description">Deskripsi singkat</Label>
+              <Label htmlFor="description">Short description</Label>
               <span className="text-xs tabular-nums text-muted-foreground">
                 {shortDescription.length}/150
               </span>
@@ -631,7 +631,7 @@ export function ProductForm({ product }: ProductFormProps) {
             />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="featureSubtitle">Deskripsi lengkap</Label>
+            <Label htmlFor="featureSubtitle">Full description</Label>
             <Textarea
               id="featureSubtitle"
               maxLength={3000}
@@ -648,7 +648,7 @@ export function ProductForm({ product }: ProductFormProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="order">Urutan tampil</Label>
+            <Label htmlFor="order">Display order</Label>
             <Input
               id="order"
               type="number"
@@ -664,15 +664,15 @@ export function ProductForm({ product }: ProductFormProps) {
             <FieldError id="order-error" message={form.formState.errors.order?.message} />
             {!form.formState.errors.order ? (
               <p id="order-hint" className="text-xs text-muted-foreground">
-                Angka lebih kecil tampil lebih dahulu.
+                Lower numbers appear first.
               </p>
             ) : null}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="isActive">Status publikasi</Label>
+            <Label htmlFor="isActive">Publication status</Label>
             <div className="flex min-h-10 items-center justify-between rounded-lg border border-border px-3 py-2">
               <span className="text-sm font-medium text-foreground">
-                {isActive ? 'Aktif' : 'Draft'}
+                {isActive ? 'Active' : 'Draft'}
               </span>
               <Switch
                 id="isActive"
@@ -680,21 +680,21 @@ export function ProductForm({ product }: ProductFormProps) {
                 onCheckedChange={(checked) =>
                   form.setValue('isActive', checked, { shouldDirty: true })
                 }
-                aria-label="Aktifkan produk di website publik"
+                aria-label="Publish product on the public website"
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              Produk draft tidak tampil di website publik.
+              Draft products do not appear on the public website.
             </p>
           </div>
         </div>
 
         <ImagePicker
           id="main-image"
-          label="Gambar utama"
-          hint="Rasio 16:9 disarankan. JPG, PNG, WEBP, atau AVIF; maksimal 10 MB."
+          label="Main image"
+          hint="A 16:9 ratio is recommended. JPG, PNG, WEBP, or AVIF; maximum 10 MB."
           preview={imagePreview}
-          alt={`Pratinjau gambar utama ${form.getValues('name') || 'produk'}`}
+          alt={`Main image preview ${form.getValues('name') || 'product'}`}
           onChange={changeMainImage}
           onRemove={removeMainImage}
         />
@@ -703,8 +703,8 @@ export function ProductForm({ product }: ProductFormProps) {
       <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={Sparkles}
-          title="Manfaat produk"
-          description="Tambahkan manfaat yang diterima pengguna; urutan mengikuti susunan daftar."
+          title="Product benefits"
+          description="Add user benefits; the order follows the list."
         />
         <div className="flex justify-end">
           <Button
@@ -713,7 +713,7 @@ export function ProductForm({ product }: ProductFormProps) {
             disabled={benefits.fields.length >= 30}
             onClick={() => benefits.append({ title: '', description: '', icon: '' })}
           >
-            <Plus className="mr-2 h-4 w-4" aria-hidden /> Tambah manfaat
+            <Plus className="mr-2 h-4 w-4" aria-hidden /> Add benefit
           </Button>
         </div>
         <div className="overflow-hidden rounded-lg border border-border">
@@ -727,7 +727,7 @@ export function ProductForm({ product }: ProductFormProps) {
                 >
                   <input type="hidden" {...form.register(`benefits.${index}.icon`)} />
                   <div className="space-y-2">
-                    <Label htmlFor={`benefit-${field.id}-title`}>Judul manfaat</Label>
+                    <Label htmlFor={`benefit-${field.id}-title`}>Benefit title</Label>
                     <Input
                       id={`benefit-${field.id}-title`}
                       maxLength={120}
@@ -743,7 +743,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor={`benefit-${field.id}-description`}>Deskripsi</Label>
+                    <Label htmlFor={`benefit-${field.id}-description`}>Description</Label>
                     <Textarea
                       id={`benefit-${field.id}-description`}
                       maxLength={500}
@@ -752,7 +752,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     />
                   </div>
                   <OrderControls
-                    label={`manfaat ${index + 1}`}
+                    label={`benefit ${index + 1}`}
                     index={index}
                     total={benefits.fields.length}
                     onMove={benefits.move}
@@ -762,7 +762,7 @@ export function ProductForm({ product }: ProductFormProps) {
               );
             })
           ) : (
-            <p className="p-5 text-sm text-muted-foreground">Belum ada manfaat produk.</p>
+            <p className="p-5 text-sm text-muted-foreground">No product benefits yet.</p>
           )}
         </div>
       </section>
@@ -770,8 +770,8 @@ export function ProductForm({ product }: ProductFormProps) {
       <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={Layers3}
-          title="Fitur produk"
-          description="Kelola fitur utama dan susunan tampilnya pada halaman detail."
+          title="Product features"
+          description="Manage key features and their order on the detail page."
         />
         <div className="flex justify-end">
           <Button
@@ -780,7 +780,7 @@ export function ProductForm({ product }: ProductFormProps) {
             disabled={features.fields.length >= 30}
             onClick={() => features.append({ title: '', description: '', icon: '' })}
           >
-            <Plus className="mr-2 h-4 w-4" aria-hidden /> Tambah fitur
+            <Plus className="mr-2 h-4 w-4" aria-hidden /> Add feature
           </Button>
         </div>
         <div className="overflow-hidden rounded-lg border border-border">
@@ -794,7 +794,7 @@ export function ProductForm({ product }: ProductFormProps) {
                 >
                   <input type="hidden" {...form.register(`features.${index}.icon`)} />
                   <div className="space-y-2">
-                    <Label htmlFor={`feature-${field.id}-title`}>Judul fitur</Label>
+                    <Label htmlFor={`feature-${field.id}-title`}>Feature title</Label>
                     <Input
                       id={`feature-${field.id}-title`}
                       maxLength={120}
@@ -810,7 +810,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor={`feature-${field.id}-description`}>Deskripsi</Label>
+                    <Label htmlFor={`feature-${field.id}-description`}>Description</Label>
                     <Textarea
                       id={`feature-${field.id}-description`}
                       maxLength={500}
@@ -819,7 +819,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     />
                   </div>
                   <OrderControls
-                    label={`fitur ${index + 1}`}
+                    label={`feature ${index + 1}`}
                     index={index}
                     total={features.fields.length}
                     onMove={features.move}
@@ -829,7 +829,7 @@ export function ProductForm({ product }: ProductFormProps) {
               );
             })
           ) : (
-            <p className="p-5 text-sm text-muted-foreground">Belum ada fitur produk.</p>
+            <p className="p-5 text-sm text-muted-foreground">No product features yet.</p>
           )}
         </div>
       </section>
@@ -837,8 +837,8 @@ export function ProductForm({ product }: ProductFormProps) {
       <section className="space-y-5 rounded-md border border-border bg-card p-4 sm:p-6">
         <SectionHeading
           icon={Cpu}
-          title="Grup kapabilitas"
-          description="Setiap grup dapat memiliki deskripsi, item, dan gambar atau diagram sendiri."
+          title="Capability groups"
+          description="Each group can have its own description, items, and image or diagram."
         />
         <div className="flex justify-end">
           <Button
@@ -849,7 +849,7 @@ export function ProductForm({ product }: ProductFormProps) {
               capabilities.append({ title: '', description: '', imageUrl: '', items: [] })
             }
           >
-            <Plus className="mr-2 h-4 w-4" aria-hidden /> Tambah grup
+            <Plus className="mr-2 h-4 w-4" aria-hidden /> Add group
           </Button>
         </div>
         <div className="overflow-hidden rounded-md border border-border">
@@ -869,7 +869,7 @@ export function ProductForm({ product }: ProductFormProps) {
               />
             ))
           ) : (
-            <p className="p-5 text-sm text-muted-foreground">Belum ada grup kapabilitas.</p>
+            <p className="p-5 text-sm text-muted-foreground">No capability groups yet.</p>
           )}
         </div>
       </section>
@@ -877,7 +877,7 @@ export function ProductForm({ product }: ProductFormProps) {
       <div className="sticky bottom-4 z-20 rounded-md border border-border bg-background/95 p-3 shadow-lg backdrop-blur-sm supports-[backdrop-filter]:bg-background/85">
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button asChild variant="outline" className="min-h-10 sm:min-w-28">
-            <Link href={'/admin/products' as Route}>Batal</Link>
+            <Link href={'/admin/products' as Route}>Cancel</Link>
           </Button>
           <Button
             type="submit"
@@ -886,12 +886,12 @@ export function ProductForm({ product }: ProductFormProps) {
           >
             {form.formState.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Menyimpan...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> Saving...
               </>
             ) : (
               <>
                 <CheckCircle2 className="mr-2 h-4 w-4" aria-hidden />
-                {product ? 'Simpan perubahan' : 'Simpan produk'}
+                {product ? 'Save changes' : 'Save product'}
               </>
             )}
           </Button>

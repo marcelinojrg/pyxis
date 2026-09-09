@@ -5,9 +5,9 @@ export const productLinks = [
 ];
 
 export const companyLinks = [
-  { name: 'Tentang Kami', href: '/about' },
-  { name: 'Karir', href: '/careers' },
-  { name: 'Hubungi Kami', href: '/contact' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Careers', href: '/careers' },
+  { name: 'Contact Us', href: '/contact' },
 ];
 
 export const legalLinks = [

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
   const { slug } = await params;
   const article = await getPublishedArticle(slug);
 
-  if (!article) return genPageMetadata({ title: 'Artikel Tidak Ditemukan' });
+  if (!article) return genPageMetadata({ title: 'Article not found' });
 
   return genPageMetadata({
     title: `${article.title} — Blog PT. Pyxis Ultimate Solution`,
@@ -48,7 +48,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const article = await getPublishedArticle(slug);
   if (!article) notFound();
 
-  const relatedArticles = await prisma.article.findMany({
+  const databaseRelatedArticles = await prisma.article.findMany({
     where: {
       id: { not: article.id },
       isPublished: true,
@@ -74,15 +74,19 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         title={article.title}
         createdAt={article.publishedAt || article.createdAt}
         authorName={article.createdBy?.name}
+        category={article.articleCategories[0]?.name}
       />
       <BlogDetailContent
         title={article.title}
         content={article.content}
         cover={article.cover}
-        relatedArticles={relatedArticles.map(({ publishedAt, ...related }) => ({
-          ...related,
-          createdAt: publishedAt || related.createdAt,
-        }))}
+        relatedArticles={databaseRelatedArticles.map(
+          ({ publishedAt, articleCategories, ...related }) => ({
+            ...related,
+            category: articleCategories[0]?.name || null,
+            createdAt: publishedAt || related.createdAt,
+          })
+        )}
       />
     </div>
   );

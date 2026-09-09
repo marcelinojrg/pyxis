@@ -43,8 +43,8 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
       const result = await createCareerCategory(newName);
       if (
         finish(result, {
-          error: 'Kategori gagal dibuat.',
-          success: 'Kategori berhasil dibuat.',
+          error: 'Failed to create the category.',
+          success: 'Category created.',
         })
       )
         setNewName('');
@@ -57,8 +57,8 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
       const result = await updateCareerCategory(editId, editName);
       if (
         finish(result, {
-          error: 'Kategori gagal diperbarui.',
-          success: 'Kategori berhasil diperbarui.',
+          error: 'Failed to update the category.',
+          success: 'Category updated.',
         })
       )
         setEditId(null);
@@ -70,8 +70,8 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
       const result = await deleteCareerCategory(id);
       if (
         finish(result, {
-          error: 'Kategori gagal dihapus.',
-          success: 'Kategori berhasil dihapus.',
+          error: 'Failed to delete the category.',
+          success: 'Category deleted.',
         })
       )
         setDeleteId(null);
@@ -87,10 +87,10 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
         <Tags className="h-4 w-4 text-slate-700" />
         <div>
           <h2 id="career-categories-title" className="text-sm font-bold text-slate-900">
-            Kategori Lowongan
+            Opening categories
           </h2>
           <p className="mt-0.5 text-xs text-slate-500">
-            Kategori yang masih dipakai tidak dapat dihapus.
+            Categories that are still in use cannot be deleted.
           </p>
         </div>
       </div>
@@ -98,13 +98,13 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
         <div className="flex-1">
           <Label htmlFor="new-career-category" className="sr-only">
-            Nama kategori baru
+            New category name
           </Label>
           <Input
             id="new-career-category"
             value={newName}
             onChange={(event) => setNewName(event.target.value)}
-            placeholder="Nama kategori baru"
+            placeholder="New category name"
             disabled={isPending}
           />
         </div>
@@ -114,13 +114,13 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
           disabled={isPending || !newName.trim()}
           className="bg-blue-600 text-white hover:bg-blue-700"
         >
-          <Plus className="h-4 w-4" /> Tambah Kategori
+          <Plus className="h-4 w-4" /> Add category
         </Button>
       </div>
 
       <ul className="mt-4 divide-y divide-slate-100" aria-live="polite">
         {categories.length === 0 && (
-          <li className="py-6 text-center text-xs text-slate-500">Belum ada kategori.</li>
+          <li className="py-6 text-center text-xs text-slate-500">No categories yet.</li>
         )}
         {categories.map((category) => (
           <li
@@ -130,7 +130,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
             {editId === category.id ? (
               <div className="flex flex-1 items-center gap-2">
                 <Label htmlFor={`category-${category.id}`} className="sr-only">
-                  Ubah nama {category.name}
+                  Edit name for {category.name}
                 </Label>
                 <Input
                   id={`category-${category.id}`}
@@ -144,7 +144,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
                   size="icon"
                   onClick={update}
                   disabled={isPending || !editName.trim()}
-                  aria-label="Simpan nama kategori"
+                  aria-label="Save category name"
                 >
                   <Check className="h-4 w-4" />
                 </Button>
@@ -153,7 +153,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
                   variant="ghost"
                   size="icon"
                   onClick={() => setEditId(null)}
-                  aria-label="Batal mengubah kategori"
+                  aria-label="Cancel category edit"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -161,7 +161,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
             ) : (
               <div>
                 <p className="text-sm font-semibold text-slate-800">{category.name}</p>
-                <p className="text-xs text-slate-500">{category._count.careers} lowongan</p>
+                <p className="text-xs text-slate-500">{category._count.careers} openings</p>
               </div>
             )}
 
@@ -169,7 +169,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
               <div className="flex items-center gap-1 self-end sm:self-auto">
                 {deleteId === category.id ? (
                   <>
-                    <span className="mr-1 text-xs font-medium text-red-700">Hapus kategori?</span>
+                    <span className="mr-1 text-xs font-medium text-red-700">Delete category?</span>
                     <Button
                       type="button"
                       variant="destructive"
@@ -177,7 +177,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
                       onClick={() => remove(category.id)}
                       disabled={isPending || category._count.careers > 0}
                     >
-                      Ya, hapus
+                      Yes, delete
                     </Button>
                     <Button
                       type="button"
@@ -185,7 +185,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
                       size="sm"
                       onClick={() => setDeleteId(null)}
                     >
-                      Batal
+                      Cancel
                     </Button>
                   </>
                 ) : (
@@ -198,7 +198,7 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
                         setEditId(category.id);
                         setEditName(category.name);
                       }}
-                      aria-label={`Ubah kategori ${category.name}`}
+                      aria-label={`Edit category ${category.name}`}
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -208,10 +208,10 @@ export function CareerCategoryManager({ categories }: CareerCategoryManagerProps
                       size="icon"
                       onClick={() => setDeleteId(category.id)}
                       disabled={category._count.careers > 0}
-                      aria-label={`Hapus kategori ${category.name}`}
+                      aria-label={`Delete category ${category.name}`}
                       title={
                         category._count.careers > 0
-                          ? 'Pindahkan lowongan sebelum menghapus kategori.'
+                          ? 'Move the openings before deleting this category.'
                           : undefined
                       }
                     >

@@ -12,22 +12,22 @@ export type LoginValues = z.infer<typeof loginSchema>;
 export type RegisterValues = z.infer<typeof registerSchema>;
 
 /**
- * Mapping pesan error Better Auth ke Bahasa Indonesia
+ * Map Better Auth errors to user-facing messages.
  */
 const mapAuthError = (message: string): string => {
   const lowerMessage = message.toLowerCase();
 
   switch (lowerMessage) {
     case 'invalid email or password':
-      return 'Email atau password salah.';
+      return 'Incorrect email or password.';
     case 'user not found':
-      return 'Pengguna tidak ditemukan.';
+      return 'User not found.';
     case 'email not verified':
-      return 'Email Anda belum diverifikasi.';
+      return 'Your email has not been verified.';
     case 'too many requests':
-      return 'Terlalu banyak percobaan login. Silakan coba lagi nanti.';
+      return 'Too many sign-in attempts. Please try again later.';
     default:
-      return 'Terjadi kesalahan saat login. Periksa kembali data Anda.';
+      return 'Something went wrong while signing in. Check your details and try again.';
   }
 };
 
@@ -37,7 +37,7 @@ const mapAuthError = (message: string): string => {
 export async function loginAction(values: LoginValues): Promise<AuthResponse> {
   const validatedFields = loginSchema.safeParse(values);
   if (!validatedFields.success) {
-    return { success: false, error: 'Data input tidak valid.' };
+    return { success: false, error: 'The submitted data is invalid.' };
   }
 
   try {
@@ -56,7 +56,7 @@ export async function loginAction(values: LoginValues): Promise<AuthResponse> {
       const cookieStore = await cookies();
 
       for (const cookieStr of setCookies) {
-        // Parsing manual yang lebih presisi
+        // Parse the cookie attributes explicitly so Next.js receives the original settings.
         const parts = cookieStr.split(';').map((s) => s.trim());
         const [nameValue] = parts;
         const firstEq = nameValue.indexOf('=');
@@ -72,7 +72,7 @@ export async function loginAction(values: LoginValues): Promise<AuthResponse> {
           sameSite: 'lax',
         };
 
-        // Ambil Max-Age dan Expires jika ada
+        // Preserve Max-Age and Expires when present.
         parts.slice(1).forEach((opt) => {
           const [key, val] = opt.split('=').map((s) => s.trim());
           const lowerKey = key.toLowerCase();
@@ -83,7 +83,7 @@ export async function loginAction(values: LoginValues): Promise<AuthResponse> {
             cookieOptions.sameSite = val.toLowerCase() as 'strict' | 'lax' | 'none';
         });
 
-        // Paksa pengaturan cookie ke store Next.js
+        // Apply the cookie to Next.js' cookie store.
         cookieStore.set(name, value, cookieOptions);
       }
     }
@@ -129,7 +129,7 @@ export async function logoutAction(): Promise<AuthResponse> {
   } catch (error: Error | unknown) {
     return {
       success: false,
-      error: 'Terjadi kesalahan saat keluar dari sistem.',
+      error: 'Something went wrong while signing out.',
     };
   }
 }
@@ -140,7 +140,7 @@ export async function logoutAction(): Promise<AuthResponse> {
 export async function registerAction(values: RegisterValues): Promise<AuthResponse> {
   const validatedFields = registerSchema.safeParse(values);
   if (!validatedFields.success) {
-    return { success: false, error: 'Data input tidak valid.' };
+    return { success: false, error: 'The submitted data is invalid.' };
   }
 
   try {
@@ -177,11 +177,11 @@ export async function registerAction(values: RegisterValues): Promise<AuthRespon
       const msg = (data as { message?: string }).message ?? '';
       const lower = msg.toLowerCase();
       if (lower.includes('email') && lower.includes('exist')) {
-        return { success: false, error: 'Email sudah terdaftar. Gunakan email lain.' };
+        return { success: false, error: 'That email is already registered. Use another email.' };
       }
       return {
         success: false,
-        error: 'Terjadi kesalahan saat registrasi. Periksa kembali data Anda.',
+        error: 'Something went wrong during registration. Check your details and try again.',
       };
     }
 
@@ -202,29 +202,25 @@ export async function registerAction(values: RegisterValues): Promise<AuthRespon
       });
     }
 
-    // Send Welcome Email
+    // Send the welcome email.
     const { queueEmail } = await import('./emails');
-    const userName = body.user.name || 'Peserta';
+    const userName = body.user.name || 'Pyxis user';
     const welcomeBody = `
-      <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Selamat Datang!</h2>
-      <p>Halo <strong>${userName}</strong>,</p>
-      <p>Terima kasih telah mendaftar di <strong>Pyxis</strong>. Akun Anda telah aktif dan siap digunakan.</p>
+      <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Welcome to Pyxis</h2>
+      <p>Hello <strong>${userName}</strong>,</p>
+      <p>Thank you for signing up for <strong>Pyxis</strong>. Your account is active and ready to use.</p>
       <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
         <tr>
           <td align="center" style="border-radius: 8px; background-color: #D97757;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Masuk ke Akun Anda &rarr;</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Open your account &rarr;</a>
           </td>
         </tr>
       </table>
       <p style="font-size: 13px; color: #87867F; margin-bottom: 0;">
-        Jika Anda merasa tidak mendaftar di Pyxis, Anda dapat mengabaikan email ini.
+        If you did not sign up for Pyxis, you can ignore this email.
       </p>
     `;
-    await queueEmail(
-      body.user.email,
-      'Selamat Datang di Pyxis - Konfirmasi Pendaftaran',
-      welcomeBody
-    );
+    await queueEmail(body.user.email, 'Welcome to Pyxis - Registration confirmation', welcomeBody);
 
     return {
       success: true,
@@ -234,14 +230,14 @@ export async function registerAction(values: RegisterValues): Promise<AuthRespon
     const rawMessage = error instanceof Error ? error.message : '';
     const lower = rawMessage.toLowerCase();
     if (lower.includes('email') && (lower.includes('exist') || lower.includes('taken'))) {
-      return { success: false, error: 'Email sudah terdaftar. Gunakan email lain.' };
+      return { success: false, error: 'That email is already registered. Use another email.' };
     }
-    return { success: false, error: 'Terjadi kesalahan saat registrasi.' };
+    return { success: false, error: 'Something went wrong during registration.' };
   }
 }
 
 /**
- * Mengirim email notifikasi perubahan password
+ * Send a password-change notification email.
  */
 async function sendPasswordChangeNotificationEmail(
   email: string,
@@ -251,13 +247,13 @@ async function sendPasswordChangeNotificationEmail(
     const { queueEmail } = await import('./emails');
     const body = `
       <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E3DACC; border-radius: 12px; background-color: #FAF9F5;">
-        <h2 style="color: #D97757; font-family: serif;">Keamanan Akun: Password Diubah</h2>
-        <p>Halo ${name || email},</p>
-        <p>Password untuk akun Pyxis Anda baru saja berhasil diperbarui/diubah.</p>
-        <p>Jika Anda tidak merasa melakukan perubahan ini, segera hubungi tim dukungan kami.</p>
+        <h2 style="color: #D97757; font-family: serif;">Account security: password changed</h2>
+        <p>Hello ${name || email},</p>
+        <p>Your Pyxis account password was recently changed.</p>
+        <p>If you did not make this change, contact our support team immediately.</p>
       </div>
     `;
-    await queueEmail(email, 'Notifikasi Perubahan Password - Pyxis', body);
+    await queueEmail(email, 'Pyxis password-change notification', body);
     return { success: true };
   } catch (error) {
     console.error('Send Password Change Email Error:', error);

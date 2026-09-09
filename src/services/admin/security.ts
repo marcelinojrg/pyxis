@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 
 /**
- * Helper untuk mengecek hak akses di sisi server (Server Actions / Route Handlers)
- * Menjamin keamanan data dari akses yang tidak sah melalui manipulasi client-side.
+ * Helper for checking access on the server (Server Actions / Route Handlers).
+ * Protects data from unauthorized client-side manipulation.
  */
 export async function verifyPermission(permissionName: string): Promise<boolean> {
   try {
@@ -33,12 +33,12 @@ export async function verifyPermission(permissionName: string): Promise<boolean>
 
     const permissionsSet = new Set<string>();
 
-    // Cek permissions dari relasi multi-roles
+    // Check permissions from the multi-role relation.
     user.roles.forEach((role) => {
       role.permissions.forEach((p) => permissionsSet.add(p.name));
     });
 
-    // Cek permissions dari roleId (relasi legacy/tunggal jika ada)
+    // Check permissions from roleId when the legacy single-role relation exists.
     if (user.roleId) {
       const singleRole = await prisma.role.findUnique({
         where: { id: user.roleId },
@@ -55,7 +55,7 @@ export async function verifyPermission(permissionName: string): Promise<boolean>
 }
 
 /**
- * Memastikan user sudah login.
+ * Ensure the user is signed in.
  */
 export async function verifySession() {
   const session = await auth.api.getSession({
@@ -65,7 +65,7 @@ export async function verifySession() {
 }
 
 /**
- * Catat audit log untuk setiap aksi administratif / sensitif.
+ * Record an audit log for each administrative or sensitive action.
  */
 export async function createAuditLog(params: {
   userId?: string;
@@ -93,7 +93,7 @@ export async function createAuditLog(params: {
 }
 
 /**
- * Ambil daftar roles dan permissions user secara terabstraksi via service layer.
+ * Fetch the user's roles and permissions through the service layer.
  */
 export async function getUserPermissionsAndRoles(userId: string) {
   try {

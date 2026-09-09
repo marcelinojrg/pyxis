@@ -1,58 +1,56 @@
 import type { FC } from 'react';
-import { Cpu, Globe, Headphones } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 const BENEFITS = [
   {
-    id: 'tech',
-    icon: Cpu,
-    title: 'Teknologi Terdepan',
+    title: 'Hospitality-first expertise',
     description:
-      'Akses API modern dan arsitektur cloud terdesentralisasi yang dirancang khusus untuk reliabilitas tinggi dan skalabilitas operasional hospitality.',
+      'Pyxis develops hotel management systems for front office, back office, restaurant POS, and P.A.B.X. operations.',
   },
   {
-    id: 'market',
-    icon: Globe,
-    title: 'Jangkauan Pasar Luas',
+    title: 'Integration that fits',
     description:
-      'Terhubung dengan jaringan klien enterprise kami di seluruh wilayah, membuka peluang baru untuk distribusi dan ekspansi bisnis bersama.',
+      'Connect keylock systems, devices, channel managers, and other hospitality technologies around the core operation.',
   },
   {
-    id: 'support',
-    icon: Headphones,
-    title: 'Dukungan Teknis Prioritas',
+    title: 'Support beyond launch',
     description:
-      'Dapatkan bantuan langsung dari tim engineer kami untuk memastikan integrasi berjalan lancar dan optimal tanpa hambatan teknis.',
+      'Partner with a team committed to ongoing customer support and practical implementation.',
   },
-];
+] as const;
 
 export const PartnersBenefits: FC = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="bg-white py-20 sm:py-24">
       <Container>
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 mb-3">
-            Mengapa Bermitra dengan Kami?
-          </h2>
-          <div className="h-1 w-14 bg-[#F59E0B] rounded-full mx-auto" />
-        </div>
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-4">
+            <h2 className="max-w-sm text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl">
+              Why partner with Pyxis?
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-7 text-neutral-600">
+              A hospitality platform designed to connect the systems, teams, and services behind
+              every guest experience.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
-          {BENEFITS.map((benefit) => {
-            const Icon = benefit.icon;
-            return (
-              <div
-                key={benefit.id}
-                className="bg-white rounded-2xl p-7 border border-neutral-200/70 shadow-xs hover:shadow-md transition-shadow space-y-4"
-              >
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                  <Icon className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-bold text-neutral-900">{benefit.title}</h3>
-                <p className="text-sm text-neutral-600 leading-relaxed">{benefit.description}</p>
-              </div>
-            );
-          })}
+          <div className="lg:col-span-8">
+            <div className="border-t border-neutral-300">
+              {BENEFITS.map((benefit) => (
+                <article
+                  key={benefit.title}
+                  className="grid gap-3 border-b border-neutral-300 py-7 sm:grid-cols-[15rem_1fr] sm:gap-8"
+                >
+                  <h3 className="text-lg font-semibold tracking-tight text-neutral-900">
+                    {benefit.title}
+                  </h3>
+                  <p className="max-w-xl text-sm leading-6 text-neutral-600">
+                    {benefit.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </Container>
     </section>

@@ -10,20 +10,19 @@ import { Eye, EyeOff, Clock, AlertCircle } from 'lucide-react';
 const SLIDES = [
   {
     image: '/assets/img/admin-login (1).jpg',
-    title: 'Kelola Konten & Solusi',
-    subtitle:
-      'Kendalikan publikasi produk, layanan, dan informasi korporat dalam satu platform terpadu.',
+    title: 'Manage content and solutions',
+    subtitle: 'Control product, service, and corporate content publishing in one platform.',
   },
   {
     image: '/assets/img/admin-login (2).jpg',
-    title: 'Pantau Insight & Artikel',
+    title: 'Track insights and articles',
     subtitle:
-      'Publikasikan artikel blog dan wawasan industri terkini secara terstruktur dan profesional.',
+      'Publish blog articles and current industry insights in a structured, professional workflow.',
   },
   {
     image: '/assets/img/admin-login (3).jpg',
-    title: 'Peluang & Talenta Unggul',
-    subtitle: 'Kelola rekrutmen dan informasi karier untuk menjangkau talenta terbaik masa depan.',
+    title: 'Opportunities and top talent',
+    subtitle: "Manage recruitment and career information to reach tomorrow's best talent.",
   },
 ];
 
@@ -60,14 +59,14 @@ export default function LoginPage() {
       });
 
       if (signInError) {
-        setError('Email atau password salah. Silakan coba lagi.');
+        setError('Incorrect email or password. Please try again.');
         setIsLoading(false);
       } else {
         router.push(callbackUrl as Route);
         router.refresh();
       }
     } catch {
-      setError('Terjadi kesalahan saat masuk. Silakan coba lagi.');
+      setError('Something went wrong while signing in. Please try again.');
       setIsLoading(false);
     }
   };
@@ -126,7 +125,7 @@ export default function LoginPage() {
                   key={index}
                   type="button"
                   onClick={() => setActiveSlide(index)}
-                  aria-label={`Pindah ke slide ${index + 1}`}
+                  aria-label={`Go to slide ${index + 1}`}
                   className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                     index === activeSlide ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'
                   }`}
@@ -146,9 +145,11 @@ export default function LoginPage() {
           </div>
 
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-slate-900 font-heading">Masuk ke Dashboard</h1>
+            <h1 className="text-2xl font-bold text-slate-900 font-heading">
+              Sign in to the dashboard
+            </h1>
             <p className="mt-2 text-sm text-slate-500">
-              Gunakan akun administrator resmi untuk melanjutkan.
+              Use an authorized administrator account to continue.
             </p>
           </div>
 
@@ -157,8 +158,7 @@ export default function LoginPage() {
             <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
               <p className="text-sm text-amber-800">
-                Sesi Anda telah berakhir karena tidak ada aktivitas selama 2 jam. Silakan masuk
-                kembali.
+                Your session expired after 2 hours of inactivity. Please sign in again.
               </p>
             </div>
           )}
@@ -208,7 +208,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-slate-900 focus:bg-white focus:ring-2 focus:ring-slate-900/10 disabled:opacity-50"
-                  placeholder="Masukkan password Anda"
+                  placeholder="Enter your password"
                   required
                   autoComplete="current-password"
                   disabled={isLoading}
@@ -218,7 +218,7 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition-colors hover:text-slate-700 cursor-pointer"
                   tabIndex={-1}
-                  aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -253,17 +253,17 @@ export default function LoginPage() {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                     />
                   </svg>
-                  Memverifikasi...
+                  Verifying...
                 </>
               ) : (
-                'Masuk'
+                'Sign in'
               )}
             </button>
           </form>
 
           {/* Footer note */}
           <p className="mt-8 text-center text-xs text-slate-400">
-            Akses terbatas hanya untuk administrator resmi.
+            Access is limited to authorized administrators.
             <br />© {new Date().getFullYear()} PT. Pyxis Ultimate Solution
           </p>
         </div>

@@ -17,15 +17,15 @@ interface AdminHeaderProps {
 }
 
 const TITLES: Array<[string, string]> = [
-  ['/admin/products/new', 'Tambah Produk'],
-  ['/admin/blog/new', 'Tambah Artikel'],
-  ['/admin/careers/new', 'Tambah Lowongan'],
-  ['/admin/products/', 'Edit Produk'],
-  ['/admin/blog/', 'Edit Artikel'],
-  ['/admin/careers/', 'Edit Lowongan'],
-  ['/admin/products', 'Kelola Produk'],
-  ['/admin/blog', 'Kelola Blog'],
-  ['/admin/careers', 'Kelola Karier'],
+  ['/admin/products/new', 'Add product'],
+  ['/admin/blog/new', 'Add article'],
+  ['/admin/careers/new', 'Add opening'],
+  ['/admin/products/', 'Edit product'],
+  ['/admin/blog/', 'Edit article'],
+  ['/admin/careers/', 'Edit opening'],
+  ['/admin/products', 'Manage products'],
+  ['/admin/blog', 'Manage blog'],
+  ['/admin/careers', 'Manage careers'],
   ['/admin', 'Dashboard'],
 ];
 
@@ -45,7 +45,7 @@ export function AdminHeader({ adminName, adminEmail, initials, onSignOut }: Admi
               variant="ghost"
               size="icon"
               className="size-11 lg:hidden"
-              aria-label="Buka navigasi admin"
+              aria-label="Open admin navigation"
             >
               <Menu className="size-5" />
             </Button>
@@ -96,10 +96,10 @@ export function AdminHeader({ adminName, adminEmail, initials, onSignOut }: Admi
             variant="outline"
             size="sm"
             className="h-11 gap-1.5 px-3 text-xs text-slate-700 hover:border-red-300 hover:text-red-700"
-            aria-label="Keluar dari admin"
+            aria-label="Sign out of admin"
           >
             <LogOut className="size-3.5" />
-            <span className="hidden sm:inline">Keluar</span>
+            <span className="hidden sm:inline">Sign out</span>
           </Button>
         </form>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 
 interface SanitizedHtmlProps {
@@ -9,10 +9,12 @@ interface SanitizedHtmlProps {
 }
 
 export function SanitizedHtml({ content, className }: SanitizedHtmlProps) {
-  const sanitizedContent = useMemo(
-    () => DOMPurify.sanitize(content, { USE_PROFILES: { html: true } }),
-    [content]
-  );
+  const [sanitizedContent, setSanitizedContent] = useState('');
+
+  useEffect(() => {
+    const purifier = DOMPurify(window);
+    setSanitizedContent(purifier.sanitize(content, { USE_PROFILES: { html: true } }));
+  }, [content]);
 
   return <div className={className} dangerouslySetInnerHTML={{ __html: sanitizedContent }} />;
 }

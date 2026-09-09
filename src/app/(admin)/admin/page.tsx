@@ -34,47 +34,47 @@ export default async function AdminDashboardPage() {
 
   const statistics = [
     {
-      label: 'Produk',
+      label: 'Products',
       value: productTotal,
-      detail: `${activeProducts} aktif · ${productTotal - activeProducts} nonaktif`,
+      detail: `${activeProducts} active · ${productTotal - activeProducts} inactive`,
       icon: Package,
       href: '/admin/products' as Route,
     },
     {
-      label: 'Artikel Blog',
+      label: 'Blog articles',
       value: articleTotal,
-      detail: `${publishedArticles} terbit · ${articleTotal - publishedArticles} draft`,
+      detail: `${publishedArticles} published · ${articleTotal - publishedArticles} draft`,
       icon: Newspaper,
       href: '/admin/blog' as Route,
     },
     {
-      label: 'Lowongan Karier',
+      label: 'Career openings',
       value: careerTotal,
-      detail: `${activeCareers} aktif · ${careerTotal - activeCareers} nonaktif`,
+      detail: `${activeCareers} active · ${careerTotal - activeCareers} inactive`,
       icon: BriefcaseBusiness,
       href: '/admin/careers' as Route,
     },
   ];
 
   const actions = [
-    { label: 'Tambah produk', href: '/admin/products/new' as Route, icon: Package },
-    { label: 'Tulis artikel', href: '/admin/blog/new' as Route, icon: Newspaper },
-    { label: 'Buat lowongan', href: '/admin/careers/new' as Route, icon: BriefcaseBusiness },
+    { label: 'Add product', href: '/admin/products/new' as Route, icon: Package },
+    { label: 'Write article', href: '/admin/blog/new' as Route, icon: Newspaper },
+    { label: 'Create opening', href: '/admin/careers/new' as Route, icon: BriefcaseBusiness },
   ];
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Console Administrasi</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Admin console</h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-500">
-            Kelola katalog produk, publikasi blog, dan lowongan karier dari satu tempat.
+            Manage the product catalog, blog publishing, and career openings in one place.
           </p>
         </div>
         <Button asChild variant="outline" className="h-11 w-full sm:w-auto">
           <Link href={'/' as Route} target="_blank">
             <ExternalLink className="size-4" />
-            Lihat website
+            View website
           </Link>
         </Button>
       </div>
@@ -114,14 +114,16 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section
-        aria-labelledby="aksi-cepat"
+        aria-labelledby="quick-actions"
         className="rounded-md bg-white p-5 shadow-sm ring-1 ring-slate-200 sm:p-6"
       >
         <div className="mb-4">
-          <h2 id="aksi-cepat" className="text-base font-semibold text-slate-900">
-            Aksi cepat
+          <h2 id="quick-actions" className="text-base font-semibold text-slate-900">
+            Quick actions
           </h2>
-          <p className="mt-1 text-sm text-slate-500">Buat konten baru pada tiga kanal publik.</p>
+          <p className="mt-1 text-sm text-slate-500">
+            Create content for the three public channels.
+          </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {actions.map((action) => {

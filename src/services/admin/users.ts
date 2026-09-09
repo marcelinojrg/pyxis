@@ -32,7 +32,7 @@ const BASE_PATH = '/admin/managements/users';
 export type UserValues = z.infer<typeof userSchema>;
 
 /**
- * Mengambil data users dengan pagination dan pencarian
+ * Fetch users with pagination and search.
  */
 export async function getUsers(
   page: number = 1,
@@ -45,7 +45,7 @@ export async function getUsers(
       success: false,
       data: [],
       meta: { total: 0, page: 1, lastPage: 0 },
-      error: 'Anda tidak memiliki hak akses untuk melihat data ini.',
+      error: 'You do not have permission to view this data.',
     } satisfies UserPaginationResponse;
   }
 
@@ -96,12 +96,12 @@ export async function getUsers(
 }
 
 /**
- * Mengambil data user berdasarkan ID
+ * Fetch a user by ID.
  */
 export async function getUserById(id: string): Promise<UserResponse> {
   const hasAccess = await verifyPermission('user.read');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses.' };
+    return { success: false, error: 'You do not have permission.' };
   }
 
   try {
@@ -115,18 +115,18 @@ export async function getUserById(id: string): Promise<UserResponse> {
     });
 
     if (!user) {
-      return { success: false, error: 'Pengguna tidak ditemukan.' };
+      return { success: false, error: 'User not found.' };
     }
 
     return { success: true, data: user as unknown as User };
   } catch (error) {
     console.error('Get User By ID Error:', error);
-    return { success: false, error: 'Gagal mengambil data pengguna.' };
+    return { success: false, error: 'Failed to load the user.' };
   }
 }
 
 /**
- * Mengambil data user untuk verifikasi participant layout
+ * Fetch a user for participant layout verification.
  */
 export async function getParticipantUser(id: string) {
   try {
@@ -146,22 +146,22 @@ export async function getParticipantUser(id: string) {
 }
 
 /**
- * Membuat User baru
+ * Create a new user.
  */
 export async function createUser(values: UserValues): Promise<UserResponse> {
   const hasAccess = await verifyPermission('user.create');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk membuat data.' };
+    return { success: false, error: 'You do not have permission to create data.' };
   }
 
   const validatedFields = userSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { success: false, error: 'Input tidak valid.' };
+    return { success: false, error: 'The input is invalid.' };
   }
 
   if (!values.password) {
-    return { success: false, error: 'Password wajib diisi untuk pengguna baru.' };
+    return { success: false, error: 'Password is required for a new user.' };
   }
 
   try {
@@ -170,10 +170,10 @@ export async function createUser(values: UserValues): Promise<UserResponse> {
     });
 
     if (existing) {
-      return { success: false, error: 'Email sudah digunakan.' };
+      return { success: false, error: 'That email is already in use.' };
     }
 
-    // Gunakan Better Auth API untuk membuat user (menangani password hashing)
+    // Use the Better Auth API to create the user and hash the password.
     const result = await (auth.api as unknown as AdminAuthApi).createUser({
       body: {
         email: validatedFields.data.email,
@@ -183,7 +183,7 @@ export async function createUser(values: UserValues): Promise<UserResponse> {
     });
 
     if (!result || !result.user) {
-      return { success: false, error: 'Gagal membuat akun melalui auth provider.' };
+      return { success: false, error: 'Failed to create the account through the auth provider.' };
     }
 
     // Update role dan status verifikasi
@@ -194,7 +194,7 @@ export async function createUser(values: UserValues): Promise<UserResponse> {
         roles: {
           connect: { id: validatedFields.data.roleId },
         },
-        roleId: validatedFields.data.roleId, // Set kolom roleId juga untuk kompatibilitas
+        roleId: validatedFields.data.roleId, // Keep roleId for compatibility.
       },
     });
 
@@ -202,11 +202,11 @@ export async function createUser(values: UserValues): Promise<UserResponse> {
 
     return {
       success: true,
-      message: 'Pengguna berhasil dibuat.',
+      message: 'User created.',
     };
   } catch (error) {
     console.error('Create User Error:', error);
-    return { success: false, error: 'Gagal membuat pengguna.' };
+    return { success: false, error: 'Failed to create the user.' };
   }
 }
 
@@ -216,13 +216,13 @@ export async function createUser(values: UserValues): Promise<UserResponse> {
 export async function updateUser(id: string, values: UserValues): Promise<UserResponse> {
   const hasAccess = await verifyPermission('user.update');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk mengubah data.' };
+    return { success: false, error: 'You do not have permission to update data.' };
   }
 
   const validatedFields = userSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { success: false, error: 'Input tidak valid.' };
+    return { success: false, error: 'The input is invalid.' };
   }
 
   try {
@@ -231,7 +231,7 @@ export async function updateUser(id: string, values: UserValues): Promise<UserRe
     });
 
     if (!existing) {
-      return { success: false, error: 'Pengguna tidak ditemukan.' };
+      return { success: false, error: 'User not found.' };
     }
 
     // Update data dasar via Prisma
@@ -248,7 +248,7 @@ export async function updateUser(id: string, values: UserValues): Promise<UserRe
       },
     });
 
-    // Reset password jika diisi (hanya superadmin yang bisa mengirim field ini)
+    // Reset the password when provided; only superadmins can send this field.
     if (validatedFields.data.newPassword && validatedFields.data.newPassword.trim() !== '') {
       await (auth.api as unknown as AdminAuthApi).setUserPassword({
         body: {
@@ -262,42 +262,41 @@ export async function updateUser(id: string, values: UserValues): Promise<UserRe
 
     return {
       success: true,
-      message: 'Pengguna berhasil diperbarui.',
+      message: 'User updated.',
     };
   } catch (error) {
     console.error('Update User Error:', error);
-    return { success: false, error: 'Gagal memperbarui pengguna.' };
+    return { success: false, error: 'Failed to update the user.' };
   }
 }
 
 /**
- * Hapus User
+ * Delete a user.
  */
 export async function deleteUser(id: string): Promise<UserResponse> {
   const hasAccess = await verifyPermission('user.delete');
   if (!hasAccess) {
-    return { success: false, error: 'Anda tidak memiliki hak akses untuk menghapus data.' };
+    return { success: false, error: 'You do not have permission to delete data.' };
   }
 
   try {
-    // Gunakan admin API better-auth jika memungkinkan, atau hapus langsung via Prisma
-    // Di sini kita hapus langsung via Prisma untuk kesederhanaan,
-    // Better-auth akan menangani session yang hangus secara otomatis.
+    // Use the Better Auth admin API when possible, or delete through Prisma.
+    // Better Auth handles expired sessions automatically.
     await prisma.user.delete({
       where: { id },
     });
 
     revalidatePath(BASE_PATH);
 
-    return { success: true, message: 'Pengguna berhasil dihapus.' };
+    return { success: true, message: 'User deleted.' };
   } catch (error) {
     console.error('Delete User Error:', error);
-    return { success: false, error: 'Gagal menghapus pengguna.' };
+    return { success: false, error: 'Failed to delete the user.' };
   }
 }
 
 /**
- * Mengambil data permissions dan roles user yang sedang login
+ * Fetch permissions and roles for the signed-in user.
  */
 export async function getCurrentUserData(): Promise<{ permissions: string[]; roles: string[] }> {
   try {

@@ -103,7 +103,7 @@ async function cleanupImages(urls: Array<string | null | undefined>) {
 
 export async function getAdminProducts() {
   if (!(await canManageProducts('read')))
-    return { success: false, data: [], error: 'Anda tidak memiliki akses untuk melihat produk.' };
+    return { success: false, data: [], error: 'You do not have permission to view products.' };
 
   try {
     const data = await prisma.product.findMany({
@@ -113,35 +113,35 @@ export async function getAdminProducts() {
     return { success: true, data };
   } catch (error) {
     console.error('[getAdminProducts]', error);
-    return { success: false, data: [], error: 'Daftar produk gagal dimuat. Coba muat ulang.' };
+    return { success: false, data: [], error: 'Failed to load products. Reload and try again.' };
   }
 }
 
 export async function getAdminProductById(id: string) {
   if (!(await canManageProducts('read')))
-    return { success: false, error: 'Anda tidak memiliki akses untuk melihat produk.' };
-  if (!id) return { success: false, error: 'ID produk tidak valid.' };
+    return { success: false, error: 'You do not have permission to view products.' };
+  if (!id) return { success: false, error: 'Product ID is invalid.' };
 
   try {
     const data = await prisma.product.findUnique({ where: { id }, select: productSelect });
-    if (!data) return { success: false, error: 'Produk tidak ditemukan.' };
+    if (!data) return { success: false, error: 'Product not found.' };
     return { success: true, data };
   } catch (error) {
     console.error('[getAdminProductById]', error);
-    return { success: false, error: 'Produk gagal dimuat. Coba lagi.' };
+    return { success: false, error: 'Failed to load the product. Try again.' };
   }
 }
 
 export async function createProduct(values: ProductValues) {
   if (!(await canManageProducts('create')))
-    return { success: false, error: 'Anda tidak memiliki akses untuk membuat produk.' };
+    return { success: false, error: 'You do not have permission to create products.' };
 
   const parsed = productSchema.safeParse(values);
   if (!parsed.success)
-    return { success: false, error: parsed.error.issues[0]?.message || 'Data produk tidak valid.' };
+    return { success: false, error: parsed.error.issues[0]?.message || 'Product data is invalid.' };
 
   const slug = await uniqueSlug(parsed.data.slug || parsed.data.name);
-  if (!slug) return { success: false, error: 'Nama atau slug produk tidak valid.' };
+  if (!slug) return { success: false, error: 'Product name or slug is invalid.' };
 
   try {
     const data = await prisma.product.create({
@@ -166,35 +166,35 @@ export async function createProduct(values: ProductValues) {
       newValues: JSON.stringify(data),
     });
     revalidateProducts(slug);
-    return { success: true, data, message: 'Produk berhasil dibuat.' };
+    return { success: true, data, message: 'Product created.' };
   } catch (error) {
     console.error('[createProduct]', error);
     return {
       success: false,
       error: isUniqueConstraintError(error)
-        ? 'Slug sudah digunakan. Ubah slug lalu coba lagi.'
-        : 'Produk gagal dibuat. Coba lagi.',
+        ? 'That slug is already in use. Change the slug and try again.'
+        : 'Failed to create the product. Try again.',
     };
   }
 }
 
 export async function updateProduct(id: string, values: ProductValues) {
   if (!(await canManageProducts('update')))
-    return { success: false, error: 'Anda tidak memiliki akses untuk mengubah produk.' };
-  if (!id) return { success: false, error: 'ID produk tidak valid.' };
+    return { success: false, error: 'You do not have permission to update products.' };
+  if (!id) return { success: false, error: 'Product ID is invalid.' };
 
   const parsed = productSchema.safeParse(values);
   if (!parsed.success)
-    return { success: false, error: parsed.error.issues[0]?.message || 'Data produk tidak valid.' };
+    return { success: false, error: parsed.error.issues[0]?.message || 'Product data is invalid.' };
 
   const existing = await prisma.product.findUnique({
     where: { id },
     select: { slug: true, image: true, capabilities: { select: { imageUrl: true } } },
   });
-  if (!existing) return { success: false, error: 'Produk tidak ditemukan.' };
+  if (!existing) return { success: false, error: 'Product not found.' };
 
   const slug = await uniqueSlug(parsed.data.slug || parsed.data.name, id);
-  if (!slug) return { success: false, error: 'Nama atau slug produk tidak valid.' };
+  if (!slug) return { success: false, error: 'Product name or slug is invalid.' };
 
   try {
     const data = await prisma.product.update({
@@ -230,28 +230,28 @@ export async function updateProduct(id: string, values: ProductValues) {
     });
     revalidateProducts(existing.slug);
     if (slug !== existing.slug) revalidateProducts(slug);
-    return { success: true, data, message: 'Produk berhasil diperbarui.' };
+    return { success: true, data, message: 'Product updated.' };
   } catch (error) {
     console.error('[updateProduct]', error);
     return {
       success: false,
       error: isUniqueConstraintError(error)
-        ? 'Slug sudah digunakan. Ubah slug lalu coba lagi.'
-        : 'Produk gagal diperbarui. Coba lagi.',
+        ? 'That slug is already in use. Change the slug and try again.'
+        : 'Failed to update the product. Try again.',
     };
   }
 }
 
 export async function deleteProductById(id: string) {
   if (!(await canManageProducts('delete')))
-    return { success: false, error: 'Anda tidak memiliki akses untuk menghapus produk.' };
-  if (!id) return { success: false, error: 'ID produk tidak valid.' };
+    return { success: false, error: 'You do not have permission to delete products.' };
+  if (!id) return { success: false, error: 'Product ID is invalid.' };
 
   const existing = await prisma.product.findUnique({
     where: { id },
     select: { slug: true, image: true, capabilities: { select: { imageUrl: true } } },
   });
-  if (!existing) return { success: false, error: 'Produk tidak ditemukan.' };
+  if (!existing) return { success: false, error: 'Product not found.' };
 
   try {
     await prisma.product.delete({ where: { id } });
@@ -263,9 +263,9 @@ export async function deleteProductById(id: string) {
       oldValues: JSON.stringify(existing),
     });
     revalidateProducts(existing.slug);
-    return { success: true, message: 'Produk berhasil dihapus.' };
+    return { success: true, message: 'Product deleted.' };
   } catch (error) {
     console.error('[deleteProductById]', error);
-    return { success: false, error: 'Produk gagal dihapus. Coba lagi.' };
+    return { success: false, error: 'Failed to delete the product. Try again.' };
   }
 }

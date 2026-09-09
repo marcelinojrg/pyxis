@@ -1,6 +1,7 @@
 import type { Route } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { ArrowUpRight } from 'lucide-react';
 
 interface HomeHeroProps {
   data?: {
@@ -13,75 +14,61 @@ interface HomeHeroProps {
 }
 
 export default function HomeHero({ data }: HomeHeroProps) {
-  const title = data?.title || 'Kelola Hotel Anda dengan Lebih Cerdas & Mudah';
+  const title = data?.title || 'The smarter way to run your hotel';
   const subtitle =
     data?.subtitle ||
-    'Pyxis membantu Anda meningkatkan efisiensi operasional, memaksimalkan pendapatan, dan memberikan pengalaman tamu yang tak terlupakan melalui satu platform terpadu.';
-  const ctaLabel = data?.ctaLabel || 'Contact Us';
+    'Pyxis helps hotel operations become more efficient, connected, and profitable.';
+  const ctaLabel = data?.ctaLabel || 'Schedule a Presentation';
   const ctaUrl = data?.ctaUrl || '/contact';
 
   return (
-    <section className="relative pt-36 pb-24 md:pt-48 md:pb-32 min-h-[85vh] flex items-center bg-linear-to-b from-[#004AEB] to-[#001A53] text-white overflow-hidden">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Text */}
-          <div className="lg:col-span-6 space-y-6 text-left">
-            <h1
-              data-home-reveal="heading"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold font-heading text-white leading-[1.18] tracking-tight"
-            >
-              {title}
-            </h1>
-
-            <p
-              data-home-reveal="copy"
-              className="text-sm sm:text-base text-blue-100 max-w-xl leading-relaxed"
-            >
-              {subtitle}
-            </p>
-
-            <div data-home-reveal="cta" className="pt-2">
-              <Link
-                href={ctaUrl as Route}
-                className="inline-flex items-center justify-center px-6 py-2.5 rounded-lg border border-white/40 bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all duration-200"
+    <section className="relative flex min-h-[76vh] items-center overflow-hidden bg-[radial-gradient(circle_at_82%_24%,rgba(96,165,250,0.22),transparent_34%),linear-gradient(135deg,#004AEB_0%,#001A53_100%)] py-24 text-white md:py-32">
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="max-w-4xl border-t border-white/25 pt-9 text-left md:pt-11 lg:col-span-7">
+            <div className="space-y-6">
+              <h1
+                data-home-reveal="heading"
+                className="max-w-3xl text-3xl font-bold leading-[1.06] tracking-[-0.035em] text-white sm:text-4xl md:text-5xl lg:text-[4rem]"
               >
-                {ctaLabel}
-              </Link>
-            </div>
-          </div>
+                {title}
+              </h1>
 
-          {/* Right Visual Cards */}
-          <div
-            data-home-reveal="media"
-            className="lg:col-span-6 relative flex justify-center lg:justify-end"
-          >
-            <div className="relative w-full max-w-lg h-72 sm:h-80 md:h-88">
-              {/* Back Card (Top Right) */}
-              <div className="absolute top-0 right-0 w-[68%] h-48 sm:h-56 rounded-md bg-white/95 shadow-xl backdrop-blur-sm overflow-hidden">
-                <Image
-                  src="/assets/img/home-hero-hotel-lobby.jpg"
-                  alt="Interior lobby hotel modern"
-                  fill
-                  sizes="(max-width: 1024px) 70vw, 28vw"
-                  className="object-cover"
-                  quality={75}
-                />
-              </div>
+              <p
+                data-home-reveal="copy"
+                className="max-w-lg text-sm leading-7 text-blue-50/90 sm:text-base"
+              >
+                {subtitle}
+              </p>
 
-              {/* Front Card (Bottom Left Overlapping) */}
-              <div className="absolute bottom-4 sm:bottom-6 left-0 z-10 w-[62%] h-44 sm:h-52 rounded-md bg-white shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-1 ring-black/5 overflow-hidden">
-                <Image
-                  src="/assets/img/home-hero-ilustrasi.jpg"
-                  alt="Ilustrasi platform Pyxis"
-                  fill
-                  sizes="(max-width: 1024px) 70vw, 26vw"
-                  className="object-cover"
-                  quality={75}
-                  priority
-                />
+              <div data-home-reveal="cta" className="pt-1">
+                <Link
+                  href={ctaUrl as Route}
+                  className="group inline-flex items-center gap-3 border-b border-[#F59E0B] pb-2 text-sm font-semibold text-white transition-colors duration-200 hover:text-[#FBBF24]"
+                >
+                  {ctaLabel}
+                  <ArrowUpRight className="h-5 w-5 rotate-90 transition-transform duration-300 group-hover:rotate-0" />
+                </Link>
               </div>
             </div>
           </div>
+
+          <figure data-home-reveal="media" className="lg:col-span-5 lg:translate-y-4">
+            <div className="relative aspect-[4/3] overflow-hidden border border-white/25 bg-blue-950/30">
+              <Image
+                src="/assets/img/home-hero-hotel-lobby-unsplash.jpg"
+                alt="Modern hotel lobby interior"
+                fill
+                sizes="(max-width: 1024px) 100vw, 42vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+            <figcaption className="flex items-center justify-between gap-4 border-b border-white/25 py-3 text-xs text-blue-100/80">
+              <span>Hotel lobby</span>
+              <span>Hospitality</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>

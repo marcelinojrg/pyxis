@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
 
@@ -72,14 +73,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <span
-            className={cn(
-              'font-heading font-bold text-2xl tracking-tight transition-colors duration-300',
-              isWhite ? 'text-[#1D4ED8]' : 'text-white'
-            )}
-          >
-            Pyxis
-          </span>
+          <Image
+            src={isWhite ? '/assets/img/Pyxis_logo.png' : '/assets/img/Pyxis_logo_white.png'}
+            alt="Pyxis"
+            width={128}
+            height={37}
+            priority
+            className="h-auto w-[128px]"
+          />
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -102,7 +103,7 @@ export default function Navbar() {
                 )}
               >
                 {link.title}
-                {/* Animasi garis: Biru/Putih saat aktif, Abu-abu saat hover di halaman lain */}
+                {/* Blue or white underline for active links; gray on hover elsewhere. */}
                 <span
                   className={cn(
                     'absolute -bottom-1 left-0 h-[2px] w-full rounded-full transition-all duration-300 ease-out origin-left',
@@ -124,7 +125,12 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/contact"
-            className="px-5 py-2 rounded-lg bg-[#F59E0B] hover:bg-[#D97706] text-neutral-900 font-semibold text-sm transition-all duration-200 shadow-sm active:scale-95"
+            className={cn(
+              'inline-flex items-center border px-4 py-2 text-sm font-semibold transition-all duration-200 active:translate-y-px',
+              isWhite
+                ? 'border-neutral-300 text-neutral-900 hover:border-[#F59E0B] hover:bg-[#F59E0B]/10'
+                : 'border-white/40 text-white hover:border-[#F59E0B] hover:bg-white/10 hover:text-[#FBBF24]'
+            )}
           >
             Contact Us
           </Link>
@@ -138,7 +144,7 @@ export default function Navbar() {
             'md:hidden p-2 rounded-lg transition-colors',
             isWhite ? 'text-neutral-800 hover:bg-neutral-100' : 'text-white hover:bg-white/10'
           )}
-          aria-label={isOpen ? 'Tutup menu' : 'Buka menu'}
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>

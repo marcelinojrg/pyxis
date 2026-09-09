@@ -55,11 +55,11 @@ const ImagePreviewModal: FC<ImagePreviewModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title || 'Pratinjau Gambar'}
+      title={title || 'Image preview'}
       description={
         allImages.length > 1
-          ? `Gambar ke-${currentIndex + 1} dari ${allImages.length}`
-          : 'Tampilan penuh gambar yang dipilih.'
+          ? `Image ${currentIndex + 1} of ${allImages.length}`
+          : 'Full view of the selected image.'
       }
       className={aspectRatio === '1/1' ? 'sm:max-w-md' : 'sm:max-w-3xl'}
     >
@@ -125,7 +125,7 @@ const ImagePreviewModal: FC<ImagePreviewModalProps> = ({
 
       <div className="mt-6 flex justify-end">
         <Button variant="outline" onClick={onClose} className="rounded-xl px-8">
-          Tutup
+          Close
         </Button>
       </div>
     </Modal>

@@ -1,141 +1,95 @@
 import type { FC } from 'react';
-import { Eye, Rocket } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export interface AboutVisionMissionProps {
   vision?: string | null;
   mission?: string | null;
 }
 
-// Product evolution timeline data matching the reference design
-const EVOLUTION_ITEMS = [
+const JOURNEY = [
   {
-    generation: 'Gen 1-2: DOS & Windows',
-    description: 'Langkah awal komputasi hingga transisi antarmuka grafis.',
-    period: '1989-2000',
-    dotStyle: 'border-2 border-neutral-400 bg-white',
+    year: '1988',
+    title: 'ParHIS and the first generation',
+    description:
+      'PT. Daccom Anugerahmulya develops a DOS-based hotel system under the ParHIS brand.',
   },
   {
-    generation: 'Gen 3: Hybrid Technology',
-    description: 'Menjembatani sistem desktop tradisional dengan akses cloud.',
-    period: '2010',
-    dotStyle: 'border-2 border-neutral-400 bg-white',
+    year: '2000',
+    title: 'BITS moves hotel software to Windows',
+    description: 'PT. Myohdotcom Indonesia launches BITS, later known as MYOH Hotel Software.',
   },
   {
-    generation: 'Gen 4: Smart IoT',
-    description: 'Otomatisasi cerdas dan perangkat terhubung mobile.',
-    period: '2020',
-    dotStyle: 'border-2 border-neutral-400 bg-white',
+    year: '2004',
+    title: 'A clearer focus on information technology',
+    description:
+      'The company becomes PT. MYOH Technology Tbk as its identity shifts toward IT development.',
   },
   {
-    generation: 'Gen 5: Digital Infrastructure',
-    description: 'Solusi cloud-native menyeluruh masa kini.',
-    period: '2022-Now',
-    dotStyle: 'bg-[#0B1E48]',
-    isActive: true,
+    year: '2011',
+    title: 'Pyxis continues the hospitality business',
+    description:
+      'PT. Pyxis Ultimate Solution is established to continue the hotel technology business and customer support.',
+  },
+  {
+    year: '2016',
+    title: 'The ecosystem grows',
+    description:
+      'Pyxis expands its technology ecosystem through new hospitality technology partnerships.',
+  },
+  {
+    year: '2017',
+    title: 'Alcor brings the next generation',
+    description: 'Pyxis introduces Alcor, a new generation of cloud-based hotel systems.',
   },
 ];
 
-export const AboutVisionMission: FC<AboutVisionMissionProps> = ({ vision, mission }) => {
+export const AboutVisionMission: FC<AboutVisionMissionProps> = () => {
   return (
-    <section className="py-16 bg-[#F8FAFC] border-t border-neutral-200/70">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20">
-          {/* Left Column: Vision & Mission */}
-          <div className="space-y-6">
-            <div className="space-y-3">
-              <h2
-                data-home-reveal="heading"
-                className="text-2xl sm:text-3xl font-bold font-heading text-neutral-900 leading-tight underline underline-offset-8 decoration-2 decoration-[#1D4ED8]"
-              >
-                Vision & Mission
-              </h2>
-              <p
-                data-home-reveal="copy"
-                className="text-sm sm:text-base text-neutral-600 leading-relaxed"
-              >
-                Fondasi kami dalam memberikan layanan terbaik untuk industri perhotelan.
+    <section className="border-t border-neutral-200/70 bg-[#F8FAFC] py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-4">
+            <h2
+              data-home-reveal="heading"
+              className="max-w-sm text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl"
+            >
+              Built for the details that keep hospitality moving.
+            </h2>
+            <p
+              data-home-reveal="copy"
+              className="mt-6 max-w-md text-base leading-7 text-neutral-600"
+            >
+              Our work spans the full hospitality environment: hotels, apartments, condominiums,
+              restaurants, bars, and karaoke venues.
+            </p>
+            <div className="mt-10 border-t border-neutral-300 pt-6">
+              <p className="text-sm font-semibold text-neutral-900">What guides our work</p>
+              <p className="mt-3 text-sm leading-6 text-neutral-600">
+                Practical systems. Long-term support. Technology that fits the way each operation
+                actually works.
               </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Visi Card */}
-              <div
-                data-home-reveal="card"
-                className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex items-start gap-4"
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <Eye className="w-5 h-5" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-bold font-heading text-neutral-900">Visi</h3>
-                  <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
-                    {vision ||
-                      'Menjadi penyedia solusi TI perhotelan terdepan melalui inovasi digital berbasis cloud.'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Misi Card */}
-              <div
-                data-home-reveal="card"
-                className="bg-[#0B1E48] text-white rounded-2xl p-6 border border-blue-950 shadow-md flex items-start gap-4"
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#F59E0B] text-white flex items-center justify-center shrink-0 shadow-sm">
-                  <Rocket className="w-5 h-5" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-bold font-heading text-white">Misi</h3>
-                  <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
-                    {mission ||
-                      'Memberikan solusi operasional hotel yang cerdas, efisien, dan andal.'}
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Right Column: Evolusi Produk Timeline */}
-          <div className="space-y-6">
-            <h2
-              data-home-reveal="heading"
-              className="text-2xl sm:text-3xl font-bold font-heading text-[#1D4ED8] leading-tight"
-            >
-              Evolusi Produk
-            </h2>
-
-            <div className="relative space-y-0">
-              {/* Vertical line */}
-              <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-neutral-300" />
-
-              {EVOLUTION_ITEMS.map((item, idx) => (
-                <div key={idx} className="relative flex items-start gap-5 py-3">
-                  {/* Timeline dot */}
-                  <div
-                    className={cn(
-                      'relative z-10 w-[16px] h-[16px] rounded-full shrink-0 mt-1',
-                      item.dotStyle
-                    )}
-                  />
-
-                  {/* Content */}
-                  <div className="space-y-0.5">
-                    <h4 className="text-sm sm:text-base font-bold font-heading text-neutral-900">
-                      {item.generation}
-                    </h4>
-                    <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                      {item.description}{' '}
-                      <span
-                        className={cn(
-                          'font-semibold',
-                          item.isActive ? 'text-[#F59E0B]' : 'text-[#1D4ED8]'
-                        )}
-                      >
-                        ({item.period})
-                      </span>
+          <div className="lg:col-span-8">
+            <div className="border-t border-neutral-300">
+              {JOURNEY.map((item) => (
+                <article
+                  key={item.year}
+                  data-home-reveal="card"
+                  className="grid gap-3 border-b border-neutral-300 py-6 sm:grid-cols-[7rem_1fr] sm:gap-8"
+                >
+                  <p className="text-sm font-semibold tabular-nums text-[#1D4ED8] sm:pr-6 sm:text-right">
+                    {item.year}
+                  </p>
+                  <div className="sm:border-l sm:border-neutral-300 sm:pl-6">
+                    <h3 className="text-lg font-semibold tracking-tight text-neutral-900">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">
+                      {item.description}
                     </p>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>

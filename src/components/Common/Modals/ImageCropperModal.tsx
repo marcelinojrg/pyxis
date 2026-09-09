@@ -90,8 +90,7 @@ const ImageCropperModal: FC<ImageCropperModalProps> = ({
       img.onload = () => {
         setImageWidth(img.naturalWidth);
         setImageHeight(img.naturalHeight);
-        // Jika tidak ada aspectRatio dari prop (atau saat modal buka ulang),
-        // sesuaikan containerAspectRatio dengan rasio asli gambar agar tidak collaps
+        // When no aspect ratio is provided, preserve the image's natural ratio.
         if (!aspectRatio) {
           setContainerAspectRatio(img.naturalWidth / img.naturalHeight);
         }
@@ -106,8 +105,8 @@ const ImageCropperModal: FC<ImageCropperModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Potong Gambar"
-      description="Sesuaikan area gambar yang ingin ditampilkan agar terlihat sempurna."
+      title="Crop image"
+      description="Adjust the image area you want to display."
       className="sm:max-w-5xl w-full"
     >
       <div className="mt-2 flex flex-col gap-6 w-full">
@@ -148,9 +147,9 @@ const ImageCropperModal: FC<ImageCropperModalProps> = ({
 
         {/* Aspect Ratio Selector */}
         <div className="flex flex-wrap items-center justify-center gap-2 bg-zinc-50 dark:bg-zinc-900/50 p-2.5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-          <span className="text-xs font-semibold text-muted-foreground mr-2">Pilih Rasio:</span>
+          <span className="text-xs font-semibold text-muted-foreground mr-2">Select ratio:</span>
           {[
-            { label: 'Bebas', value: undefined },
+            { label: 'Freeform', value: undefined },
             { label: '1:1 (Square)', value: 1 },
             { label: '16:9 (Landscape)', value: 16 / 9 },
             { label: '4:3 (Standard)', value: 4 / 3 },
@@ -188,27 +187,25 @@ const ImageCropperModal: FC<ImageCropperModalProps> = ({
               <Scissors className="h-6 w-6" />
             </div>
             <div className="space-y-1">
-              <p className="text-base font-bold leading-none">Gunakan Area Terpilih</p>
-              <p className="text-xs text-muted-foreground">
-                Geser atau zoom untuk menyesuaikan bingkai.
-              </p>
+              <p className="text-base font-bold leading-none">Use selected area</p>
+              <p className="text-xs text-muted-foreground">Drag or zoom to adjust the frame.</p>
             </div>
           </div>
           <div className="flex items-center gap-3 sm:w-auto shrink-0">
             <Button variant="ghost" onClick={onClose} disabled={isLoading}>
               <X />
-              Batal
+              Cancel
             </Button>
             <Button onClick={handleCrop} disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Memproses...
+                  Processing...
                 </>
               ) : (
                 <>
                   <Check />
-                  Potong & Simpan
+                  Crop & save
                 </>
               )}
             </Button>

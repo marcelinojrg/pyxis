@@ -61,7 +61,7 @@ async function uniqueCareerSlug(title: string, id?: string) {
 
 export async function getAdminCareers() {
   if (!(await canManageCareers('read'))) {
-    return { success: false, data: [], error: 'Akses ditolak.' };
+    return { success: false, data: [], error: 'Access denied.' };
   }
 
   const data = await prisma.career.findMany({
@@ -72,26 +72,26 @@ export async function getAdminCareers() {
 }
 
 export async function getAdminCareerById(id: string) {
-  if (!(await canManageCareers('read'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCareers('read'))) return { success: false, error: 'Access denied.' };
 
   const data = await prisma.career.findUnique({ where: { id }, select: careerSelect });
-  if (!data) return { success: false, error: 'Lowongan tidak ditemukan.' };
+  if (!data) return { success: false, error: 'Opening not found.' };
   return { success: true, data };
 }
 
 export async function createCareer(values: CareerValues) {
-  if (!(await canManageCareers('create'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCareers('create'))) return { success: false, error: 'Access denied.' };
 
   const parsed = careerSchema.safeParse(values);
   if (!parsed.success) {
     return {
       success: false,
-      error: parsed.error.issues[0]?.message || 'Data lowongan tidak valid.',
+      error: parsed.error.issues[0]?.message || 'Opening data is invalid.',
     };
   }
 
   const slug = await uniqueCareerSlug(parsed.data.title);
-  if (!slug) return { success: false, error: 'Judul tidak dapat dijadikan slug.' };
+  if (!slug) return { success: false, error: 'The title cannot be converted into a slug.' };
 
   try {
     const data = await prisma.career.create({
@@ -110,21 +110,21 @@ export async function createCareer(values: CareerValues) {
       newValues: JSON.stringify(data),
     });
     revalidateCareers(slug);
-    return { success: true, data, message: 'Lowongan berhasil dibuat.' };
+    return { success: true, data, message: 'Opening created.' };
   } catch (error) {
     console.error('[createCareer]', error);
-    return { success: false, error: 'Lowongan gagal dibuat. Coba lagi.' };
+    return { success: false, error: 'Failed to create the opening. Try again.' };
   }
 }
 
 export async function updateCareer(id: string, values: CareerValues) {
-  if (!(await canManageCareers('update'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCareers('update'))) return { success: false, error: 'Access denied.' };
 
   const parsed = careerSchema.safeParse(values);
   if (!parsed.success) {
     return {
       success: false,
-      error: parsed.error.issues[0]?.message || 'Data lowongan tidak valid.',
+      error: parsed.error.issues[0]?.message || 'Opening data is invalid.',
     };
   }
 
@@ -132,10 +132,10 @@ export async function updateCareer(id: string, values: CareerValues) {
     where: { id },
     select: { id: true, slug: true },
   });
-  if (!existing) return { success: false, error: 'Lowongan tidak ditemukan.' };
+  if (!existing) return { success: false, error: 'Opening not found.' };
 
   const slug = await uniqueCareerSlug(parsed.data.title, id);
-  if (!slug) return { success: false, error: 'Judul tidak dapat dijadikan slug.' };
+  if (!slug) return { success: false, error: 'The title cannot be converted into a slug.' };
 
   try {
     const data = await prisma.career.update({
@@ -157,18 +157,18 @@ export async function updateCareer(id: string, values: CareerValues) {
     });
     revalidateCareers(existing.slug);
     if (slug !== existing.slug) revalidateCareers(slug);
-    return { success: true, data, message: 'Lowongan berhasil diperbarui.' };
+    return { success: true, data, message: 'Opening updated.' };
   } catch (error) {
     console.error('[updateCareer]', error);
-    return { success: false, error: 'Lowongan gagal diperbarui. Coba lagi.' };
+    return { success: false, error: 'Failed to update the opening. Try again.' };
   }
 }
 
 export async function deleteCareerById(id: string) {
-  if (!(await canManageCareers('delete'))) return { success: false, error: 'Akses ditolak.' };
+  if (!(await canManageCareers('delete'))) return { success: false, error: 'Access denied.' };
 
   const existing = await prisma.career.findUnique({ where: { id }, select: { slug: true } });
-  if (!existing) return { success: false, error: 'Lowongan tidak ditemukan.' };
+  if (!existing) return { success: false, error: 'Opening not found.' };
 
   try {
     await prisma.career.delete({ where: { id } });
@@ -179,16 +179,16 @@ export async function deleteCareerById(id: string) {
       oldValues: JSON.stringify(existing),
     });
     revalidateCareers(existing.slug);
-    return { success: true, message: 'Lowongan berhasil dihapus.' };
+    return { success: true, message: 'Opening deleted.' };
   } catch (error) {
     console.error('[deleteCareerById]', error);
-    return { success: false, error: 'Lowongan gagal dihapus. Coba lagi.' };
+    return { success: false, error: 'Failed to delete the opening. Try again.' };
   }
 }
 
 export async function getCareerCategories() {
   if (!(await canManageCareerCategories('read'))) {
-    return { success: false, data: [], error: 'Akses ditolak.' };
+    return { success: false, data: [], error: 'Access denied.' };
   }
 
   const data = await prisma.careerCategory.findMany({
@@ -200,19 +200,19 @@ export async function getCareerCategories() {
 
 export async function createCareerCategory(name: string) {
   if (!(await canManageCareerCategories('create'))) {
-    return { success: false, error: 'Akses ditolak.' };
+    return { success: false, error: 'Access denied.' };
   }
 
   const parsed = careerCategorySchema.safeParse({ name });
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message || 'Kategori tidak valid.' };
+    return { success: false, error: parsed.error.issues[0]?.message || 'Category is invalid.' };
   }
 
   const duplicate = await prisma.careerCategory.findFirst({
     where: { name: { equals: parsed.data.name, mode: 'insensitive' } },
     select: { id: true },
   });
-  if (duplicate) return { success: false, error: 'Kategori dengan nama ini sudah ada.' };
+  if (duplicate) return { success: false, error: 'A category with this name already exists.' };
 
   try {
     const data = await prisma.careerCategory.create({ data: parsed.data });
@@ -223,21 +223,21 @@ export async function createCareerCategory(name: string) {
       newValues: JSON.stringify(data),
     });
     revalidateCareers();
-    return { success: true, data, message: 'Kategori berhasil dibuat.' };
+    return { success: true, data, message: 'Category created.' };
   } catch (error) {
     console.error('[createCareerCategory]', error);
-    return { success: false, error: 'Kategori gagal dibuat. Coba lagi.' };
+    return { success: false, error: 'Failed to create the category. Try again.' };
   }
 }
 
 export async function updateCareerCategory(id: string, name: string) {
   if (!(await canManageCareerCategories('update'))) {
-    return { success: false, error: 'Akses ditolak.' };
+    return { success: false, error: 'Access denied.' };
   }
 
   const parsed = careerCategorySchema.safeParse({ name });
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message || 'Kategori tidak valid.' };
+    return { success: false, error: parsed.error.issues[0]?.message || 'Category is invalid.' };
   }
 
   const [existing, duplicate] = await Promise.all([
@@ -247,8 +247,8 @@ export async function updateCareerCategory(id: string, name: string) {
       select: { id: true },
     }),
   ]);
-  if (!existing) return { success: false, error: 'Kategori tidak ditemukan.' };
-  if (duplicate) return { success: false, error: 'Kategori dengan nama ini sudah ada.' };
+  if (!existing) return { success: false, error: 'Category not found.' };
+  if (duplicate) return { success: false, error: 'A category with this name already exists.' };
 
   try {
     const data = await prisma.careerCategory.update({ where: { id }, data: parsed.data });
@@ -260,27 +260,27 @@ export async function updateCareerCategory(id: string, name: string) {
       newValues: JSON.stringify(data),
     });
     revalidateCareers();
-    return { success: true, data, message: 'Kategori berhasil diperbarui.' };
+    return { success: true, data, message: 'Category updated.' };
   } catch (error) {
     console.error('[updateCareerCategory]', error);
-    return { success: false, error: 'Kategori gagal diperbarui. Coba lagi.' };
+    return { success: false, error: 'Failed to update the category. Try again.' };
   }
 }
 
 export async function deleteCareerCategory(id: string) {
   if (!(await canManageCareerCategories('delete'))) {
-    return { success: false, error: 'Akses ditolak.' };
+    return { success: false, error: 'Access denied.' };
   }
 
   const category = await prisma.careerCategory.findUnique({
     where: { id },
     include: { _count: { select: { careers: true } } },
   });
-  if (!category) return { success: false, error: 'Kategori tidak ditemukan.' };
+  if (!category) return { success: false, error: 'Category not found.' };
   if (category._count.careers > 0) {
     return {
       success: false,
-      error: `Kategori masih digunakan oleh ${category._count.careers} lowongan.`,
+      error: `This category is still used by ${category._count.careers} openings.`,
     };
   }
 
@@ -293,9 +293,9 @@ export async function deleteCareerCategory(id: string) {
       oldValues: JSON.stringify(category),
     });
     revalidateCareers();
-    return { success: true, message: 'Kategori berhasil dihapus.' };
+    return { success: true, message: 'Category deleted.' };
   } catch (error) {
     console.error('[deleteCareerCategory]', error);
-    return { success: false, error: 'Kategori gagal dihapus. Coba lagi.' };
+    return { success: false, error: 'Failed to delete the category. Try again.' };
   }
 }

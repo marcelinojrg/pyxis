@@ -16,15 +16,19 @@ export const ProductDetailDescription: FC<ProductDetailDescriptionProps> = ({ co
   if (paragraphs.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 pt-8 pb-12 md:pt-12 md:pb-16">
+    <section className="border-y border-neutral-200/70 bg-[#F8FAFC] py-16 sm:py-20">
       <Container>
-        <h2 className="mb-6 text-2xl font-bold text-brand-deep sm:text-3xl">Tentang Produk</h2>
-        <div className="space-y-5">
-          {paragraphs.map((paragraph, index) => (
-            <p key={index} className="text-base leading-relaxed text-neutral-600">
-              {paragraph}
-            </p>
-          ))}
+        <div className="grid gap-8 md:grid-cols-12 md:gap-16">
+          <h2 className="max-w-sm text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 md:col-span-5 sm:text-4xl">
+            Designed around the daily operation.
+          </h2>
+          <div className="max-w-2xl space-y-4 md:col-span-7">
+            {paragraphs.map((paragraph, index) => (
+              <p key={index} className="text-base leading-7 text-neutral-600">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
       </Container>
     </section>

@@ -1,14 +1,13 @@
-import { ArrowDown } from 'lucide-react';
 import { genPageMetadata } from '@/app/seo';
 import { prisma } from '@/lib/prisma';
-import PageHero from '@/components/Common/PageHero';
 import { ProductsList } from '@/app/(root)/_components/products/ProductsList';
 import CTASection from '@/components/Common/CTASection';
+import EditorialHero from '@/components/Common/EditorialHero';
 
 export const metadata = genPageMetadata({
-  title: 'Produk — Solusi Software Hotel & Restoran Terintegrasi',
+  title: 'Products | Integrated Hospitality Systems',
   description:
-    'Katalog lengkap produk software PT. Pyxis Ultimate Solution: Alcor PMS, POS, Booking Engine, Channel Manager, dan modul terintegrasi lainnya.',
+    'Explore Pyxis systems for front office, food and beverage, finance, inventory, distribution, and connected hotel operations.',
   path: '/products',
 });
 
@@ -30,14 +29,16 @@ export default async function ProductsPage() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-50/50">
-      <PageHero
-        title="Solusi Hospitality Terintegrasi"
-        description="Berdayakan operasional hotel Anda dengan teknologi modern yang dirancang untuk efisiensi, skalabilitas, dan pengalaman tamu yang tak terlupakan."
-        ctaText="Lihat Produk"
+    <div className="flex min-h-screen flex-col bg-neutral-50/50">
+      <EditorialHero
+        eyebrow="Products"
+        title="Systems that keep hospitality moving."
+        description="Connected tools for the front desk, restaurants, finance, and every operation in between."
+        ctaText="Explore the suite"
         ctaHref="#products-list"
-        ctaIcon={<ArrowDown className="w-4 h-4" />}
-      />
+      >
+        <div aria-hidden="true" className="min-h-56" />
+      </EditorialHero>
       <ProductsList products={products} />
       <CTASection />
     </div>

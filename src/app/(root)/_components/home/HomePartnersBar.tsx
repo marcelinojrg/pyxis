@@ -1,48 +1,22 @@
-// import { Container } from '@/components/ui/container';
+import { PartnerLogoMarquee } from '../partners/PartnerLogoMarquee';
+import type { PartnerLogo } from '../partners/PartnerLogoMarquee';
 
-const PARTNERS = [
-  {
-    name: 'ASTON',
-    style: 'font-serif tracking-widest font-bold text-lg sm:text-xl text-neutral-500',
-  },
-  {
-    name: 'HARRIS',
-    style: 'font-sans tracking-wider font-extrabold text-lg sm:text-xl text-neutral-500',
-  },
-  { name: 'Santika', style: 'font-serif italic font-semibold text-lg sm:text-xl text-neutral-500' },
-  {
-    name: 'SWISS-BELHOTEL',
-    style: 'font-sans tracking-wide font-bold text-base sm:text-lg text-neutral-500 uppercase',
-  },
-  {
-    name: 'MERCURE',
-    style: 'font-sans tracking-widest font-extrabold text-base sm:text-lg text-neutral-500',
-  },
-];
-
-export default function HomePartnersBar() {
+export default function HomePartnersBar({ partners }: { partners: PartnerLogo[] }) {
   return (
-    <section className="py-16 bg-white border-b border-neutral-100">
+    <section className="border-b border-neutral-100 bg-white py-12 sm:py-16">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center space-y-6">
-          <p
+          <div
             data-home-reveal="heading"
-            className="text-[11px] sm:text-xs font-semibold tracking-widest text-neutral-400 uppercase"
+            className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-neutral-500 sm:text-xs"
           >
-            DIPERCAYA OLEH LEBIH DARI 50+ PROPERTI DI SELURUH INDONESIA
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 md:gap-16 opacity-75">
-            {PARTNERS.map((partner) => (
-              <span
-                key={partner.name}
-                data-home-reveal="card"
-                className={`${partner.style} select-none transition-opacity duration-200 hover:opacity-100 hover:text-neutral-700`}
-              >
-                {partner.name}
-              </span>
-            ))}
+            <span>Trusted by</span>
+            <strong className="text-[#1D4ED8]">900+ hotels & restaurants</strong>
+            <span>Integrated with</span>
+            <strong className="text-neutral-900">50+ partners</strong>
           </div>
+
+          <PartnerLogoMarquee partners={partners} className="-mx-4 sm:-mx-6 md:-mx-8" />
         </div>
       </div>
     </section>

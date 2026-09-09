@@ -6,28 +6,27 @@ import type { ErrorStateProps } from '@/interfaces/error';
 
 const errorCopy: Record<number, { title: string; description: string }> = {
   401: {
-    title: 'Sesi Anda berakhir',
-    description: 'Silakan masuk kembali untuk melanjutkan aktivitas Anda.',
+    title: 'Your session has expired',
+    description: 'Please sign in again to continue.',
   },
   403: {
-    title: 'Akses dibatasi',
-    description: 'Anda tidak memiliki izin untuk membuka halaman ini.',
+    title: 'Access restricted',
+    description: 'You do not have permission to open this page.',
   },
   404: {
-    title: 'Halaman tidak ditemukan',
-    description: 'Alamat yang Anda buka mungkin sudah berpindah atau tidak tersedia.',
+    title: 'Page not found',
+    description: 'The address you opened may have moved or is no longer available.',
   },
   503: {
-    title: 'Layanan sedang dipelihara',
-    description: 'Kami sedang melakukan penyesuaian. Silakan coba lagi beberapa saat lagi.',
+    title: 'Service maintenance',
+    description: 'We are making a few adjustments. Please try again shortly.',
   },
 };
 
 export default function ErrorState({ code, error, onRetry }: ErrorStateProps) {
   const content = errorCopy[code] ?? {
-    title: 'Terjadi kesalahan internal',
-    description:
-      'Sistem Pyxis sedang mengalami gangguan sementara. Tim kami telah menerima laporan ini.',
+    title: 'Internal error',
+    description: 'The Pyxis system is temporarily unavailable. Our team has received the report.',
   };
   const showDetails = process.env.NODE_ENV !== 'production' && error?.message;
 
@@ -41,7 +40,7 @@ export default function ErrorState({ code, error, onRetry }: ErrorStateProps) {
               className="inline-flex min-h-11 items-center gap-2 rounded-lg px-1 text-sm font-semibold text-slate-600 transition hover:text-[#0A1222] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B]"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
-              Kembali ke beranda
+              Back to home
             </Link>
 
             <p className="mt-10 text-7xl font-extrabold leading-none tracking-[-0.04em] text-[#0A1222] sm:text-8xl">
@@ -60,7 +59,7 @@ export default function ErrorState({ code, error, onRetry }: ErrorStateProps) {
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0A1222] px-6 text-sm font-bold text-white transition hover:bg-[#0B1E48] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B] focus-visible:ring-offset-2"
                 >
                   <RotateCcw className="size-4" aria-hidden="true" />
-                  Coba lagi
+                  Try again
                 </button>
               ) : null}
               <Link
@@ -68,14 +67,14 @@ export default function ErrorState({ code, error, onRetry }: ErrorStateProps) {
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-300 px-6 text-sm font-bold text-[#0A1222] transition hover:border-[#0A1222] hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B]"
               >
                 <MessageCircle className="size-4" aria-hidden="true" />
-                Hubungi tim Pyxis
+                Contact the Pyxis team
               </Link>
             </div>
 
             {showDetails ? (
               <details className="mt-8 max-w-xl rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
                 <summary className="cursor-pointer font-semibold text-slate-900">
-                  Detail untuk development
+                  Development details
                 </summary>
                 <p className="mt-3 break-words font-mono text-xs leading-6 text-amber-800">
                   {error.message}
@@ -92,10 +91,10 @@ export default function ErrorState({ code, error, onRetry }: ErrorStateProps) {
               Pyxis Ultimate Solution
             </p>
             <p className="mt-3 text-2xl font-bold tracking-tight text-[#0A1222]">
-              Kami sedang menanganinya.
+              We are handling it.
             </p>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Anda dapat kembali ke beranda atau mencoba memuat ulang halaman tanpa kehilangan arah.
+              You can return home or reload the page and pick up where you left off.
             </p>
           </aside>
         </div>

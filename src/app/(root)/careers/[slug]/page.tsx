@@ -15,10 +15,10 @@ interface CareerDetailPageProps {
 export async function generateMetadata({ params }: CareerDetailPageProps) {
   const { slug } = await params;
   const career = await prisma.career.findFirst({ where: { slug, isActive: true } });
-  if (!career) return genPageMetadata({ title: 'Lowongan Tidak Ditemukan' });
+  if (!career) return genPageMetadata({ title: 'Opening not found' });
 
   return genPageMetadata({
-    title: `${career.title} — Karir PT. Pyxis Ultimate Solution`,
+    title: `${career.title} — Careers at PT. Pyxis Ultimate Solution`,
     description: career.description.slice(0, 160),
     path: `/careers/${career.slug}`,
   });
@@ -36,7 +36,7 @@ export default async function CareerDetailPage({ params }: CareerDetailPageProps
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f7f8fa] pb-16">
+    <div className="flex min-h-screen flex-col bg-white pb-20">
       <CareerDetailHeader
         title={career.title}
         department={career.department}
@@ -44,29 +44,26 @@ export default async function CareerDetailPage({ params }: CareerDetailPageProps
         type={career.type}
       />
 
-      <Container className="py-8 md:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <CareerDetailContent
-              description={career.description}
-              responsibilities={career.responsibilities}
-              requirements={career.requirements}
-            />
-          </div>
-          <div className="lg:col-span-1">
+      <Container className="py-12 md:py-20">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-20">
+          <CareerDetailContent
+            description={career.description}
+            responsibilities={career.responsibilities}
+            requirements={career.requirements}
+          />
+          <div>
             <CareerApplyForm careerId={career.id} careerTitle={career.title} />
-            <div className="mt-8 rounded-xl bg-[#dce5ff] p-7 text-neutral-800">
-              <span className="text-3xl font-bold text-[#07358b]">“</span>
-              <p className="mt-2 text-sm italic leading-relaxed">
-                Bekerja di Pyxis berarti menjadi bagian dari tim yang peduli pada kualitas dan
-                inovasi. Kami membangun solusi yang membantu bisnis hospitality berkembang.
+            <blockquote className="mt-16 border-t border-neutral-300 pt-6 text-neutral-800">
+              <p className="text-lg leading-8 tracking-tight text-neutral-900">
+                Working at Pyxis means being part of a team that cares about quality and craft. We
+                build solutions that help hospitality businesses grow.
               </p>
-              <p className="mt-5 text-xs font-bold">
+              <footer className="mt-6 text-sm font-semibold">
                 Siti Rahmawati
                 <br />
-                <span className="font-normal">CTO, Pyxis</span>
-              </p>
-            </div>
+                <span className="font-normal text-neutral-500">CTO, Pyxis</span>
+              </footer>
+            </blockquote>
           </div>
         </div>
       </Container>

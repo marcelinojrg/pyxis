@@ -22,7 +22,7 @@ export function genPageMetadata({
       url: path,
       siteName: siteMetadata.title,
       images: image ? [image] : [siteMetadata.socialBanner],
-      locale: 'id_ID',
+      locale: 'en_US',
       type: 'website',
     },
     authors: [{ name: siteMetadata.author }],

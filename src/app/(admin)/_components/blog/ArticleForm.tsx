@@ -61,7 +61,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
     setSubmitError('');
     if (!file) return;
     if (!imageTypes.has(file.type) || file.size > 10 * 1024 * 1024) {
-      setSubmitError('Cover harus berupa JPEG, PNG, WebP, atau AVIF dengan ukuran maksimal 10 MB.');
+      setSubmitError('The cover must be JPEG, PNG, WebP, or AVIF and no larger than 10 MB.');
       return;
     }
     if (coverPreview.startsWith('blob:')) URL.revokeObjectURL(coverPreview);
@@ -83,7 +83,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
     if (coverFile) {
       const upload = await uploadImage(coverFile, 'articles/covers');
       if (!upload.success || !upload.url) {
-        setSubmitError(upload.error || 'Cover gagal diunggah.');
+        setSubmitError(upload.error || 'Failed to upload the cover.');
         return;
       }
       finalCover = upload.url;
@@ -95,13 +95,11 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
       : await createArticle({ ...values, cover: finalCover });
 
     if (!result.success) {
-      setSubmitError(result.error || 'Artikel gagal disimpan.');
+      setSubmitError(result.error || 'Failed to save the article.');
       return;
     }
 
-    toast.success(
-      result.message || (article ? 'Artikel berhasil diperbarui.' : 'Artikel berhasil dibuat.')
-    );
+    toast.success(result.message || (article ? 'Article updated.' : 'Article created.'));
     router.push('/admin/blog' as Route);
     router.refresh();
   }
@@ -120,14 +118,14 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
-          Kembali ke blog
+          Back to blog
         </Link>
         <div className="mt-3">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            {article ? 'Edit artikel' : 'Tulis artikel baru'}
+            {article ? 'Edit article' : 'Write a new article'}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Susun konten, pilih kategori, lalu simpan sebagai draft atau terbitkan.
+            Structure the content, choose categories, then save it as a draft or publish it.
           </p>
         </div>
       </header>
@@ -136,11 +134,11 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
         <div className="min-w-0 space-y-6">
           <section className="space-y-5 rounded-md bg-card p-5 ring-1 ring-border sm:p-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Judul artikel</Label>
+              <Label htmlFor="title">Article title</Label>
               <Input
                 id="title"
                 maxLength={160}
-                placeholder="Judul yang jelas dan spesifik"
+                placeholder="A clear, specific title"
                 aria-invalid={!!form.formState.errors.title}
                 aria-describedby={form.formState.errors.title ? 'title-error' : undefined}
                 {...form.register('title')}
@@ -151,12 +149,13 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                 </p>
               )}
               <p className="text-xs text-muted-foreground">
-                Slug dibuat otomatis dan diberi akhiran bila judul sudah digunakan.
+                The slug is generated automatically and gets a suffix if the title is already in
+                use.
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label id="content-label">Konten artikel</Label>
+              <Label id="content-label">Article content</Label>
               <div role="group" aria-labelledby="content-label">
                 <Controller
                   control={form.control}
@@ -166,7 +165,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                       value={field.value}
                       onChange={field.onChange}
                       folderName={folderName}
-                      placeholder="Mulai menulis artikel..."
+                      placeholder="Start writing the article..."
                     />
                   )}
                 />
@@ -181,20 +180,20 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
         <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
           <section className="space-y-4 rounded-md bg-card p-5 ring-1 ring-border">
             <div>
-              <h2 className="font-semibold text-foreground">Publikasi</h2>
+              <h2 className="font-semibold text-foreground">Publishing</h2>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                Artikel draft tidak akan tampil di halaman publik.
+                Draft articles do not appear on the public page.
               </p>
             </div>
             <div className="flex items-start justify-between gap-4 rounded-lg bg-muted p-3">
               <div>
                 <Label htmlFor="isPublished" className="cursor-pointer">
-                  {isPublished ? 'Terbitkan' : 'Simpan sebagai draft'}
+                  {isPublished ? 'Publish' : 'Save as draft'}
                 </Label>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {isPublished
-                    ? 'Tanggal terbit ditetapkan saat pertama kali dipublikasikan.'
-                    : 'Anda dapat melanjutkan penyuntingan nanti.'}
+                    ? 'The publication date is set when the article is first published.'
+                    : 'You can continue editing it later.'}
                 </p>
               </div>
               <Switch
@@ -203,15 +202,15 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                 onCheckedChange={(checked) =>
                   form.setValue('isPublished', checked, { shouldDirty: true })
                 }
-                aria-label="Status publikasi artikel"
+                aria-label="Article publication status"
               />
             </div>
           </section>
 
           <section className="space-y-3 rounded-md bg-card p-5 ring-1 ring-border">
             <div>
-              <h2 className="font-semibold text-foreground">Kategori</h2>
-              <p className="mt-1 text-xs text-muted-foreground">Pilih maksimal 8 kategori.</p>
+              <h2 className="font-semibold text-foreground">Categories</h2>
+              <p className="mt-1 text-xs text-muted-foreground">Choose up to 8 categories.</p>
             </div>
             {categories.length ? (
               <div className="max-h-56 space-y-1 overflow-y-auto pr-1">
@@ -225,7 +224,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                       <Checkbox
                         checked={checked}
                         onCheckedChange={(value) => toggleCategory(category.id, value === true)}
-                        aria-label={`Pilih kategori ${category.name}`}
+                        aria-label={`Select category ${category.name}`}
                       />
                       <span className="min-w-0 flex-1 truncate">{category.name}</span>
                     </label>
@@ -234,7 +233,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
               </div>
             ) : (
               <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">
-                Belum ada kategori. Buat kategori dari halaman daftar blog terlebih dahulu.
+                No categories yet. Create one from the blog list first.
               </p>
             )}
             {form.formState.errors.categoryIds && (
@@ -248,7 +247,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
             <div>
               <h2 className="font-semibold text-foreground">Cover</h2>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                Rasio 16:9 disarankan. Proses upload dapat memakan waktu hingga 30 detik.
+                A 16:9 ratio is recommended. Uploads may take up to 30 seconds.
               </p>
             </div>
             {coverPreview ? (
@@ -256,7 +255,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                 <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
                   <Image
                     src={coverPreview}
-                    alt={title ? `Pratinjau cover ${title}` : 'Pratinjau cover artikel'}
+                    alt={title ? `Cover preview for ${title}` : 'Article cover preview'}
                     fill
                     sizes="320px"
                     className="object-cover"
@@ -276,7 +275,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                   }}
                 >
                   <Trash2 className="size-4" aria-hidden="true" />
-                  Hapus cover
+                  Remove cover
                 </Button>
               </div>
             ) : (
@@ -285,8 +284,8 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
                 className="flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/40 p-4 text-center transition-colors hover:bg-muted focus-within:ring-2 focus-within:ring-ring"
               >
                 <ImagePlus className="size-6 text-muted-foreground" aria-hidden="true" />
-                <span className="mt-2 text-sm font-medium">Pilih gambar cover</span>
-                <span className="mt-1 text-xs text-muted-foreground">Maksimal 10 MB</span>
+                <span className="mt-2 text-sm font-medium">Choose a cover image</span>
+                <span className="mt-1 text-xs text-muted-foreground">Maximum 10 MB</span>
                 <input
                   id="cover"
                   type="file"
@@ -308,7 +307,7 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
 
       <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" asChild>
-          <Link href={'/admin/blog' as Route}>Batal</Link>
+          <Link href={'/admin/blog' as Route}>Cancel</Link>
         </Button>
         <Button type="submit" disabled={isSubmitting || categories.length === 0}>
           {isSubmitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
@@ -316,11 +315,11 @@ export function ArticleForm({ article, categories }: ArticleFormProps) {
             ? 'Menyimpan...'
             : isPublished
               ? article
-                ? 'Perbarui & terbitkan'
-                : 'Terbitkan artikel'
+                ? 'Update and publish'
+                : 'Publish article'
               : article
-                ? 'Perbarui draft'
-                : 'Simpan draft'}
+                ? 'Update draft'
+                : 'Save draft'}
         </Button>
       </div>
     </form>

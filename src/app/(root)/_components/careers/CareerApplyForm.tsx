@@ -8,7 +8,7 @@ export interface CareerApplyFormProps {
   careerTitle: string;
 }
 
-export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
+export const CareerApplyForm: FC<CareerApplyFormProps> = ({ careerId, careerTitle }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -19,20 +19,38 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
     e.preventDefault();
     setStatus({
       type: 'error',
-      message: 'Lamaran online belum aktif. Silakan kirim CV dan portofolio melalui email karier.',
+      message:
+        'Online applications are not available yet. Please send your CV and portfolio through the careers email.',
     });
   };
 
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-sm">
-      <h3 className="text-lg font-bold text-neutral-900 mb-6">Formulir Lamaran</h3>
+    <section
+      aria-labelledby="career-application-title"
+      className="border-t border-neutral-300 pt-6"
+    >
+      <div className="border-b border-neutral-200 pb-6">
+        <h2
+          id="career-application-title"
+          className="text-2xl font-semibold tracking-tight text-neutral-950"
+        >
+          Share your interest
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-neutral-600">
+          Complete the initial details for{' '}
+          <span className="font-semibold text-neutral-900">{careerTitle}</span>.
+        </p>
+      </div>
 
       <div
         id="career-form-note"
-        className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900"
+        className="mt-6 flex gap-3 border border-amber-200 bg-amber-50/80 p-4 text-xs leading-6 text-amber-950"
       >
-        Pengiriman CV melalui formulir ini belum tersedia. Setelah mengisi data, kirim CV dan
-        portofolio ke email karier yang tercantum di halaman lowongan.
+        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden="true" />
+        <p>
+          This form does not send your data or CV. Prepare your CV and portfolio; the application
+          channel will be shared when the feature is available.
+        </p>
       </div>
 
       {status && (
@@ -52,10 +70,11 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4" aria-describedby="career-form-note">
+      <form onSubmit={handleSubmit} className="mt-7 space-y-5" aria-describedby="career-form-note">
+        <input type="hidden" name="careerId" value={careerId} />
         <div>
-          <label htmlFor="fullName" className="block text-xs font-semibold text-neutral-700 mb-1">
-            Nama Lengkap <span className="text-red-500">*</span>
+          <label htmlFor="fullName" className="mb-2 block text-sm font-semibold text-neutral-800">
+            Full name <span className="text-red-500">*</span>
           </label>
           <input
             id="fullName"
@@ -64,13 +83,13 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            placeholder="John Doe"
-            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
+            placeholder="Your name"
+            className="w-full rounded-none border-0 border-b border-neutral-300 bg-transparent px-0 py-3 text-sm placeholder:text-neutral-400 focus-visible:border-[#1D4ED8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-4"
           />
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-xs font-semibold text-neutral-700 mb-1">
+          <label htmlFor="email" className="mb-2 block text-sm font-semibold text-neutral-800">
             Email <span className="text-red-500">*</span>
           </label>
           <input
@@ -80,14 +99,14 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="johndoe@example.com"
-            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
+            placeholder="name@example.com"
+            className="w-full rounded-none border-0 border-b border-neutral-300 bg-transparent px-0 py-3 text-sm placeholder:text-neutral-400 focus-visible:border-[#1D4ED8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-4"
           />
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-xs font-semibold text-neutral-700 mb-1">
-            Nomor Telepon / WhatsApp <span className="text-red-500">*</span>
+          <label htmlFor="phone" className="mb-2 block text-sm font-semibold text-neutral-800">
+            Phone / WhatsApp <span className="text-red-500">*</span>
           </label>
           <input
             id="phone"
@@ -96,17 +115,17 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
             required
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="08123456789"
-            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
+            placeholder="+62 812 3456 7890"
+            className="w-full rounded-none border-0 border-b border-neutral-300 bg-transparent px-0 py-3 text-sm placeholder:text-neutral-400 focus-visible:border-[#1D4ED8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-4"
           />
         </div>
 
         <div>
           <label
             htmlFor="portfolioUrl"
-            className="block text-xs font-semibold text-neutral-700 mb-1"
+            className="mb-2 block text-sm font-semibold text-neutral-800"
           >
-            Link Tautan Portofolio / LinkedIn (Opsional)
+            Portfolio / LinkedIn link (optional)
           </label>
           <input
             id="portfolioUrl"
@@ -115,19 +134,19 @@ export const CareerApplyForm: FC<CareerApplyFormProps> = () => {
             value={portfolioUrl}
             onChange={(e) => setPortfolioUrl(e.target.value)}
             placeholder="https://linkedin.com/in/username"
-            className="w-full rounded-md border border-neutral-300 bg-[#f8f9fb] px-3.5 py-2.5 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#07358b]"
+            className="w-full rounded-none border-0 border-b border-neutral-300 bg-transparent px-0 py-3 text-sm placeholder:text-neutral-400 focus-visible:border-[#1D4ED8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-4"
           />
         </div>
 
         <button
           type="submit"
           disabled
-          className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-[#07358b] px-4 py-3 text-xs font-bold text-white transition-colors hover:bg-[#052769] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-3 flex w-full cursor-not-allowed items-center justify-center gap-2 border border-neutral-300 bg-neutral-100 px-4 py-3 text-sm font-semibold text-neutral-500 disabled:opacity-100"
         >
-          <Send className="w-4 h-4" />
-          <span>Lamaran Online Belum Aktif</span>
+          <Send className="h-4 w-4" aria-hidden="true" />
+          <span>Application submission is not available yet</span>
         </button>
       </form>
-    </div>
+    </section>
   );
 };

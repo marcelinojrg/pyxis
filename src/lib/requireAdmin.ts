@@ -4,8 +4,8 @@ import { auth } from '@/lib/auth';
 import { verifyPermission } from '@/services/admin/security';
 
 /**
- * Guard sisi server untuk halaman admin.
- * Memastikan ada session yang valid; jika tidak, arahkan ke halaman login.
+ * Server-side guard for admin pages.
+ * Ensures a valid session exists; otherwise, redirects to the login page.
  */
 export async function requireAdmin() {
   const session = await auth.api.getSession({

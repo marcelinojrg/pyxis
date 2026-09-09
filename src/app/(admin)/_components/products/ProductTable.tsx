@@ -72,11 +72,11 @@ function ProductActions({ product }: { product: ProductTableItem }) {
     startTransition(async () => {
       const result = await deleteProductById(product.id);
       if (!result.success) {
-        toast.error(result.error || 'Produk gagal dihapus.');
+        toast.error(result.error || 'Failed to delete the product.');
         return;
       }
       flushSync(() => setOpen(false));
-      toast.success(result.message || 'Produk berhasil dihapus.');
+      toast.success(result.message || 'Product deleted.');
       router.refresh();
     });
   }
@@ -89,7 +89,7 @@ function ProductActions({ product }: { product: ProductTableItem }) {
             variant="ghost"
             size="icon"
             className="h-8 w-8 rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-            aria-label={`Aksi ${product.name}`}
+            aria-label={`Actions for ${product.name}`}
           >
             <MoreHorizontal className="h-4 w-4" />
           </Button>
@@ -101,7 +101,7 @@ function ProductActions({ product }: { product: ProductTableItem }) {
               className="flex items-center gap-2"
             >
               <Edit3 className="h-3.5 w-3.5 text-blue-600" />
-              <span>Edit Produk</span>
+              <span>Edit product</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild className="rounded-md text-xs font-medium cursor-pointer">
@@ -112,7 +112,7 @@ function ProductActions({ product }: { product: ProductTableItem }) {
               className="flex items-center gap-2"
             >
               <ExternalLink className="h-3.5 w-3.5 text-slate-500" />
-              <span>Lihat di Web</span>
+              <span>View on website</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="my-1" />
@@ -122,7 +122,7 @@ function ProductActions({ product }: { product: ProductTableItem }) {
             className="rounded-md text-xs font-medium text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer flex items-center gap-2"
           >
             <Trash2 className="h-3.5 w-3.5" />
-            <span>Hapus Produk</span>
+            <span>Delete product</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -135,11 +135,11 @@ function ProductActions({ product }: { product: ProductTableItem }) {
             </div>
             <div>
               <DialogTitle className="text-base font-bold text-slate-900">
-                Hapus &ldquo;{product.name}&rdquo;?
+                Delete &ldquo;{product.name}&rdquo;?
               </DialogTitle>
               <DialogDescription className="mt-1 text-xs leading-relaxed text-slate-500">
-                Tindakan ini permanen. Seluruh manfaat, fitur, dan grup kapabilitas terkait akan
-                dihapus dari sistem.
+                This action is permanent. All related benefits, features, and capability groups will
+                be removed from the system.
               </DialogDescription>
             </div>
           </DialogHeader>
@@ -151,7 +151,7 @@ function ProductActions({ product }: { product: ProductTableItem }) {
               disabled={isPending}
               className="rounded-lg border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
             >
-              Batal
+              Cancel
             </Button>
             <Button
               variant="destructive"
@@ -160,7 +160,7 @@ function ProductActions({ product }: { product: ProductTableItem }) {
               disabled={isPending}
               className="rounded-lg bg-red-600 text-xs font-semibold text-white shadow-xs hover:bg-red-700"
             >
-              {isPending ? 'Menghapus...' : 'Ya, Hapus Produk'}
+              {isPending ? 'Deleting...' : 'Yes, delete product'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -220,7 +220,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
       },
       {
         accessorKey: 'name',
-        header: 'Nama Produk',
+        header: 'Product name',
         cell: ({ row }) => (
           <div className="min-w-[180px]">
             <Link
@@ -237,7 +237,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
       },
       {
         accessorKey: 'order',
-        header: 'Urutan',
+        header: 'Order',
         cell: ({ row }) => (
           <span className="text-xs tabular-nums text-slate-600">{row.original.order}</span>
         ),
@@ -249,7 +249,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
           row.original.isActive ? (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-800">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-              Aktif
+              Active
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
@@ -287,8 +287,8 @@ export function ProductTable({ products, error }: ProductTableProps) {
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Cari produk berdasarkan nama atau slug..."
-            aria-label="Cari produk"
+            placeholder="Search products by name or slug..."
+            aria-label="Search products"
             className="h-9 rounded-lg border-slate-200 bg-white pl-9 pr-8 text-xs shadow-none transition-colors placeholder:text-slate-400 focus-visible:border-blue-600 focus-visible:ring-1 focus-visible:ring-blue-600"
           />
           {search && (
@@ -296,7 +296,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
               type="button"
               onClick={() => setSearch('')}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              aria-label="Bersihkan pencarian"
+              aria-label="Clear search"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -307,7 +307,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
         <div
           className="flex flex-wrap items-center gap-1 self-start rounded-lg border border-slate-200 bg-slate-50 p-0.5 sm:self-auto"
           role="group"
-          aria-label="Filter status produk"
+          aria-label="Filter product status"
         >
           <button
             type="button"
@@ -319,7 +319,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
                 : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            Semua ({products.length})
+            All ({products.length})
           </button>
           <button
             type="button"
@@ -331,7 +331,7 @@ export function ProductTable({ products, error }: ProductTableProps) {
                 : 'text-slate-500 hover:text-slate-900'
             }`}
           >
-            Aktif ({activeCount})
+            Active ({activeCount})
           </button>
           <button
             type="button"
@@ -356,10 +356,10 @@ export function ProductTable({ products, error }: ProductTableProps) {
             role="alert"
           >
             <TriangleAlert className="h-7 w-7 text-red-600" aria-hidden />
-            <h2 className="mt-3 text-sm font-bold text-slate-900">Produk gagal dimuat</h2>
+            <h2 className="mt-3 text-sm font-bold text-slate-900">Failed to load products</h2>
             <p className="mt-1 max-w-md text-xs text-slate-500">{error}</p>
             <Button variant="outline" size="sm" className="mt-4" onClick={() => router.refresh()}>
-              <RefreshCw className="mr-1.5 h-3.5 w-3.5" aria-hidden /> Muat ulang
+              <RefreshCw className="mr-1.5 h-3.5 w-3.5" aria-hidden /> Reload
             </Button>
           </div>
         ) : products.length === 0 ? (
@@ -367,9 +367,9 @@ export function ProductTable({ products, error }: ProductTableProps) {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
               <PackageOpen className="h-6 w-6" />
             </div>
-            <h2 className="mt-3 text-sm font-bold text-slate-900">Belum ada produk</h2>
+            <h2 className="mt-3 text-sm font-bold text-slate-900">No products yet</h2>
             <p className="mt-0.5 text-xs text-slate-500 max-w-sm">
-              Tambahkan produk pertama untuk menampilkan layanan Pyxis di website publik.
+              Add your first product to show Pyxis services on the public website.
             </p>
             <Button
               asChild
@@ -377,16 +377,16 @@ export function ProductTable({ products, error }: ProductTableProps) {
               className="mt-4 rounded-lg bg-blue-600 text-xs font-semibold text-white hover:bg-blue-700 shadow-xs"
             >
               <Link href={'/admin/products/new' as Route}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" /> Tambah Produk Baru
+                <Plus className="mr-1.5 h-3.5 w-3.5" /> Add new product
               </Link>
             </Button>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="flex min-h-48 flex-col items-center justify-center p-8 text-center">
             <Search className="h-6 w-6 text-slate-300" />
-            <p className="mt-2 text-xs font-bold text-slate-700">Produk tidak ditemukan</p>
+            <p className="mt-2 text-xs font-bold text-slate-700">Product not found</p>
             <p className="mt-0.5 text-[11px] text-slate-400">
-              Tidak ada hasil untuk kata kunci &ldquo;{search}&rdquo;.
+              No results for &ldquo;{search}&rdquo;.
             </p>
             <Button
               variant="outline"
@@ -446,10 +446,10 @@ export function ProductListHeader() {
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-          Kelola Produk & Layanan
+          Manage products and services
         </h1>
         <p className="mt-0.5 text-xs text-slate-500">
-          Manajemen katalog produk teknologi, sistem solusi, dan kapabilitas Pyxis.
+          Manage Pyxis technology products, solution systems, and capabilities.
         </p>
       </div>
 
@@ -460,7 +460,7 @@ export function ProductListHeader() {
       >
         <Link href={'/admin/products/new' as Route} className="flex items-center gap-1.5">
           <Plus className="h-3.5 w-3.5" />
-          <span>Tambah Produk Baru</span>
+          <span>Add new product</span>
         </Link>
       </Button>
     </div>

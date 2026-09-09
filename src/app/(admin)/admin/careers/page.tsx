@@ -2,7 +2,7 @@ import { CareerCategoryManager } from '@/app/(admin)/_components/careers/CareerC
 import { CareerListHeader, CareerTable } from '@/app/(admin)/_components/careers/CareerTable';
 import { getAdminCareers, getCareerCategories } from '@/services/admin/careers';
 
-export const metadata = { title: 'Kelola Lowongan — Pyxis Admin' };
+export const metadata = { title: 'Manage openings — Pyxis Admin' };
 
 export default async function AdminCareersPage() {
   const [careers, categories] = await Promise.all([getAdminCareers(), getCareerCategories()]);

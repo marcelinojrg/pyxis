@@ -1,43 +1,54 @@
 import type { Metadata } from 'next';
-import PageHero from '@/components/Common/PageHero';
+import Image from 'next/image';
 import { AboutProfile } from '@/app/(root)/_components/about/AboutProfile';
 import { AboutVisionMission } from '@/app/(root)/_components/about/AboutVisionMission';
 import { AboutContact } from '@/app/(root)/_components/about/AboutContact';
 import CTASection from '@/components/Common/CTASection';
+import EditorialHero from '@/components/Common/EditorialHero';
 
 export const metadata: Metadata = {
-  title: 'Tentang Kami — PT. Pyxis Ultimate Solution',
+  title: 'About Pyxis — PT. Pyxis Ultimate Solution',
   description:
-    'PT PYXIS Ultimate Solution menyediakan infrastruktur digital inovatif untuk membantu bisnis Anda tetap unggul.',
-  alternates: {
-    canonical: '/about',
-  },
+    'Pyxis develops integrated hospitality technology for hotels, restaurants, and connected operations.',
+  alternates: { canonical: '/about' },
   openGraph: {
-    title: 'Tentang Kami — PT. Pyxis Ultimate Solution',
+    title: 'About Pyxis — PT. Pyxis Ultimate Solution',
     description:
-      'PT PYXIS Ultimate Solution menyediakan infrastruktur digital inovatif untuk membantu bisnis Anda tetap unggul.',
+      'Pyxis develops integrated hospitality technology for hotels, restaurants, and connected operations.',
   },
 };
 
 export default function AboutPage() {
   return (
-    <div className="w-full flex flex-col">
-      {/* 1. Hero Section — Navy gradient with bold heading */}
-      <PageHero
-        title="Membangun Masa Depan Teknologi Hospitality"
-        description="PT PYXIS Ultimate Solution menyediakan infrastruktur digital inovatif untuk membantu bisnis Anda tetap unggul."
-      />
+    <div className="flex w-full flex-col">
+      <EditorialHero
+        eyebrow="About Pyxis"
+        title="Technology built around hospitality."
+        description="Pyxis develops connected hotel and restaurant systems that help hospitality teams operate with clarity, consistency, and confidence."
+        ctaText="Talk to our team"
+        ctaHref="/contact"
+      >
+        <figure>
+          <div className="relative aspect-[4/3] overflow-hidden border border-white/25 bg-blue-950/30">
+            <Image
+              src="/assets/img/about-pyxis-journey.jpg"
+              alt="Hospitality technology team collaborating in a meeting"
+              fill
+              sizes="(max-width: 1024px) 100vw, 42vw"
+              className="object-cover"
+              priority
+            />
+          </div>
+          <figcaption className="flex items-center justify-between gap-4 border-b border-white/25 py-3 text-xs text-blue-100/80">
+            <span>People behind the platform</span>
+            <span>Malang, Indonesia</span>
+          </figcaption>
+        </figure>
+      </EditorialHero>
 
-      {/* 2. Our Journey — Image + text + 30+ badge */}
       <AboutProfile />
-
-      {/* 3. Vision & Mission + Evolusi Produk side-by-side */}
       <AboutVisionMission />
-
-      {/* 4. Lokasi Kami — Two company contact cards */}
       <AboutContact />
-
-      {/* 5. CTA — Saatnya Bergabung */}
       <CTASection />
     </div>
   );

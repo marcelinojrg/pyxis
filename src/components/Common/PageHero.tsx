@@ -53,7 +53,7 @@ export const PageHero: FC<PageHeroProps> = ({
             <div data-home-reveal="cta" className="pt-2">
               <Link
                 href={ctaHref as Route}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-neutral-950 font-bold text-sm shadow-lg hover:bg-blue-50 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white text-[#071327] font-bold text-sm shadow-lg hover:bg-blue-50 transition-all active:scale-95"
               >
                 <span>{ctaText}</span>
                 {ctaIcon}

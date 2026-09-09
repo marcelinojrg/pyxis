@@ -3,6 +3,13 @@
 import { useState, type FC } from 'react';
 import { ShieldCheck, FileText, Cookie } from 'lucide-react';
 import { Container } from '@/components/ui/container';
+import { SanitizedHtml } from '@/components/Common/SanitizedHtml';
+
+type LegalDocument = {
+  slug: string;
+  title: string;
+  content: string;
+};
 
 const LEGAL_TABS = [
   { id: 'privacy', label: 'Privacy Policy', icon: ShieldCheck },
@@ -10,15 +17,20 @@ const LEGAL_TABS = [
   { id: 'cookies', label: 'Cookie Policy', icon: Cookie },
 ];
 
-export const LegalContent: FC = () => {
+export const LegalContent: FC<{ documents: LegalDocument[] }> = ({ documents }) => {
   const [activeTab, setActiveTab] = useState('privacy');
+  const documentSlugs: Record<string, string> = {
+    privacy: 'privacy-policy',
+    terms: 'terms-of-service',
+  };
+  const activeDocument = documents.find((document) => document.slug === documentSlugs[activeTab]);
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="border-y border-neutral-200 bg-white py-16 sm:py-24">
       <Container>
-        <div className="max-w-4xl mx-auto">
+        <div className="grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-16">
           {/* Tab Navigation Bar */}
-          <div className="flex border-b border-neutral-200 mb-10 overflow-x-auto">
+          <div className="flex gap-2 overflow-x-auto border-b border-neutral-200 pb-2 lg:flex-col lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
             {LEGAL_TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -27,10 +39,10 @@ export const LegalContent: FC = () => {
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-3.5 font-bold text-sm border-b-2 transition-all shrink-0 cursor-pointer ${
+                  className={`flex shrink-0 items-center gap-3 border-l-2 px-4 py-3 text-left text-sm font-semibold transition-all ${
                     isActive
-                      ? 'border-blue-600 text-blue-600 bg-blue-50/50'
-                      : 'border-transparent text-neutral-500 hover:text-neutral-900'
+                      ? 'border-[#1D4ED8] text-[#1D4ED8] bg-blue-50/50'
+                      : 'border-transparent text-neutral-500 hover:border-neutral-300 hover:text-neutral-900'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -42,103 +54,41 @@ export const LegalContent: FC = () => {
 
           {/* Tab Content Panels */}
           <div className="prose prose-neutral max-w-none text-neutral-700 space-y-6 text-sm sm:text-base leading-relaxed">
-            {activeTab === 'privacy' && (
-              <div>
-                <h2 className="text-2xl font-bold text-neutral-900 mb-4">
-                  Kebijakan Privasi (Privacy Policy)
-                </h2>
-                <p>
-                  PT. Pyxis Ultimate Solution menghormati dan berkomitmen untuk melindungi privasi
-                  setiap pengunjung dan pengguna produk software kami (Alcor PMS, Alcor POS, dan
-                  layanan terkait).
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  1. Pengumpulan Informasi
-                </h3>
-                <p>
-                  Kami mengumpulkan informasi pribadi yang Anda berikan secara langsung saat mengisi
-                  formulir kontak, formulir demo produk, atau pendaftaran akun layanan. Informasi
-                  ini mencakup nama, alamat email, nomor telepon, dan data nama properti Anda.
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  2. Penggunaan Informasi
-                </h3>
-                <p>
-                  Informasi yang kami kumpulkan digunakan untuk memberikan layanan, memproses
-                  permintaan demo, meningkatkan pengalaman pengguna, serta mengirimkan pemberitahuan
-                  penting terkait pembaruan sistem dan keamanan.
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">3. Keamanan Data</h3>
-                <p>
-                  Kami menerapkan tindakan teknis dan organisasional yang ketat untuk melindungi
-                  data pribadi Anda dari akses tidak sah, pengubahan, pengungkapan, atau
-                  penghancuran yang tidak sah.
-                </p>
-              </div>
-            )}
-
-            {activeTab === 'terms' && (
-              <div>
-                <h2 className="text-2xl font-bold text-neutral-900 mb-4">
-                  Syarat & Ketentuan Layanan (Terms of Service)
-                </h2>
-                <p>
-                  Dengan mengakses atau menggunakan situs web dan produk dari PT. Pyxis Ultimate
-                  Solution, Anda menyetujui untuk terikat oleh Syarat dan Ketentuan berikut ini.
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  1. Lisensi Penggunaan
-                </h3>
-                <p>
-                  Pyxis memberikan Anda lisensi terbatas, non-eksklusif, dan tidak dapat
-                  dipindahtangankan untuk mengakses dan menggunakan produk software kami sesuai
-                  dengan perjanjian berlangganan yang disepakati.
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  2. Hak Kekayaan Intelektual
-                </h3>
-                <p>
-                  Seluruh hak cipta, merek dagang, desain, dan kode sumber dari Alcor PMS, Alcor
-                  POS, serta situs web ini adalah hak milik penuh dari PT. Pyxis Ultimate Solution.
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  3. Batasan Tanggung Jawab
-                </h3>
-                <p>
-                  Pyxis tidak bertanggung jawab atas kerugian tidak langsung atau konsekuensial yang
-                  timbul dari gangguan penggunaan layanan di luar kendali wajar kami.
-                </p>
-              </div>
-            )}
+            {activeTab !== 'cookies' &&
+              (activeDocument ? (
+                <div>
+                  <h2 className="mb-4 text-2xl font-bold text-neutral-900">
+                    {activeDocument.title}
+                  </h2>
+                  <SanitizedHtml content={activeDocument.content} />
+                </div>
+              ) : (
+                <p className="text-neutral-500">This policy is not published yet.</p>
+              ))}
 
             {activeTab === 'cookies' && (
               <div>
-                <h2 className="text-2xl font-bold text-neutral-900 mb-4">
-                  Kebijakan Cookie (Cookie Policy)
-                </h2>
+                <h2 className="text-2xl font-bold text-neutral-900 mb-4">Cookie Policy</h2>
                 <p>
-                  Situs web kami menggunakan cookie dan teknologi pelacakan serupa untuk
-                  meningkatkan kenyamanan penelusuran Anda.
-                </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">1. Apa itu Cookie?</h3>
-                <p>
-                  Cookie adalah file teks kecil yang disimpan di perangkat Anda saat Anda
-                  mengunjungi situs web kami. Cookie membantu kami mengingat preferensi Anda dan
-                  menganalisis lalu lintas situs.
+                  Our website uses cookies and similar tracking technologies to improve your
+                  browsing experience.
                 </p>
                 <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  2. Jenis Cookie yang Kami Gunakan
+                  1. What are cookies?
                 </h3>
                 <p>
-                  Kami menggunakan Cookie Esensial (untuk fungsi keamanan dan navigasi dasar) serta
-                  Cookie Analitis (untuk memahami cara pengunjung berinteraksi dengan halaman kami).
+                  Cookies are small text files stored on your device when you visit our website.
+                  They help us remember your preferences and analyze site traffic.
                 </p>
-                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">
-                  3. Pengaturan Cookie
-                </h3>
+                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">2. Cookies we use</h3>
                 <p>
-                  Anda dapat mengatur browser Anda untuk menolak semua atau beberapa cookie, namun
-                  hal ini dapat mempengaruhi fungsi beberapa bagian dari situs web kami.
+                  We use Essential Cookies for security and basic navigation, as well as Analytics
+                  Cookies to understand how visitors interact with our pages.
+                </p>
+                <h3 className="text-lg font-bold text-neutral-900 mt-6 mb-2">3. Cookie settings</h3>
+                <p>
+                  You can configure your browser to reject all or some cookies, but this may affect
+                  the functionality of parts of our website.
                 </p>
               </div>
             )}

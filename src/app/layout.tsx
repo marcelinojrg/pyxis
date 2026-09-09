@@ -30,6 +30,14 @@ export const metadata: Metadata = {
     template: `%s`,
   },
   description: siteMetadata.description,
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-icon.png',
+  },
   alternates: {
     canonical: '/',
   },
@@ -39,7 +47,7 @@ export const metadata: Metadata = {
     url: './',
     siteName: siteMetadata.title,
     images: [siteMetadata.socialBanner],
-    locale: 'id_ID',
+    locale: 'en_US',
     type: 'website',
   },
   authors: [{ name: siteMetadata.author }],
@@ -79,7 +87,7 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="id"
+      lang="en"
       suppressHydrationWarning
       className={cn(inter.variable, roboto.variable, 'font-sans')}
     >

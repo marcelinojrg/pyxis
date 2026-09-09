@@ -6,60 +6,66 @@ const optionalText = (max: number, message: string) =>
 const imageSchema = z
   .string()
   .trim()
-  .max(2048, 'URL gambar terlalu panjang.')
+  .max(2048, 'Image URL is too long.')
   .refine(
     (value) => !value || /^\/(?!\/)/.test(value) || /^https?:\/\/\S+$/i.test(value),
-    'URL gambar tidak valid.'
+    'Image URL is invalid.'
   )
   .optional();
 
 const contentItemSchema = z.object({
-  title: z.string().trim().min(1, 'Judul wajib diisi.').max(120, 'Judul maksimal 120 karakter.'),
-  description: optionalText(500, 'Deskripsi maksimal 500 karakter.'),
-  icon: optionalText(80, 'Nama ikon maksimal 80 karakter.'),
+  title: z
+    .string()
+    .trim()
+    .min(1, 'Title is required.')
+    .max(120, 'Title must be 120 characters or fewer.'),
+  description: optionalText(500, 'Description must be 500 characters or fewer.'),
+  icon: optionalText(80, 'Icon name must be 80 characters or fewer.'),
 });
 
 export const productSchema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, 'Nama produk wajib diisi.')
-    .max(120, 'Nama produk maksimal 120 karakter.'),
+    .min(1, 'Product name is required.')
+    .max(120, 'Product name must be 120 characters or fewer.'),
   slug: z
     .string()
     .trim()
     .toLowerCase()
-    .max(120, 'Slug maksimal 120 karakter.')
+    .max(120, 'Slug must be 120 characters or fewer.')
     .refine(
       (value) => !value || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value),
-      'Slug hanya boleh berisi huruf kecil, angka, dan tanda hubung.'
+      'Slug may contain only lowercase letters, numbers, and hyphens.'
     )
     .optional(),
-  description: optionalText(150, 'Deskripsi singkat maksimal 150 karakter.'),
-  featureSubtitle: optionalText(3000, 'Deskripsi lengkap maksimal 3.000 karakter.'),
+  description: optionalText(150, 'Short description must be 150 characters or fewer.'),
+  featureSubtitle: optionalText(3000, 'Full description must be 3,000 characters or fewer.'),
   image: imageSchema,
   order: z
     .number()
-    .int('Urutan harus berupa bilangan bulat.')
-    .min(0, 'Urutan tidak boleh negatif.')
+    .int('Order must be a whole number.')
+    .min(0, 'Order cannot be negative.')
     .max(9999),
   isActive: z.boolean(),
-  benefits: z.array(contentItemSchema).max(30, 'Maksimal 30 manfaat.'),
-  features: z.array(contentItemSchema).max(30, 'Maksimal 30 fitur.'),
+  benefits: z.array(contentItemSchema).max(30, 'You can add no more than 30 benefits.'),
+  features: z.array(contentItemSchema).max(30, 'You can add no more than 30 features.'),
   capabilities: z
     .array(
       z.object({
         title: z
           .string()
           .trim()
-          .min(1, 'Judul grup kapabilitas wajib diisi.')
-          .max(120, 'Judul grup maksimal 120 karakter.'),
-        description: optionalText(3000, 'Deskripsi grup maksimal 3.000 karakter.'),
+          .min(1, 'Capability group title is required.')
+          .max(120, 'Group title must be 120 characters or fewer.'),
+        description: optionalText(3000, 'Group description must be 3,000 characters or fewer.'),
         imageUrl: imageSchema,
-        items: z.array(contentItemSchema).max(30, 'Maksimal 30 item per grup kapabilitas.'),
+        items: z
+          .array(contentItemSchema)
+          .max(30, 'You can add no more than 30 items per capability group.'),
       })
     )
-    .max(10, 'Maksimal 10 grup kapabilitas.'),
+    .max(10, 'You can add no more than 10 capability groups.'),
 });
 
 export type ProductValues = z.infer<typeof productSchema>;

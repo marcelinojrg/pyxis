@@ -1,20 +1,12 @@
 import type { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Route } from 'next';
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 import { SanitizedHtml } from '@/components/Common/SanitizedHtml';
+import { BlogCard, getBlogCover, type BlogCardArticle } from './BlogCard';
 
-export interface RelatedArticle {
-  id: string;
-  title: string;
-  content: string;
-  slug?: string | null;
-  cover?: string | null;
-  createdAt: Date;
-  articleCategories: { name: string }[];
-}
+export interface RelatedArticle extends BlogCardArticle {}
 
 export interface BlogDetailContentProps {
   content: string;
@@ -29,83 +21,60 @@ export const BlogDetailContent: FC<BlogDetailContentProps> = ({
   title,
   relatedArticles,
 }) => {
+  const articleCover = getBlogCover(cover);
+
   return (
-    <section className="bg-[#f7f8fa] pb-14 md:pb-20">
-      <Container className="max-w-5xl">
-        <div className="max-w-4xl mx-auto">
-          {cover && (
-            <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-8 bg-neutral-300">
-              <Image src={cover} alt={title} fill className="object-cover" priority />
-            </div>
-          )}
-
-          <SanitizedHtml content={content} className="article-content pyxis-article mb-12" />
-
-          <div className="rounded-lg border border-[#dbe3ff] bg-[#eff2ff] px-6 py-7 text-center mb-14">
-            <h2 className="text-base font-bold text-[#07358b]">Tertarik dengan produk Pyxis?</h2>
-            <p className="mt-2 text-sm text-neutral-600">
-              Jadwalkan sesi konsultasi gratis dengan tim ahli kami untuk melihat bagaimana Pyxis
-              dapat mentransformasi operasional hotel Anda.
-            </p>
-            <Link
-              href="/contact"
-              className="mt-5 inline-flex rounded-md bg-[#07358b] px-5 py-2.5 text-xs font-semibold text-white hover:bg-[#052769]"
-            >
-              Hubungi Kami
-            </Link>
-          </div>
-
-          {relatedArticles.length > 0 && (
-            <div>
-              <div className="mb-5 flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-[#07358b]">Artikel Lainnya</h3>
-                <Link
-                  href="/blog"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#07358b] hover:underline"
-                >
-                  Lihat Semua <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {relatedArticles.map((art) => {
-                  const targetUrl = `/blog/${art.slug || art.id}` as Route;
-                  const excerpt = art.content.replace(/<[^>]+>/g, '').trim();
-                  return (
-                    <Link
-                      key={art.id}
-                      href={targetUrl}
-                      className="group overflow-hidden rounded-lg border border-neutral-200 bg-white hover:border-[#9fb7ee] transition-colors"
-                    >
-                      {art.cover ? (
-                        <div className="relative w-full aspect-video overflow-hidden bg-neutral-400">
-                          <Image
-                            src={art.cover}
-                            alt={art.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full aspect-video bg-neutral-400" />
-                      )}
-                      <div className="p-4">
-                        <span className="text-[11px] font-medium uppercase text-[#b27a22]">
-                          {art.articleCategories[0]?.name || 'Wawasan Industri'}
-                        </span>
-                        <h4 className="mt-2 text-sm font-bold leading-snug text-[#07358b] group-hover:underline line-clamp-3">
-                          {art.title}
-                        </h4>
-                        <p className="mt-3 text-xs leading-relaxed text-neutral-500 line-clamp-2">
-                          {excerpt}
-                        </p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+    <section className="bg-white pb-16 sm:pb-24">
+      <Container className="max-w-6xl">
+        <div className="relative aspect-[16/8] overflow-hidden border-b border-neutral-300 bg-neutral-100">
+          <Image src={articleCover} alt={title} fill className="object-cover" priority />
         </div>
+
+        <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <article className="lg:col-span-8 lg:col-start-2">
+            <SanitizedHtml content={content} className="blog-article-content" />
+          </article>
+        </div>
+
+        <div className="mt-16 grid gap-6 border-y border-neutral-200 py-8 md:grid-cols-[1fr_auto] md:items-end md:gap-12">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl font-semibold leading-tight tracking-tight text-neutral-900 sm:text-3xl">
+              See what a connected operation can change.
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-neutral-600">
+              Talk to the Pyxis team about the systems behind your property.
+            </p>
+          </div>
+          <Link
+            href="/contact"
+            className="group inline-flex items-center gap-3 border-b border-[#F59E0B] pb-2 text-sm font-semibold text-neutral-900 transition-colors hover:text-[#1D4ED8]"
+          >
+            Talk to our team
+            <ArrowUpRight className="h-5 w-5 rotate-90 transition-transform duration-300 group-hover:rotate-0" />
+          </Link>
+        </div>
+
+        {relatedArticles.length > 0 && (
+          <div className="mt-20 border-t border-neutral-200 pt-10 sm:mt-24">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <h2 className="text-2xl font-semibold tracking-tight text-neutral-900 sm:text-3xl">
+                More stories
+              </h2>
+              <Link
+                href="/blog"
+                className="group inline-flex items-center gap-2 border-b border-[#F59E0B] pb-1 text-sm font-semibold text-neutral-900 transition-colors hover:text-[#1D4ED8]"
+              >
+                View all
+                <ArrowUpRight className="h-4 w-4 rotate-90 transition-transform duration-300 group-hover:rotate-0" />
+              </Link>
+            </div>
+            <div className="mt-8 grid gap-x-8 gap-y-12 md:grid-cols-3">
+              {relatedArticles.map((article, index) => (
+                <BlogCard key={article.id} article={article} index={index + 1} />
+              ))}
+            </div>
+          </div>
+        )}
       </Container>
     </section>
   );

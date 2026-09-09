@@ -6,10 +6,9 @@ import { cn } from '@/lib/utils';
 const EVOLUTION_NODES = [
   {
     step: 1,
-    year: '1989',
-    title: 'DOS Platform',
-    description:
-      'PAHIS adalah generasi pertama lini produk kami, difokuskan untuk memenuhi kebutuhan berbagai karakteristik hotel.',
+    year: '1988',
+    title: 'ParHIS',
+    description: 'The first DOS-based hotel system was developed by PT. DACCOM ANUGERAHMULYA.',
     align: 'right',
     nodeColor: 'bg-[#1D4ED8] text-white',
     yearBadge: 'bg-blue-50 text-[#1D4ED8] border-blue-200',
@@ -17,39 +16,39 @@ const EVOLUTION_NODES = [
   {
     step: 2,
     year: '2000',
-    title: 'Windows Platform',
+    title: 'BITS & MYOH Hotel Software',
     description:
-      'MYOH PMS menawarkan solusi terintegrasi penuh dari Front Office, Food Beverage, Back Office, dan Device Integration tanpa gateway tambahan.',
+      'PT. MYOHDOTCOM Indonesia, Tbk launched its second-generation Windows-based hospitality software.',
     align: 'left',
     nodeColor: 'bg-[#E2E8F0] text-neutral-700',
     yearBadge: 'bg-blue-50 text-[#1D4ED8] border-blue-200',
   },
   {
     step: 3,
-    year: '2010',
-    title: 'Hybrid Technology',
+    year: '2004',
+    title: 'PT. MYOH Technology Tbk',
     description:
-      'PYXIS PMS menggabungkan aplikasi berbasis windows dan internet, menawarkan kecepatan, efisiensi, dan akses global.',
+      'The company name was updated to reflect its focus as an information technology developer.',
     align: 'right',
     nodeColor: 'bg-[#E2E8F0] text-neutral-700',
     yearBadge: 'bg-blue-50 text-[#1D4ED8] border-blue-200',
   },
   {
     step: 4,
-    year: '2020',
-    title: 'Smart IoT',
+    year: '2011–2021',
+    title: 'Pyxis & Hybrid Technology',
     description:
-      'SeREG memfasilitasi penerapan teknologi pintar (IoT) di properti, memungkinkan kontrol dengan satu klik dari ponsel.',
+      "PT. Pyxis Ultimate Solution continued MYOH's hospitality business and introduced hybrid technology in 2014.",
     align: 'left',
     nodeColor: 'bg-[#E2E8F0] text-neutral-700',
     yearBadge: 'bg-blue-50 text-[#1D4ED8] border-blue-200',
   },
   {
     step: 5,
-    year: '2022 - Now',
-    title: 'Digital Infrastructure',
+    year: '2021–Present',
+    title: 'Pyxis-X',
     description:
-      'PYXIS-X menyediakan infrastruktur komunikasi digital komprehensif, mencakup komponen smart tourism seperti Smart Destination dan Smart Business.',
+      'The Pyxis-X decentralized cloud technology platform was introduced for digital travel and tourism infrastructure.',
     align: 'right',
     nodeColor: 'bg-[#F59E0B] text-white',
     yearBadge: 'bg-amber-50 text-amber-700 border-amber-300',
@@ -118,14 +117,14 @@ export default function HomeEvolution() {
             data-home-reveal="heading"
             className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-neutral-900"
           >
-            Evolusi Produk Kami
+            Our product evolution
           </h2>
           <p
             data-home-reveal="copy"
             className="text-sm sm:text-base text-neutral-600 leading-relaxed"
           >
-            Sejarah panjang inovasi berkelanjutan untuk memenuhi kebutuhan industri perhotelan yang
-            terus berkembang.
+            A long history of continuous innovation built around the changing needs of the
+            hospitality industry.
           </p>
         </div>
 

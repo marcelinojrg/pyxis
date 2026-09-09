@@ -6,7 +6,7 @@ interface EditCareerPageProps {
   params: Promise<{ id: string }>;
 }
 
-export const metadata = { title: 'Edit Lowongan — Pyxis Admin' };
+export const metadata = { title: 'Edit opening — Pyxis Admin' };
 
 export default async function EditCareerPage({ params }: EditCareerPageProps) {
   const { id } = await params;

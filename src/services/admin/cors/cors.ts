@@ -3,7 +3,7 @@ export const addCorsHeaders = (
   origin: string | null,
   methods: string[] = ['GET', 'POST', 'PUT', 'DELETE']
 ): void => {
-  // whitelist dari env, contoh: https://example.com,*.mydomain.com
+  // Whitelist from the environment, for example: https://example.com,*.mydomain.com
   const whitelist = (process.env.CORS_ORIGIN?.split(',') ?? ['*']).map((s) => s.trim());
   if (!origin) return;
   const allowed = whitelist.some((w) =>

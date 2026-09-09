@@ -39,24 +39,24 @@ export const auth = betterAuth({
       const { queueEmail } = await import('@/services/public/emails');
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
       const safeUrl = url.replace(/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
-      const userName = user.name || 'Peserta';
+      const userName = user.name || 'Pyxis user';
 
       const body = `
         <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Reset Password</h2>
-        <p>Halo <strong>${userName}</strong>,</p>
-        <p>Kami menerima permintaan untuk menyetel ulang kata sandi akun Pyxis Anda. Klik tombol di bawah untuk melanjutkan:</p>
+        <p>Hello <strong>${userName}</strong>,</p>
+        <p>We received a request to reset your Pyxis account password. Click the button below to continue:</p>
         <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
           <tr>
             <td align="center" style="border-radius: 8px; background-color: #D97757;">
-              <a href="${safeUrl}" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Reset Password Saya &rarr;</a>
+              <a href="${safeUrl}" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Reset my password &rarr;</a>
             </td>
           </tr>
         </table>
         <p style="font-size: 13px; color: #87867F; margin-bottom: 0;">
-          Jika Anda tidak meminta reset password, Anda dapat mengabaikan email ini secara aman.
+          If you did not request a password reset, you can safely ignore this email.
         </p>
       `;
-      await queueEmail(user.email, 'Reset Password Akun Pyxis', body);
+      await queueEmail(user.email, 'Reset your Pyxis password', body);
     },
   },
   emailVerification: {
@@ -71,24 +71,24 @@ export const auth = betterAuth({
       const { queueEmail } = await import('@/services/public/emails');
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
       const safeUrl = url.replace(/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, baseUrl);
-      const userName = user.name || 'Peserta';
+      const userName = user.name || 'Pyxis user';
 
       const body = `
-        <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Verifikasi Akun Pyxis</h2>
-        <p>Halo <strong>${userName}</strong>,</p>
-        <p>Terima kasih telah mendaftar di <strong>Pyxis</strong>. Klik tombol di bawah ini untuk memverifikasi alamat email Anda:</p>
+        <h2 style="color: #141413; font-family: Georgia, serif; margin-top: 0;">Verify your Pyxis account</h2>
+        <p>Hello <strong>${userName}</strong>,</p>
+        <p>Thank you for signing up for <strong>Pyxis</strong>. Click the button below to verify your email address:</p>
         <table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin: 24px 0;">
           <tr>
             <td align="center" style="border-radius: 8px; background-color: #D97757;">
-              <a href="${safeUrl}" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Verifikasi Akun Saya &rarr;</a>
+              <a href="${safeUrl}" target="_blank" style="font-size: 14px; font-weight: bold; color: #FFFFFF; text-decoration: none; display: inline-block; padding: 12px 24px; border-radius: 8px;">Verify my account &rarr;</a>
             </td>
           </tr>
         </table>
         <p style="font-size: 13px; color: #87867F; margin-bottom: 0;">
-          Jika Anda merasa tidak mendaftar di Pyxis, abaikan email ini.
+          If you did not sign up for Pyxis, you can ignore this email.
         </p>
       `;
-      await queueEmail(user.email, 'Verifikasi Akun Pyxis Anda', body);
+      await queueEmail(user.email, 'Verify your Pyxis account', body);
     },
   },
   session: {
@@ -103,7 +103,7 @@ export const auth = betterAuth({
         after: async (user) => {
           if (user.emailVerified) {
             const { prisma: localPrisma } = await import('./prisma');
-            const subject = 'Akun Anda Berhasil Diverifikasi! - Pyxis';
+            const subject = 'Your Pyxis account has been verified';
             const alreadySent = await localPrisma.emailQueue.findFirst({
               where: {
                 to: user.email,
@@ -114,10 +114,10 @@ export const auth = betterAuth({
               const { queueEmail } = await import('@/services/public/emails');
               const body = `
                 <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #E3DACC; border-radius: 12px; background-color: #FAF9F5;">
-                  <h2 style="color: #D97757; font-family: serif;">Akun Berhasil Diverifikasi!</h2>
-                  <p>Halo ${user.name || user.email},</p>
-                  <p>Selamat! Alamat email Anda telah berhasil diverifikasi. Sekarang Anda memiliki akses penuh ke seluruh fitur di Pyxis.</p>
-                  <p>Terima kasih telah memverifikasi akun Anda!</p>
+                  <h2 style="color: #D97757; font-family: serif;">Your account has been verified</h2>
+                  <p>Hello ${user.name || user.email},</p>
+                  <p>Your email address has been verified. You now have full access to Pyxis.</p>
+                  <p>Thank you for verifying your account.</p>
                 </div>
               `;
               await queueEmail(user.email, subject, body);

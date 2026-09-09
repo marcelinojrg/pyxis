@@ -16,23 +16,23 @@ const BLOCKED_DOMAINS = [
 ];
 
 export const loginSchema = z.object({
-  email: z.email('Format email tidak valid'),
-  password: z.string().min(8, 'Password minimal 8 karakter'),
+  email: z.email('Email format is invalid'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 export const registerSchema = z.object({
-  name: z.string().min(2, 'Nama minimal 2 karakter'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z
     .string()
-    .email('Format email tidak valid')
+    .email('Email format is invalid')
     .refine(
       (email) => {
         const domain = email.split('@')[1]?.toLowerCase();
         return !BLOCKED_DOMAINS.includes(domain);
       },
       {
-        message: 'Domain email ini tidak diperbolehkan untuk registrasi',
+        message: 'This email domain is not allowed for registration',
       }
     ),
-  password: z.string().min(8, 'Password minimal 8 karakter'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });

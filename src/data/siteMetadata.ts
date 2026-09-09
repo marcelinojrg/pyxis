@@ -3,8 +3,8 @@ export const siteMetadata = {
   author: process.env.NEXT_PUBLIC_SEO_AUTHOR || 'Pyxis',
   description:
     process.env.NEXT_PUBLIC_SEO_DESCRIPTION ||
-    'Sejak 2023, kami telah membantu berbagai bisnis mewujudkan visi digital mereka. Dengan dedikasi tinggi dan keahlian rekayasa perangkat lunak modern, kami menciptakan website premium, aplikasi kustom, dan solusi IT bisnis yang andal dan tepat sasaran.',
-  language: process.env.NEXT_PUBLIC_SEO_LANGUAGE || 'id-ID',
+    'Since 2023, we have helped businesses bring their digital vision to life. With disciplined engineering and modern software expertise, we build premium websites, custom applications, and dependable IT solutions that fit the way teams work.',
+  language: process.env.NEXT_PUBLIC_SEO_LANGUAGE || 'en-US',
   siteUrl: process.env.NEXT_PUBLIC_SEO_SITE_URL || '',
   socialBanner: '/assets/img/home-hero-pyxis.webp',
   email: process.env.NEXT_PUBLIC_SEO_EMAIL || '',
@@ -15,7 +15,7 @@ export const siteMetadata = {
   youtube: process.env.NEXT_PUBLIC_SEO_YOUTUBE || '',
   github: 'https://github.com/nuflakbrr',
   phone: process.env.NEXT_PUBLIC_SEO_PHONE || '',
-  locale: process.env.NEXT_PUBLIC_SEO_LOCALE || 'id-ID',
+  locale: process.env.NEXT_PUBLIC_SEO_LOCALE || 'en-US',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.

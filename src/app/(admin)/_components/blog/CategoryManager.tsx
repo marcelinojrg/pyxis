@@ -29,11 +29,11 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
     startTransition(async () => {
       const result = await createCategory({ name: newName });
       if (!result.success) {
-        setError(result.error || 'Kategori gagal dibuat.');
+        setError(result.error || 'Failed to create the category.');
         return;
       }
       setNewName('');
-      toast.success(result.message || 'Kategori berhasil dibuat.');
+      toast.success(result.message || 'Category created.');
       router.refresh();
     });
   }
@@ -43,21 +43,19 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
     startTransition(async () => {
       const result = await updateCategory(id, { name: editingName });
       if (!result.success) {
-        setError(result.error || 'Kategori gagal diperbarui.');
+        setError(result.error || 'Failed to update the category.');
         return;
       }
       setEditingId(null);
       setEditingName('');
-      toast.success(result.message || 'Kategori berhasil diperbarui.');
+      toast.success(result.message || 'Category updated.');
       router.refresh();
     });
   }
 
   function removeCategory(category: ArticleCategory) {
     if (
-      !window.confirm(
-        `Hapus kategori "${category.name}"? Kategori yang sudah dihapus tidak dapat dipulihkan.`
-      )
+      !window.confirm(`Delete category "${category.name}"? Deleted categories cannot be recovered.`)
     )
       return;
 
@@ -65,10 +63,10 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
     startTransition(async () => {
       const result = await deleteCategory(category.id);
       if (!result.success) {
-        setError(result.error || 'Kategori gagal dihapus.');
+        setError(result.error || 'Failed to delete the category.');
         return;
       }
-      toast.success(result.message || 'Kategori berhasil dihapus.');
+      toast.success(result.message || 'Category deleted.');
       router.refresh();
     });
   }
@@ -78,15 +76,15 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
       <div className="flex items-start gap-3">
         <Tags className="mt-0.5 size-5 text-muted-foreground" aria-hidden="true" />
         <div>
-          <h2 className="font-semibold text-foreground">Kategori</h2>
+          <h2 className="font-semibold text-foreground">Categories</h2>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Kategori membantu pembaca menemukan topik terkait.
+            Categories help readers find related topics.
           </p>
         </div>
       </div>
 
       <form onSubmit={addCategory} className="space-y-2">
-        <Label htmlFor="new-category">Kategori baru</Label>
+        <Label htmlFor="new-category">New category</Label>
         <div className="flex gap-2">
           <Input
             id="new-category"
@@ -94,14 +92,14 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
             onChange={(event) => setNewName(event.target.value)}
             minLength={2}
             maxLength={60}
-            placeholder="Contoh: Wawasan Industri"
+            placeholder="Example: Industry insights"
             disabled={isPending}
           />
           <Button
             type="submit"
             size="icon"
             disabled={isPending || !newName.trim()}
-            aria-label="Tambah kategori"
+            aria-label="Add category"
           >
             {isPending ? (
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
@@ -130,7 +128,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
                       value={editingName}
                       onChange={(event) => setEditingName(event.target.value)}
                       maxLength={60}
-                      aria-label={`Nama kategori ${category.name}`}
+                      aria-label={`Category name ${category.name}`}
                       autoFocus
                     />
                     <Button
@@ -138,7 +136,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
                       size="icon-sm"
                       onClick={() => saveCategory(category.id)}
                       disabled={isPending || !editingName.trim()}
-                      aria-label="Simpan perubahan kategori"
+                      aria-label="Save category changes"
                     >
                       <Check className="size-4" aria-hidden="true" />
                     </Button>
@@ -148,7 +146,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
                       size="icon-sm"
                       onClick={() => setEditingId(null)}
                       disabled={isPending}
-                      aria-label="Batalkan perubahan kategori"
+                      aria-label="Cancel category changes"
                     >
                       <X className="size-4" aria-hidden="true" />
                     </Button>
@@ -160,7 +158,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
                         {category.name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {category.articleCount || 0} artikel
+                        {category.articleCount || 0} articles
                       </p>
                     </div>
                     <Button
@@ -173,7 +171,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
                         setError('');
                       }}
                       disabled={isPending}
-                      aria-label={`Ubah kategori ${category.name}`}
+                      aria-label={`Edit category ${category.name}`}
                     >
                       <Pencil className="size-4" aria-hidden="true" />
                     </Button>
@@ -183,10 +181,10 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
                       size="icon-sm"
                       onClick={() => removeCategory(category)}
                       disabled={isPending || (category.articleCount || 0) > 0}
-                      aria-label={`Hapus kategori ${category.name}`}
+                      aria-label={`Delete category ${category.name}`}
                       title={
                         (category.articleCount || 0) > 0
-                          ? 'Kategori yang masih digunakan tidak dapat dihapus.'
+                          ? 'A category that is still in use cannot be deleted.'
                           : undefined
                       }
                     >
@@ -199,7 +197,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
           })}
         </ul>
       ) : (
-        <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">Belum ada kategori.</p>
+        <p className="rounded-lg bg-muted p-3 text-sm text-muted-foreground">No categories yet.</p>
       )}
     </aside>
   );

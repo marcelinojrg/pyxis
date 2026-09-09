@@ -1,5 +1,4 @@
 import type { FC } from 'react';
-import { BarChart3, Smile, TrendingUp } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface BenefitItem {
@@ -13,30 +12,42 @@ export interface ProductDetailBenefitsProps {
   benefits: BenefitItem[];
 }
 
+function getGridColumns(count: number) {
+  if (count <= 1) return 'md:grid-cols-1';
+  if (count === 2 || count === 4) return 'md:grid-cols-2';
+  return 'md:grid-cols-3';
+}
+
 export const ProductDetailBenefits: FC<ProductDetailBenefitsProps> = ({ benefits }) => {
   if (!benefits || benefits.length === 0) return null;
 
   return (
-    <section className="bg-white py-12 md:py-16">
+    <section className="bg-white py-16 sm:py-20">
       <Container>
-        <div className="mb-10 max-w-2xl">
-          <h2 className="text-2xl font-bold text-brand-deep sm:text-3xl">Manfaat untuk Anda</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
-          {benefits.map((item, index) => {
-            const Icon = [Smile, TrendingUp, BarChart3][index % 3];
-            return (
-              <div key={item.id}>
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-md bg-brand-tint text-brand">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="text-base font-bold text-brand-deep mb-2">{item.title}</h3>
-                <p className="text-sm text-neutral-600 leading-relaxed">
-                  {item.description || 'Deskripsi manfaat produk.'}
+        <div className="grid gap-10 md:grid-cols-12 md:gap-16">
+          <div className="md:col-span-4">
+            <h2 className="max-w-sm text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl">
+              What it helps you do.
+            </h2>
+          </div>
+
+          <div
+            className={`grid border-l border-t border-neutral-200 md:col-span-8 ${getGridColumns(benefits.length)}`}
+          >
+            {benefits.map((item) => (
+              <article
+                key={item.id}
+                className="border-b border-r border-neutral-200 px-5 py-7 md:px-6"
+              >
+                <h3 className="max-w-[16rem] text-lg font-semibold leading-6 tracking-tight text-neutral-900">
+                  {item.title}
+                </h3>
+                <p className="mt-3 max-w-[18rem] text-sm leading-6 text-neutral-600">
+                  {item.description || 'A practical improvement for your operation.'}
                 </p>
-              </div>
-            );
-          })}
+              </article>
+            ))}
+          </div>
         </div>
       </Container>
     </section>

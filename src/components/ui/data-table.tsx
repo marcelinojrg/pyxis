@@ -116,7 +116,7 @@ export function DataTable<TData, TValue>({
       }
       return true;
     });
-  }, [data, searchKey, searchValue]);
+  }, [data, onSearchChange, searchKey, searchValue]);
 
   const table = useReactTable({
     data: filteredData,
@@ -164,13 +164,13 @@ export function DataTable<TData, TValue>({
               className="flex items-center gap-2 animate-in fade-in slide-in-from-left-2"
             >
               <Trash className="h-4 w-4" />
-              Hapus Terpilih ({selectedRows.length})
+              Delete selected ({selectedRows.length})
             </Button>
           )}
           {customFilters}
         </div>
         <Input
-          placeholder={placeholderSearch ? placeholderSearch : "Cari..."}
+          placeholder={placeholderSearch ? placeholderSearch : "Search..."}
           value={searchValue}
           onChange={(event) => {
             const value = event.target.value;
@@ -211,7 +211,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Memuat Data...
+                  Loading data...
                 </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
@@ -233,7 +233,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Oops! Tidak ada data.
+                  Oops! No data found.
                 </TableCell>
               </TableRow>
             )}
@@ -245,7 +245,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex items-center justify-between space-x-6 py-4">
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Tampilkan</p>
+            <p className="text-sm font-medium">Show</p>
             <Select
               value={`${pageSize}`}
               onValueChange={(value) => {
@@ -266,18 +266,18 @@ export function DataTable<TData, TValue>({
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-sm font-medium">baris data</p>
+            <p className="text-sm font-medium">rows</p>
           </div>
 
           {/* <span className="text-sm text-muted-foreground">
-            {selectedRows.length} baris terpilih
+            {selectedRows.length} selected
           </span> */}
         </div>
 
         <div className="flex items-center justify-end space-x-6 py-4">
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">
-              Halaman {table.getState().pagination.pageIndex + 1} dari{" "}
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
               {pageCount || 1}
             </span>
 
@@ -293,7 +293,7 @@ export function DataTable<TData, TValue>({
                     : "cursor-pointer"
                 )}
               >
-                Sebelumnya
+                Previous
               </Button>
               <Button
                 variant="outline"
@@ -306,38 +306,13 @@ export function DataTable<TData, TValue>({
                     : "cursor-pointer"
                 )}
               >
-                Selanjutnya
+                Next
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* <div className="flex items-center justify-end space-x-2 py-4">
-        <span className="text-sm text-muted-foreground">
-          Halaman {table.getState().pagination.pageIndex + 1} dari{" "}
-          {pageCount || 1}
-        </span>
-
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPageIndex((old) => Math.max(old - 1, 0))}
-            disabled={pageIndex === 0 || isFetching}
-          >
-            Sebelumnya
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPageIndex((old) => old + 1)}
-            disabled={pageIndex + 1 >= (pageCount || 0) || isFetching}
-          >
-            Selanjutnya
-          </Button>
-        </div>
-      </div> */}
     </div>
   );
 }

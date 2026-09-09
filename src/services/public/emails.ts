@@ -43,7 +43,7 @@ export async function createEmailHtmlWrapper(title: string, contentHtml: string)
   const currentYear = new Date().getFullYear();
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,7 +70,7 @@ export async function createEmailHtmlWrapper(title: string, contentHtml: string)
           <tr>
             <td style="background-color: #FAF9F5; padding: 20px 32px; border-top: 1px solid #E3DACC; font-size: 12px; color: #87867F; text-align: center; line-height: 1.5;">
             <p style="margin: 0 0 4px 0;">&copy; ${currentYear} Pyxis. Hak cipta dilindungi.</p>
-            <p style="margin: 0;">Email ini dikirim secara otomatis oleh sistem Pyxis.</p>
+            <p style="margin: 0;">This email was sent automatically by the Pyxis system.</p>
             </td>
           </tr>
         </table>
@@ -102,7 +102,7 @@ export async function queueEmail(to: string, subject: string, body: string, atta
     return { success: true, data: queueItem };
   } catch (error) {
     console.error('Queue Email Error:', error);
-    return { success: false, error: 'Gagal mengantrekan email.' };
+    return { success: false, error: 'Failed to queue the email.' };
   }
 }
 

@@ -17,14 +17,14 @@ const navigationGroups = [
     title: 'Utama',
     items: [
       { label: 'Dashboard', href: '/admin' as Route, icon: LayoutDashboard },
-      { label: 'Produk Layanan', href: '/admin/products' as Route, icon: Package },
+      { label: 'Products and services', href: '/admin/products' as Route, icon: Package },
     ],
   },
   {
-    title: 'Konten & Publikasi',
+    title: 'Content and publishing',
     items: [
-      { label: 'Artikel Blog', href: '/admin/blog' as Route, icon: Newspaper },
-      { label: 'Karier & Lowongan', href: '/admin/careers' as Route, icon: BriefcaseBusiness },
+      { label: 'Blog articles', href: '/admin/blog' as Route, icon: Newspaper },
+      { label: 'Careers and openings', href: '/admin/careers' as Route, icon: BriefcaseBusiness },
     ],
   },
 ];
@@ -80,7 +80,7 @@ export function AdminNavigation({ onNavigate }: { onNavigate?: () => void }) {
           className="group flex min-h-11 items-center gap-2.5 rounded-md border border-slate-200 bg-slate-50 p-2.5 text-xs font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
         >
           <ExternalLink className="size-3.5 shrink-0 text-slate-400 group-hover:text-blue-600" />
-          <span className="truncate">Buka Website Publik</span>
+          <span className="truncate">Open public website</span>
           <span className="sr-only">di tab baru</span>
         </Link>
       </div>

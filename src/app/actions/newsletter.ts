@@ -44,7 +44,7 @@ export async function subscribeNewsletter(email: string) {
     if (recentAttempts.length >= NEWSLETTER_RATE_LIMIT) {
       return {
         success: false,
-        message: 'Terlalu banyak percobaan. Silakan coba lagi beberapa menit lagi.',
+        message: 'Too many attempts. Please try again in a few minutes.',
       };
     }
 
@@ -61,7 +61,7 @@ export async function subscribeNewsletter(email: string) {
 
     const parsedEmail = newsletterEmailSchema.safeParse(email);
     if (!parsedEmail.success) {
-      return { success: false, message: 'Silakan masukkan alamat email yang valid.' };
+      return { success: false, message: 'Please enter a valid email address.' };
     }
 
     const cleanEmail = parsedEmail.data;
@@ -72,7 +72,7 @@ export async function subscribeNewsletter(email: string) {
     });
 
     if (existingSubscriber) {
-      return { success: true, message: 'Email sudah terdaftar di newsletter kami.' };
+      return { success: true, message: 'This email is already subscribed to our newsletter.' };
     }
 
     // Store subscriber in database
@@ -80,18 +80,18 @@ export async function subscribeNewsletter(email: string) {
       data: { email: cleanEmail },
     });
 
-    const subject = 'Selamat Datang di Newsletter Pyxis! 🎉';
+    const subject = 'Welcome to the Pyxis newsletter! 🎉';
     const body = `
       <div style="font-family: Arial, sans-serif; padding: 24px; color: #141413; background-color: #FAF9F5; border-radius: 16px; max-width: 600px; margin: 0 auto; border: 1px solid #E3DACC;">
         <div style="margin-bottom: 20px;">
           <span style="background-color: #D97757; color: #ffffff; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 14px;">PYXIS</span>
         </div>
-        <h2 style="color: #141413; margin-top: 10px;">Terima Kasih Telah Berlangganan!</h2>
+        <h2 style="color: #141413; margin-top: 10px;">Thank you for subscribing.</h2>
         <p style="color: #3D3D3A; font-size: 14px; line-height: 1.6;">
-          Halo, email Anda (<strong>${cleanEmail}</strong>) telah sukses terdaftar di sistem notifikasi newsletter Pyxis.
+          Your email address (<strong>${cleanEmail}</strong>) has been added to the Pyxis newsletter.
         </p>
         <p style="color: #3D3D3A; font-size: 14px; line-height: 1.6;">
-          Anda akan menjadi yang pertama mendapatkan informasi terbaru dari Pyxis.
+          You will be among the first to receive the latest updates from Pyxis.
         </p>
         <hr style="border: none; border-top: 1px solid #E3DACC; margin: 24px 0;" />
         <p style="font-size: 12px; color: #87867F; text-align: center;">
@@ -102,13 +102,16 @@ export async function subscribeNewsletter(email: string) {
 
     const res = await queueEmail(cleanEmail, subject, body);
     if (!res.success) {
-      return { success: false, message: res.error || 'Gagal mendaftar newsletter.' };
+      return { success: false, message: res.error || 'Failed to subscribe to the newsletter.' };
     }
 
-    return { success: true, message: 'Berhasil berlangganan! Cek email Anda untuk konfirmasi.' };
+    return { success: true, message: 'You are subscribed. Check your email for confirmation.' };
   } catch (error) {
     console.error('Subscribe Newsletter Error:', error);
-    return { success: false, message: 'Terjadi kesalahan sistem saat mendaftar newsletter.' };
+    return {
+      success: false,
+      message: 'A system error occurred while subscribing to the newsletter.',
+    };
   }
 }
 
@@ -121,12 +124,12 @@ export async function sendNewEventNewsletter(event: {
 }) {
   try {
     if (!(await verifyPermission('admin.access'))) {
-      return { success: false, message: 'Akses ditolak.' };
+      return { success: false, message: 'Access denied.' };
     }
 
     const parsedEvent = eventNewsletterSchema.safeParse(event);
     if (!parsedEvent.success) {
-      return { success: false, message: 'Data newsletter tidak valid.' };
+      return { success: false, message: 'The newsletter data is invalid.' };
     }
 
     const safeEvent = {
@@ -149,7 +152,7 @@ export async function sendNewEventNewsletter(event: {
     const recipientEmails = Array.from(emailSet);
     if (recipientEmails.length === 0) return;
 
-    const dateStr = safeEvent.startDate.toLocaleDateString('id-ID', {
+    const dateStr = safeEvent.startDate.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -162,24 +165,24 @@ export async function sendNewEventNewsletter(event: {
       const body = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #E3DACC; border-radius: 16px; background-color: #FAF9F5;">
           <div style="margin-bottom: 16px;">
-            <span style="background-color: #D97757; color: #ffffff; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 14px;">INFO TERBARU</span>
+            <span style="background-color: #D97757; color: #ffffff; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 14px;">LATEST UPDATE</span>
           </div>
-          <h2 style="color: #D97757; margin-top: 8px;">Informasi Terbaru dari Pyxis 🎉</h2>
-          <p style="color: #3D3D3A; font-size: 14px; line-height: 1.6;">Ada event menarik yang baru saja dipublikasikan. Segera daftarkan diri Anda sebelum kuota habis!</p>
+          <h2 style="color: #D97757; margin-top: 8px;">Latest from Pyxis 🎉</h2>
+          <p style="color: #3D3D3A; font-size: 14px; line-height: 1.6;">A new event has just been published. Register soon before places fill up.</p>
           
           <div style="background-color: #ffffff; border: 1px solid #E3DACC; border-radius: 12px; padding: 20px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: #141413;">${safeEvent.title}</h3>
-            <p style="margin: 8px 0; font-size: 14px; color: #3D3D3A;"><strong>Tanggal:</strong> ${dateStr}</p>
-            <p style="margin: 8px 0; font-size: 14px; color: #3D3D3A;"><strong>Lokasi:</strong> ${safeEvent.location}</p>
-            <p style="margin: 8px 0; font-size: 14px; color: #3D3D3A;"><strong>Tipe Event:</strong> ${safeEvent.eventType}</p>
+            <p style="margin: 8px 0; font-size: 14px; color: #3D3D3A;"><strong>Date:</strong> ${dateStr}</p>
+            <p style="margin: 8px 0; font-size: 14px; color: #3D3D3A;"><strong>Location:</strong> ${safeEvent.location}</p>
+            <p style="margin: 8px 0; font-size: 14px; color: #3D3D3A;"><strong>Event type:</strong> ${safeEvent.eventType}</p>
           </div>
           
           <p style="margin: 24px 0; text-align: center;">
-            <a href="${appUrl}/events/${safeEvent.slug}" style="background-color: #D97757; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Lihat Detail & Daftar Sekarang</a>
+            <a href="${appUrl}/events/${safeEvent.slug}" style="background-color: #D97757; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">View details and register</a>
           </p>
           <hr style="border: none; border-top: 1px solid #E3DACC; margin: 24px 0;" />
           <p style="font-size: 12px; color: #87867F; text-align: center;">
-            Anda menerima email ini karena terdaftar pada newsletter Pyxis.
+            You are receiving this email because you are subscribed to the Pyxis newsletter.
           </p>
         </div>
       `;

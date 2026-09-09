@@ -12,64 +12,65 @@ const INTERFACING_CATEGORIES = [
   {
     id: 'channel-managers',
     icon: ArrowLeftRight,
-    title: 'Channel Managers',
-    description: 'Optimasi distribusi via jaringan OTA global terkemuka.',
+    title: 'Channel managers',
+    description: "Connect distribution channels to the hotel's core operation.",
   },
   {
     id: 'device-integration',
     icon: TabletSmartphone,
-    title: 'Device Integration',
-    description: 'Konektivitas hardware operasional hotel yang mulus.',
+    title: 'Device integration',
+    description: 'Bring operational hardware into one connected workflow.',
   },
   {
     id: 'keylock-systems',
     icon: KeyRound,
-    title: 'Keylock Systems',
-    description: 'Keamanan akses kamar dengan teknologi RFID & Mobile Key.',
+    title: 'Keylock systems',
+    description: 'Connect room access with front office operations.',
   },
   {
     id: 'pabx',
     icon: PhoneCall,
     title: 'P.A.B.X.',
-    description: 'Sistem telekomunikasi internal dan eksternal terpadu.',
+    description: 'Keep room and telephone activity connected to the hotel system.',
   },
   {
     id: 'smart-devices',
     icon: SlidersHorizontal,
-    title: 'Smart Devices',
-    description: 'Otomatisasi ruangan dan kontrol lingkungan berbasis IoT.',
+    title: 'Smart devices',
+    description: 'Extend control across rooms and operating environments.',
   },
-];
+] as const;
 
 export const PartnersInterfacing: FC = () => {
   return (
-    <section className="py-16 bg-neutral-50/60 border-t border-neutral-100">
+    <section className="border-t border-neutral-200/70 bg-[#F3F4F6] py-20 sm:py-24">
       <Container>
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 mb-3">
-            50+ Interfacing Partners
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-600">
-            Terintegrasi dengan ekosistem teknologi terbaik di industri.
-          </p>
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <h2 className="max-w-2xl text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl">
+              Integration across hospitality operations.
+            </h2>
+            <p className="mt-6 max-w-xl text-base leading-7 text-neutral-600">
+              Pyxis connects the systems teams use every day, from distribution and access to
+              devices and communications.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 max-w-7xl mx-auto">
+        <div className="mt-12 grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:grid-cols-5">
           {INTERFACING_CATEGORIES.map((category) => {
             const Icon = category.icon;
+
             return (
-              <div
-                key={category.id}
-                className="bg-white rounded-2xl p-6 border border-neutral-200/70 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-start space-y-3.5"
-              >
-                <div className="text-blue-600">
-                  <Icon className="w-6 h-6" />
+              <article key={category.id} className="border-t border-neutral-300 py-6">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="text-base font-semibold tracking-tight text-neutral-900">
+                    {category.title}
+                  </h3>
+                  <Icon className="h-5 w-5 shrink-0 text-[#1D4ED8]" aria-hidden="true" />
                 </div>
-                <h3 className="text-base font-bold text-neutral-900">{category.title}</h3>
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                  {category.description}
-                </p>
-              </div>
+                <p className="mt-3 text-sm leading-6 text-neutral-600">{category.description}</p>
+              </article>
             );
           })}
         </div>

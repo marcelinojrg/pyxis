@@ -1,5 +1,4 @@
 import type { FC } from 'react';
-import { Sparkles } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface FeatureItem {
@@ -13,28 +12,42 @@ export interface ProductDetailFeaturesProps {
   features: FeatureItem[];
 }
 
+function getGridColumns(count: number) {
+  if (count <= 1) return 'md:grid-cols-1';
+  if (count === 2 || count === 4) return 'md:grid-cols-2';
+  return 'md:grid-cols-3';
+}
+
 export const ProductDetailFeatures: FC<ProductDetailFeaturesProps> = ({ features }) => {
   if (!features || features.length === 0) return null;
 
   return (
-    <section className="bg-white py-12 md:py-16">
+    <section className="bg-white py-16 sm:py-20">
       <Container>
-        <div className="mb-10 max-w-2xl">
-          <h2 className="text-2xl font-bold text-brand-deep sm:text-3xl">Fitur Utama</h2>
-        </div>
+        <div className="grid gap-10 md:grid-cols-12 md:gap-16">
+          <div className="md:col-span-4">
+            <h2 className="max-w-sm text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl">
+              Core capabilities.
+            </h2>
+          </div>
 
-        <div className="grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feat) => (
-            <div key={feat.id} className="grid grid-cols-[36px_1fr] gap-4">
-              <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-                <Sparkles className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="mb-2 text-lg font-bold text-brand-deep sm:text-xl">{feat.title}</h3>
-                <p className="text-base leading-relaxed text-neutral-600">{feat.description}</p>
-              </div>
-            </div>
-          ))}
+          <div
+            className={`grid border-l border-t border-neutral-200 md:col-span-8 ${getGridColumns(features.length)}`}
+          >
+            {features.map((feat) => (
+              <article
+                key={feat.id}
+                className="border-b border-r border-neutral-200 px-5 py-7 md:px-6"
+              >
+                <h3 className="max-w-[16rem] text-lg font-semibold leading-6 tracking-tight text-neutral-900">
+                  {feat.title}
+                </h3>
+                <p className="mt-3 max-w-[18rem] text-sm leading-6 text-neutral-600">
+                  {feat.description || 'A practical capability for your operation.'}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </Container>
     </section>

@@ -15,12 +15,12 @@ type Props = {
 };
 
 const LandingPageLayout = async ({ children }: Props) => {
-  // 1. Ambil session di server
+  // 1. Read the session on the server.
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  // 2. Ambil permissions & roles via service layer
+  // 2. Read permissions and roles through the service layer.
   const { roles, permissions } = session?.user?.id
     ? await getUserPermissionsAndRoles(session.user.id)
     : { roles: [], permissions: [] };

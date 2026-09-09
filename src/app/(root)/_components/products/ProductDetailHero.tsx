@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, ImageIcon } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface ProductDetailHeroProps {
@@ -18,43 +18,39 @@ export const ProductDetailHero: FC<ProductDetailHeroProps> = ({
   slug,
 }) => {
   return (
-    <section className="bg-slate-50 pt-28 pb-16 md:pt-36 md:pb-20">
+    <section className="relative overflow-hidden border-b border-neutral-200 bg-[#F8FAFC] py-20 text-brand-deep sm:py-24 md:min-h-[62vh] md:py-28">
       <Container>
-        <Link
-          href="/products"
-          className="mb-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand hover:underline"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Kembali ke Produk
-        </Link>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
-          <div className="space-y-5 text-left">
-            <h1 className="max-w-xl text-4xl sm:text-5xl md:text-6xl font-bold font-heading text-brand-deep leading-[1.05]">
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="flex max-w-4xl flex-col justify-center text-left lg:col-span-7">
+            <Link
+              href="/products"
+              className="mb-8 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-brand-deep"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              All products
+            </Link>
+
+            <h1 className="max-w-3xl text-4xl font-bold leading-[1.04] tracking-[-0.03em] text-brand-deep sm:text-5xl md:text-6xl lg:text-[4rem]">
               {name}
             </h1>
-            <p className="max-w-xl text-sm sm:text-base text-neutral-600 leading-relaxed">
+            <p className="mt-6 max-w-xl text-sm leading-7 text-neutral-600 sm:text-base">
               {description ||
-                'Solusi teknologi terintegrasi untuk meningkatkan performa bisnis hospitality Anda.'}
+                'An integrated hospitality system for clearer operations and better service.'}
             </p>
-            <div className="pt-2">
-              <Link
-                href={`/contact?product=${slug}`}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-7 py-3 text-sm font-bold text-neutral-950 shadow-lg transition-all duration-200 hover:bg-amber-600 active:scale-95"
-              >
-                Jadwalkan Demo <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+            <Link
+              href={`/contact?product=${slug}`}
+              className="group mt-7 inline-flex self-start items-center gap-3 border-b border-[#F59E0B] pb-2 text-sm font-semibold text-brand-deep transition-colors duration-200 hover:text-brand"
+            >
+              Schedule a demo
+              <ArrowUpRight className="h-5 w-5 rotate-90 transition-transform duration-300 group-hover:rotate-0" />
+            </Link>
           </div>
 
-          <div className="relative aspect-video rounded-xl overflow-hidden border border-neutral-200 shadow-xl bg-white">
-            {image ? (
-              <Image src={image} alt={name} fill className="object-cover" priority />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-brand-tint">
-                <ImageIcon className="h-12 w-12 text-brand/30" />
-              </div>
-            )}
-          </div>
+          <figure className="lg:col-span-5">
+            <div className="relative aspect-[4/3] overflow-hidden border border-neutral-200 bg-white">
+              {image && <Image src={image} alt={name} fill className="object-cover" priority />}
+            </div>
+          </figure>
         </div>
       </Container>
     </section>

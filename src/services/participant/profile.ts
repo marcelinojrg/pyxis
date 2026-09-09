@@ -14,7 +14,7 @@ export async function updateUserName(name: string): Promise<{ success: boolean; 
     });
 
     if (!session || !session.user) {
-      return { success: false, error: 'Sesi tidak valid.' };
+      return { success: false, error: 'Invalid session.' };
     }
 
     await prisma.user.update({
@@ -25,7 +25,7 @@ export async function updateUserName(name: string): Promise<{ success: boolean; 
     return { success: true };
   } catch (error) {
     console.error('Update User Name Error:', error);
-    return { success: false, error: 'Gagal memperbarui nama karena kesalahan server.' };
+    return { success: false, error: 'Failed to update the name because of a server error.' };
   }
 }
 
@@ -35,7 +35,7 @@ export async function updateUserEmail(
   try {
     const parsedEmail = emailSchema.safeParse(newEmail);
     if (!parsedEmail.success) {
-      return { success: false, error: 'Format email tidak valid.' };
+      return { success: false, error: 'Email format is invalid.' };
     }
 
     const cleanEmail = parsedEmail.data;
@@ -44,7 +44,7 @@ export async function updateUserEmail(
     });
 
     if (!session || !session.user) {
-      return { success: false, error: 'Sesi tidak valid.' };
+      return { success: false, error: 'Invalid session.' };
     }
 
     const user = await prisma.user.findUnique({
@@ -52,7 +52,7 @@ export async function updateUserEmail(
     });
 
     if (!user) {
-      return { success: false, error: 'Pengguna tidak ditemukan.' };
+      return { success: false, error: 'User not found.' };
     }
 
     // Check if new email is already in use by another user
@@ -61,7 +61,7 @@ export async function updateUserEmail(
     });
 
     if (emailExists) {
-      return { success: false, error: 'Email tersebut sudah digunakan oleh pengguna lain.' };
+      return { success: false, error: 'That email is already used by another user.' };
     }
 
     // Update email
@@ -75,6 +75,6 @@ export async function updateUserEmail(
     return { success: true };
   } catch (error) {
     console.error('Update User Email Error:', error);
-    return { success: false, error: 'Gagal memperbarui email karena kesalahan server.' };
+    return { success: false, error: 'Failed to update the email because of a server error.' };
   }
 }

@@ -1,85 +1,92 @@
-import Image from 'next/image';
+﻿import Image from 'next/image';
 
 const MILESTONES = [
   {
-    year: '1989',
+    year: '1988',
     title: 'PT. DACCOM ANUGERAHMULYA',
     description:
-      'Didirikan sebagai perusahaan dagang di bidang komputer, telekomunikasi, dan pengembangan perangkat lunak.',
+      'Founded as PT. DACCOM ANUGERAHMULYA, developing ParHIS, a first-generation hotel system built on DOS.',
   },
   {
     year: '2000',
-    title: 'PT. MYOHDOTCOM',
+    title: 'PT. MYOHDOTCOM INDONESIA, TBK',
     description:
-      'Menyediakan perangkat lunak dan layanan TI untuk hotel, restoran, real estate, telekomunikasi, dan lainnya.',
+      'Launched BITS, a second-generation Windows-based hospitality platform later known as MYOH Hotel Software.',
   },
   {
-    year: '2003',
-    title: 'The DOTCOM',
-    description:
-      'Berubah nama menjadi PT MYOH Technology Tbk untuk memberikan kesan yang tepat sebagai perusahaan IT Developer.',
+    year: '2004',
+    title: 'PT. MYOH TECHNOLOGY TBK',
+    description: 'Renamed to reflect its role as an information technology developer.',
   },
   {
-    year: '2011',
-    title: 'PT. Pyxis Ultimate Solution',
+    year: '2011–2021',
+    title: 'PT. PYXIS ULTIMATE SOLUTION',
     description:
-      'Didirikan untuk berkonsentrasi pada bisnis awal yaitu Teknologi Informasi perhotelan, mengambil alih layanan dari pelanggan MYOH.',
+      "PT. Pyxis Ultimate Solution was established to continue MYOH's hospitality technology business and customer services.",
   },
-];
+] as const;
 
 export default function HomeAboutSummary() {
   return (
-    <section className="py-16 bg-[#F8FAFC] border-t border-neutral-200/70">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        {/* Top Split: Text Left + Hospitality Photo Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-14">
-          <div className="lg:col-span-6 space-y-4">
+    <section className="border-y border-neutral-200/70 bg-[#F8FAFC] py-20 sm:py-24">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8">
+        <div className="grid items-stretch gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="flex flex-col justify-center lg:col-span-5">
+            <p
+              data-home-reveal="copy"
+              className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-[#1D4ED8]"
+            >
+              About Pyxis
+            </p>
             <h2
               data-home-reveal="heading"
-              className="text-3xl sm:text-4xl font-bold font-heading text-neutral-900 leading-tight"
+              className="max-w-xl text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl"
             >
-              Tentang Pyxis
+              Decades of experience. Always moving forward.
             </h2>
             <p
               data-home-reveal="copy"
-              className="text-sm sm:text-base text-neutral-600 leading-relaxed"
+              className="mt-6 max-w-lg text-base leading-7 text-neutral-600"
             >
-              PT PYXIS Ultimate Solution (PYXIS) adalah perusahaan teknologi informasi yang
-              membangun inovatif solusi digital dengan menyediakan infrastruktur digital berbasis
-              cloud dan layanan teknologi, memungkinkan pelanggan untuk tetap berada di depan kurva.
+              Pyxis is an information technology company delivering cloud-based digital solutions
+              and infrastructure for the hospitality industry.
             </p>
           </div>
 
-          <div data-home-reveal="media" className="lg:col-span-6">
-            <div className="relative w-full h-56 sm:h-64 overflow-hidden rounded-2xl shadow-sm">
+          <figure data-home-reveal="media" className="flex flex-col lg:col-span-7">
+            <div className="relative min-h-64 flex-1 overflow-hidden bg-neutral-200 sm:min-h-72">
               <Image
                 src="/assets/img/home-about-hospitality-lobby.jpg"
-                alt="Lobi hotel modern sebagai gambaran industri hospitality yang dilayani Pyxis"
+                alt="Modern hotel lobby representing the hospitality industry served by Pyxis"
                 fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 100vw, 58vw"
                 className="object-cover"
               />
             </div>
-          </div>
+            <figcaption className="mt-3 text-xs text-neutral-500">
+              Technology that helps hospitality operations move forward.
+            </figcaption>
+          </figure>
         </div>
 
-        {/* Bottom: 4 Milestone Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {MILESTONES.map((item) => (
-            <div
-              key={item.year}
-              data-home-reveal="card"
-              className="bg-white rounded-2xl p-6 border border-neutral-200/80 shadow-sm flex flex-col space-y-3"
-            >
-              <span className="text-xl font-extrabold font-heading text-[#1D4ED8]">
-                {item.year}
-              </span>
-              <h3 className="text-xs sm:text-sm font-bold font-heading text-neutral-900 uppercase tracking-tight">
-                {item.title}
-              </h3>
-              <p className="text-xs text-neutral-600 leading-relaxed">{item.description}</p>
-            </div>
-          ))}
+        <div className="mt-20 border-t border-neutral-300">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-neutral-300">
+            {MILESTONES.map((item) => (
+              <article
+                key={item.year}
+                data-home-reveal="card"
+                className="border-b border-neutral-300 py-7 lg:border-b-0 lg:px-7 lg:first:pl-0 lg:last:pr-0"
+              >
+                <p className="text-sm font-semibold tabular-nums text-[#1D4ED8]">{item.year}</p>
+                <h3 className="mt-5 max-w-xs text-sm font-semibold leading-5 text-neutral-900">
+                  {item.title}
+                </h3>
+                <p className="mt-3 max-w-xs text-sm leading-6 text-neutral-600">
+                  {item.description}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

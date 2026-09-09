@@ -1,7 +1,9 @@
-import type { FC } from 'react';
+﻿'use client';
+
+import { useMemo, useState, type FC } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, PackageOpen } from 'lucide-react';
+import { ArrowUpRight, PackageOpen, Search, X } from 'lucide-react';
 import { Container } from '@/components/ui/container';
 
 export interface ProductItem {
@@ -17,72 +19,121 @@ export interface ProductsListProps {
 }
 
 export const ProductsList: FC<ProductsListProps> = ({ products }) => {
+  const [search, setSearch] = useState('');
+  const filteredProducts = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) return products;
+
+    return products.filter((product) =>
+      `${product.name} ${product.description || ''}`.toLowerCase().includes(query)
+    );
+  }, [products, search]);
+
   return (
-    <section id="products-list" className="py-16">
+    <section id="products-list" className="border-t border-neutral-200/70 bg-white py-20 sm:py-24">
       <Container>
-        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
-            Pyxis Ultimate Solutions
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-            The ultimate solution for your hotel operations. Offers the freedom of choices to help
-            you get what you need with a basic cost effective and add modules any time.
-          </p>
+        <div className="grid items-end gap-8 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-8">
+            <h2 className="max-w-3xl text-3xl font-bold leading-[1.08] tracking-tight text-neutral-900 sm:text-4xl">
+              One operating layer for every part of hospitality.
+            </h2>
+          </div>
+          <div className="w-full max-w-md lg:col-span-4 lg:justify-self-end">
+            <label htmlFor="product-search" className="sr-only">
+              Search products
+            </label>
+            <div className="group flex items-center gap-3 border-b border-neutral-300 pb-3 transition-colors focus-within:border-[#1D4ED8]">
+              <Search
+                aria-hidden="true"
+                className="h-5 w-5 shrink-0 text-neutral-500 transition-colors group-focus-within:text-[#1D4ED8]"
+              />
+              <input
+                id="product-search"
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search products or capabilities"
+                className="min-w-0 flex-1 bg-transparent text-base text-neutral-900 outline-none placeholder:text-neutral-400"
+              />
+              {search && (
+                <button
+                  type="button"
+                  aria-label="Clear product search"
+                  onClick={() => setSearch('')}
+                  className="rounded-full p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-2"
+                >
+                  <X aria-hidden="true" className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            <p aria-live="polite" className="mt-3 text-xs text-neutral-500">
+              {search
+                ? `${filteredProducts.length} ${filteredProducts.length === 1 ? 'match' : 'matches'}`
+                : `${products.length} systems`}
+            </p>
+          </div>
         </div>
 
-        {products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 md:p-16 rounded-2xl border border-dashed border-neutral-300 bg-white text-center max-w-xl mx-auto">
-            <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 mb-4">
-              <PackageOpen className="w-6 h-6" />
+        {filteredProducts.length === 0 ? (
+          <div className="mx-auto mt-12 flex max-w-xl flex-col items-center justify-center border border-dashed border-neutral-300 bg-neutral-50 p-12 text-center md:mt-16 md:p-16">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white text-neutral-500">
+              <PackageOpen className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-bold text-neutral-800 mb-1">
-              Maaf, produk kosong saat ini.
+            <h3 className="mb-1 text-lg font-bold text-neutral-800">
+              {products.length === 0 ? 'Products are being prepared.' : 'No matching systems.'}
             </h3>
-            <p className="text-sm text-neutral-500 max-w-sm">
-              Kami sedang menyiapkan katalog produk terbaru. Silakan hubungi kami untuk informasi
-              lebih lanjut.
+            <p className="max-w-sm text-sm text-neutral-500">
+              {products.length === 0
+                ? 'Contact our team to discuss the right setup for your property.'
+                : 'Try a different product name or capability.'}
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
-            {products.map((product) => (
-              <div
+          <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-14 md:mt-16 md:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map((product) => (
+              <article
                 key={product.id}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#dbe6f7] bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                className="group flex h-full flex-col border-t border-neutral-300 pt-4"
               >
                 {product.image ? (
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+                  <Link
+                    href={`/products/${product.slug}`}
+                    aria-label={`View ${product.name}`}
+                    className="relative mb-6 block aspect-[16/10] w-full overflow-hidden bg-[#E8EEF8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-4"
+                  >
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     />
-                  </div>
+                  </Link>
                 ) : (
-                  <div className="aspect-[4/3] w-full bg-[#dbe6f7]" />
+                  <div className="mb-6 aspect-[16/10] w-full bg-[#E8EEF8]" />
                 )}
-                <div className="flex flex-1 flex-col bg-[#eef4ff] p-7 sm:p-8">
-                  <div>
-                    <h3 className="mb-4 text-xl font-semibold tracking-tight text-[#001A53]">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm leading-relaxed text-[#29456f]">
-                      {product.description || 'Tidak ada deskripsi tersedia.'}
-                    </p>
-                  </div>
-                  <div className="mt-auto pt-8">
+                <div className="flex flex-1 flex-col">
+                  <h3 className="max-w-sm text-xl font-semibold leading-tight tracking-[-0.02em] text-[#001A53] sm:text-2xl">
                     <Link
                       href={`/products/${product.slug}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-[#004AEB] transition-colors hover:text-[#001A53]"
+                      className="rounded-sm transition-colors hover:text-[#1D4ED8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D4ED8] focus-visible:ring-offset-4"
                     >
-                      Pelajari Selengkapnya
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      {product.name}
                     </Link>
-                  </div>
+                  </h3>
+                  <p className="mt-4 max-w-sm text-sm leading-7 text-neutral-600">
+                    {product.description || 'No product description available.'}
+                  </p>
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="product-card-action mt-auto inline-flex w-fit items-center gap-2 border-b border-[#1D4ED8] pb-1 pt-6 text-sm font-semibold text-[#1D4ED8] transition-colors hover:border-[#001A53] hover:text-[#001A53]"
+                  >
+                    View product
+                    <ArrowUpRight className="product-card-action-icon h-4 w-4" />
+                  </Link>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}

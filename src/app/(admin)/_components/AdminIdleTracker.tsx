@@ -14,9 +14,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Clock, ShieldAlert } from 'lucide-react';
 
-// Durasi idle: 2 jam (7.200.000 ms)
+// Idle duration: 2 hours (7,200,000 ms)
 const IDLE_TIMEOUT_MS = 2 * 60 * 60 * 1000;
-// Modal peringatan muncul 5 menit sebelum logout (300.000 ms)
+// Warning modal appears 5 minutes before logout (300,000 ms)
 const WARNING_BEFORE_MS = 5 * 60 * 1000;
 const WARNING_THRESHOLD_MS = IDLE_TIMEOUT_MS - WARNING_BEFORE_MS;
 
@@ -29,6 +29,7 @@ export function AdminIdleTracker() {
   const [showWarning, setShowWarning] = useState(false);
   const [remainingSeconds, setRemainingSeconds] = useState(300);
   const isLoggingOutRef = useRef(false);
+  const showWarningRef = useRef(false);
 
   const performLogout = useCallback(
     async (reason: 'session_expired' | 'manual' = 'session_expired') => {
@@ -36,20 +37,20 @@ export function AdminIdleTracker() {
       isLoggingOutRef.current = true;
 
       try {
-        // Notifikasi tab lain
+        // Notify other tabs
         if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
           const bc = new BroadcastChannel(CHANNEL_NAME);
           bc.postMessage({ type: 'LOGOUT', reason });
           bc.close();
         }
       } catch {
-        // Abaikan error BroadcastChannel fallback
+        // Ignore BroadcastChannel fallback errors
       }
 
       try {
         await signOut();
       } catch (err) {
-        console.error('Error saat sign out otomatis:', err);
+        console.error('Automatic sign-out failed:', err);
       } finally {
         if (typeof window !== 'undefined') {
           localStorage.removeItem(STORAGE_KEY);
@@ -74,7 +75,7 @@ export function AdminIdleTracker() {
         bc.close();
       }
     } catch {
-      // Abaikan jika tidak didukung
+      // Ignore when unsupported
     }
   }, []);
 
@@ -83,23 +84,27 @@ export function AdminIdleTracker() {
     setShowWarning(false);
   }, [resetActivity]);
 
-  // Listener interaksi user
+  useEffect(() => {
+    showWarningRef.current = showWarning;
+  }, [showWarning]);
+
+  // Listen for user interaction.
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Inisialisasi timestamp jika belum ada
+    // Initialize the timestamp if needed
     if (!localStorage.getItem(STORAGE_KEY)) {
       localStorage.setItem(STORAGE_KEY, Date.now().toString());
     }
 
     let lastRecorded = 0;
     const handleUserInteraction = () => {
-      // Throttling 2 detik agar tidak membebani performa
+      // Throttle to avoid unnecessary work
       const now = Date.now();
       if (now - lastRecorded > 2000) {
         lastRecorded = now;
-        // Hanya reset jika modal peringatan belum muncul
-        if (!showWarning) {
+        // Reset only while the warning modal is hidden
+        if (!showWarningRef.current) {
           resetActivity();
         }
       }
@@ -110,7 +115,7 @@ export function AdminIdleTracker() {
       window.addEventListener(event, handleUserInteraction, { passive: true });
     });
 
-    // Multi-tab sync via BroadcastChannel
+    // Sync multiple tabs via BroadcastChannel
     let broadcastChannel: BroadcastChannel | null = null;
     if ('BroadcastChannel' in window) {
       broadcastChannel = new BroadcastChannel(CHANNEL_NAME);
@@ -127,7 +132,7 @@ export function AdminIdleTracker() {
       };
     }
 
-    // Storage event sync untuk browser tanpa BroadcastChannel atau tab switch
+    // Sync storage events for unsupported browsers and tab switches
     const handleStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue) {
         setShowWarning(false);
@@ -135,7 +140,7 @@ export function AdminIdleTracker() {
     };
     window.addEventListener('storage', handleStorage);
 
-    // Interval checker tiap 1 detik
+    // Check the session once per second.
     const interval = setInterval(() => {
       if (isLoggingOutRef.current) return;
 
@@ -164,7 +169,7 @@ export function AdminIdleTracker() {
       }
       clearInterval(interval);
     };
-  }, [performLogout, resetActivity, router, showWarning]);
+  }, [performLogout, resetActivity, router]);
 
   const formatCountdown = (totalSec: number) => {
     const mins = Math.floor(totalSec / 60);
@@ -180,11 +185,11 @@ export function AdminIdleTracker() {
             <ShieldAlert className="h-6 w-6" />
           </div>
           <DialogTitle className="text-lg font-bold text-slate-900">
-            Sesi Admin Akan Berakhir
+            Admin session expiring
           </DialogTitle>
           <DialogDescription className="text-center text-sm text-slate-600 mt-2">
-            Tidak ada aktivitas yang terdeteksi selama hampir 2 jam. Demi keamanan data, Anda akan
-            otomatis dikeluarkan dalam:
+            No activity has been detected for almost 2 hours. For data security, you will be signed
+            out in:
           </DialogDescription>
         </DialogHeader>
 
@@ -193,7 +198,7 @@ export function AdminIdleTracker() {
             <Clock className="h-6 w-6 animate-pulse" />
             <span>{formatCountdown(remainingSeconds)}</span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">menit tersisa</p>
+          <p className="text-xs text-slate-500 mt-1">minutes remaining</p>
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2 mt-2">
@@ -203,7 +208,7 @@ export function AdminIdleTracker() {
             className="w-full sm:w-auto"
             onClick={() => performLogout('manual')}
           >
-            Keluar Sekarang
+            Sign out now
           </Button>
           <Button
             type="button"
@@ -211,7 +216,7 @@ export function AdminIdleTracker() {
             className="w-full sm:w-auto bg-primary text-white hover:bg-primary/90"
             onClick={handleExtendSession}
           >
-            Tetap Masuk (Perpanjang Sesi)
+            Stay signed in (extend session)
           </Button>
         </DialogFooter>
       </DialogContent>
