@@ -74,6 +74,30 @@
   }
 }
 
+@keyframes mobile-logo-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-2px) rotate(-1deg);
+  }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .mobile-logo-motion {
+    animation: mobile-logo-drift 3.8s ease-in-out infinite;
+    transform-origin: left center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-logo-motion {
+    animation: none;
+  }
+}
+
 .product-card-action-icon {
   rotate: 90deg;
   transition: rotate 300ms cubic-bezier(0.16, 1, 0.3, 1);

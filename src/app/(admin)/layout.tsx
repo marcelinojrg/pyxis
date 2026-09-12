@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { Settings } from 'lucide-react';
 import { requireAdmin } from '@/lib/requireAdmin';
@@ -45,11 +46,16 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       {/* Desktop Fixed Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-hidden border-r border-slate-200 bg-white text-slate-900 shadow-sm lg:flex">
         {/* Brand Header */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-5">
+        <div className="flex h-20 shrink-0 items-center justify-between border-b border-slate-200 px-5">
           <div className="flex items-center gap-3">
-            <div>
-              <span className="text-sm font-bold tracking-tight text-slate-900">Pyxis Admin</span>
-            </div>
+            <Image
+              src="/assets/img/Pyxis_logo.png"
+              alt="Pyxis"
+              width={112}
+              height={32}
+              className="h-auto w-28"
+            />
+            <span className="sr-only">Admin</span>
           </div>
         </div>
 

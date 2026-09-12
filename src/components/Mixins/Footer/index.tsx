@@ -18,7 +18,7 @@ const Footer: FC = () => {
                 src="/assets/img/Pyxis_logo_white.png"
                 alt="Pyxis"
                 width={148}
-                height={43}
+                height={42}
                 className="h-auto w-[148px]"
               />
             </Link>

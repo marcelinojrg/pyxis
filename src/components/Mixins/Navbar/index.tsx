@@ -79,7 +79,7 @@ export default function Navbar() {
             width={128}
             height={37}
             priority
-            className="h-auto w-[128px]"
+            className="mobile-logo-motion h-auto w-[128px]"
           />
         </Link>
 
@@ -139,12 +139,14 @@ export default function Navbar() {
         {/* Mobile Hamburger Toggle */}
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen((open) => !open)}
           className={cn(
-            'md:hidden p-2 rounded-lg transition-colors',
+            'md:hidden size-11 rounded-lg transition-colors',
             isWhite ? 'text-neutral-800 hover:bg-neutral-100' : 'text-white hover:bg-white/10'
           )}
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isOpen}
+          aria-controls="public-mobile-navigation"
         >
           {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -153,8 +155,9 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {isOpen && (
         <div
+          id="public-mobile-navigation"
           className={cn(
-            'md:hidden fixed inset-x-0 top-full shadow-xl p-6 transition-all border-b',
+            'md:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-b p-4 shadow-xl transition-all sm:p-6',
             isWhite
               ? 'bg-white border-neutral-200 text-neutral-800'
               : 'bg-[#1E40AF] border-blue-700 text-white'

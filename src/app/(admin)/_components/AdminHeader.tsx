@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { Route } from 'next';
 import { ChevronRight, Home, LogOut, Menu } from 'lucide-react';
@@ -37,7 +38,7 @@ export function AdminHeader({ adminName, adminEmail, initials, onSignOut }: Admi
   )?.[1];
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200/90 bg-white/95 px-4 backdrop-blur-sm sm:px-6 lg:left-64 lg:px-8">
+    <header className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200/90 bg-white/95 px-3 backdrop-blur-sm sm:px-6 lg:left-64 lg:px-8">
       <div className="flex min-w-0 items-center gap-2">
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger asChild>
@@ -45,17 +46,29 @@ export function AdminHeader({ adminName, adminEmail, initials, onSignOut }: Admi
               variant="ghost"
               size="icon"
               className="size-11 lg:hidden"
-              aria-label="Open admin navigation"
+              aria-label={menuOpen ? 'Close admin navigation' : 'Open admin navigation'}
+              aria-expanded={menuOpen}
+              aria-controls="admin-mobile-navigation"
             >
               <Menu className="size-5" />
             </Button>
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="w-72 gap-0 border-slate-200 bg-white p-0 text-slate-900 [&_[data-slot=sheet-close]]:text-slate-500"
+            id="admin-mobile-navigation"
+            className="z-[60] w-[min(86vw,20rem)] max-w-[20rem] gap-0 border-slate-200 bg-white p-0 text-slate-900 [&_[data-slot=sheet-close]]:text-slate-500"
           >
-            <SheetHeader className="h-16 justify-center border-b border-slate-200 px-5 py-0 text-left">
-              <SheetTitle className="text-sm font-bold text-slate-900">Pyxis Admin</SheetTitle>
+            <SheetHeader className="h-20 justify-center border-b border-slate-200 px-5 py-0 text-left">
+              <SheetTitle className="flex items-center gap-3 text-sm font-bold text-slate-900">
+                <Image
+                  src="/assets/img/Pyxis_logo.png"
+                  alt="Pyxis"
+                  width={112}
+                  height={32}
+                  className="mobile-logo-motion h-auto w-28"
+                />
+                <span className="sr-only">Admin</span>
+              </SheetTitle>
             </SheetHeader>
             <AdminNavigation onNavigate={() => setMenuOpen(false)} />
           </SheetContent>

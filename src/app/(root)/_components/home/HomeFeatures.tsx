@@ -59,7 +59,7 @@ export default function HomeFeatures() {
                 <div
                   key={feature.title}
                   data-home-reveal="card"
-                  className={`group py-7 sm:px-8 ${index >= 2 ? 'border-t border-neutral-200' : ''}`}
+                  className={`group py-7 sm:px-8 ${index > 0 ? 'border-t border-neutral-200' : ''} ${index === 1 ? 'sm:border-t-0' : ''}`}
                 >
                   <div className="flex items-start justify-between gap-6">
                     <span className="text-sm font-semibold tabular-nums text-[#1D4ED8]">
