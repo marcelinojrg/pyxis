@@ -72,7 +72,7 @@ Pastikan `.env`/`.env.local` masuk `.gitignore`.
 
 ## 8. Headers
 
-`next.config.ts` sudah menyetel header produksi:
+`next.config.ts` menyetel header keamanan:
 
 - `X-Content-Type-Options: nosniff`;
 - `X-Frame-Options: SAMEORIGIN` (DENY untuk `/admin/managements/*`);
@@ -80,7 +80,13 @@ Pastikan `.env`/`.env.local` masuk `.gitignore`.
 - `Permissions-Policy` (camera/microphone/geolocation dibatasi);
 - `poweredByHeader` dimatikan.
 
-Content-Security-Policy belum disetel — tambahkan setelah memetakan kebutuhan pihak ketiga (ImageKit, analytics).
+Content-Security-Policy dibuat per request di `src/proxy.ts` dengan nonce acak.
+`script-src` tetap memakai nonce dan `strict-dynamic`; `'unsafe-eval'` hanya
+aktif saat development untuk React debugging. `style-src` memakai nonce di
+production. Development mengizinkan inline styles karena Next DevTools membuat
+elemen `<style>` tanpa nonce; jangan membawa pengecualian ini ke production.
+Sumber gambar dan koneksi yang diizinkan dibatasi ke origin aplikasi,
+Unsplash, dan ImageKit.
 
 ## 9. Data Minimization
 

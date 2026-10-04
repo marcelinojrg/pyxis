@@ -4,11 +4,13 @@ import { prisma } from './lib/prisma';
 
 function createContentSecurityPolicy(nonce: string) {
   const developmentEval = process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : '';
+  const developmentStyles =
+    process.env.NODE_ENV === 'development' ? "'unsafe-inline'" : `'nonce-${nonce}'`;
 
   return [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${developmentEval}`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' ${developmentStyles}`,
     "img-src 'self' data: blob: https://images.unsplash.com https://ik.imagekit.io",
     "font-src 'self'",
     "connect-src 'self' https://ik.imagekit.io",
